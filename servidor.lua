@@ -17,32 +17,42 @@ local ip,porta = server:getsockname()
 print("Por favor, conecte local host na porta ", porta)
 print("Após a conexão, você tem 10 segundos para inserir uma linha")
 
---loop para esperar por clientes
+--marca inicio
+starttime = os.time()
 
+--loop para esperar por clientes
 while 1 do
 	--esperando uma conexão com qualquer cliente
 	local  client, status =server:accept()
 	--se nenhum cliente conecta
-	if status == "timeout" then
-		print("status ==  "..status)
-		break
-	end
-	print('Alguem se conectou!')
+	--if status == "timeout" then
+		--print("status ==  "..status)
+		--break
+	--end
+	--print('Alguem se conectou!')
 	-- não bloquear a linha de espera do cliente
 	client:settimeout(2)
 	--recebendo dados
 	local line,err, partial = client:receive()
-	print("err "..(err or "nil"))
-	print("Recebeu "..(line or partial))
+	--print("err "..(err or "nil"))
+	--print("Recebeu "..(line or partial))
 	-- se não tiver erro, envia de volta ao cliente
 	if not err then 
 		client:send((line or partial).. "tai \n")
 	elseif err == "timeout" then
-		print("err ==  "..err)
+		--print("err ==  "..err)
 		client:close()
 		break
 	end
 	--fechando o objeto após terminar com o cliente
 	client:close()
 end
-print("Fim do loop")
+
+--marca fim
+endtime = os.time()
+
+--calcula duração do loop
+timediff = endtime-starttime
+
+--os dois segundos subtraídos servem para compensar a espera realizada pelo servidor
+print("Fim do loop\n\t durou: "..(timediff-2).."s")
