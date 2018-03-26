@@ -2,7 +2,20 @@
 
 --importanto socket
 local socket = require ("socket")
-local kstring = "como vamos fazer uma string de 1kB? Vamor usar um for? tava pensando em algo do tipo:kstring = {} for i=1,999 do kstring[#kstring] = tostring(i%10)end kstring[#kstring] = '\\n' kstring = table.concat(kstring)..\\n \n"
+
+--gera string de 1kB
+kstring = {}
+for i=1,999 do
+	kstring[#kstring+1] = tostring(i%10)
+end
+--último caractere é "\n" por precisar dele no :send() e :receive()
+kstring[#kstring+1] = "\n"
+kstring = table.concat(kstring)
+--[[
+print("sizeof(kstring) = "..#kstring)
+print(kstring)
+--]]
+
 
 --Criando socket TCP e ligando ao local host em qualquer porta.
 
