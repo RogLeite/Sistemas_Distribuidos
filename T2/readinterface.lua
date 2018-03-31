@@ -1,16 +1,21 @@
-local t = {}
-
+local M = {}
+M.t = {}
 --print("t = "..tostring(t))
 function interface(b)
-	t = b
+	M.t = b
 --[[
 	print("b = "..tostring(b))
 	print("t = "..tostring(t))
 --]]
 end
----[[
+
+--[[
 dofile("exinterface")
 print("t = "..tostring(t))
 --]]
 --dofile("interface")
-return t
+function M.readinterface(filename)
+	dofile(filename)
+end
+
+return M
