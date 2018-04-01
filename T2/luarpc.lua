@@ -17,17 +17,31 @@ function M.createServant(object,interface)
 	--Acho que devemos usar 0 senão, pelo que entendi, o servidor iria se conectar a todas as portas.
 	local server=assert(socket.bind(0,123456))
 	--[[descobrir qual porta o sistema operacional escolheu para nós, e vamos retornar, para poderem se conectar a tal porta]]
-	local ip,porta = server:getsockname()
+	local l_ip,l_porta = server:getsockname()
 	
 	--corrotina do servidor 
 	local co = coroutine.create(function ()
 	--código do servidor
-	
+		--inicializa o servant, ele deve rodar uma vez antes de dormir (para ocorrer a inicialização)
+		--para cada função em object
+		for name,funct in pairs(object) do
+			--confere se funct é uma função
+			if type(funct)~="function" then
+				--trata o caso em que não é uma função
+				--[[
+				string = tostring(funct)
+				funct = function() return string end
+				]]
+			end
+		end
+		--loop da escuta de mensagens
+		while true do --[[podemos pensar em pôr uma condição de término]]
 		
+		end
 	)
 	--insere a corrotina criada na tabela "global"
 	table.insert(M.threads,co)
-	
+	return {,ip = l_ip,porta = l_porta}
 end
 
 function M.createProxy(ip, porta, interface)
