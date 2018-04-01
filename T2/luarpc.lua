@@ -34,6 +34,7 @@ function M.createServant(object,interface)
 				]]
 			end
 		end
+		server:settimeout(0)
 		--loop da escuta de mensagens
 		while true do --[[podemos pensar em pôr uma condição de término]]
 		
