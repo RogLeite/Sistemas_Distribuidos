@@ -42,7 +42,7 @@ function M.createServant(object,interface)
 	)
 	--insere a corrotina criada na tabela "global"
 	table.insert(M.threads,co)
-	return {,ip = l_ip,porta = l_porta}
+	return {ip = l_ip,porta = l_porta}
 end
 
 function M.createProxy(ip, porta, interface)

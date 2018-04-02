@@ -3,8 +3,11 @@
 ]]
 
 local socket = require "socket"
-local server=assert(socket.bind("*",123456))
---local server=assert(socket.bind(0,123456))
-local l_ip,l_porta = server:getsockname()
-print("ip = "..l_ip)
-print("porta = "..l_porta)
+local server1=assert(socket.bind("*",123456))
+local ip1,porta1 = server1:getsockname()
+print("ip1 = "..ip1)
+print("porta1 = "..porta1)
+local server2=assert(socket.bind(0,123457))
+local ip2,porta2 = server2:getsockname()
+print("ip2 = "..ip2)
+print("porta2 = "..porta2)
