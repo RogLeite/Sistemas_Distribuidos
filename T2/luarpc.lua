@@ -37,7 +37,17 @@ function M.createServant(object,interface)
 		server:settimeout(0)
 		--loop da escuta de mensagens
 		while true do --[[podemos pensar em pôr uma condição de término]]
-		
+			local client, status = server:accept()
+			if client == nil then coroutine.yield() end
+			else 
+				local msg, status, partial = 0,0,0
+				client:settimeout(0)
+				repeat
+					msg, status, partial = client:receive()
+					
+					--[[trata a mensagem do cliente, chama a função correspondente e devolve os retornos]]
+				until m
+			end
 		end
 	)
 	--insere a corrotina criada na tabela "global"
