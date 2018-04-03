@@ -36,22 +36,31 @@ function M.createServant(object,interface)
 		end
 		server:settimeout(0)
 		--loop da escuta de mensagens
+		local clients = {}
+		local conectado = 0
 		while true do
-			--como que o servidor poderia estar lendo de mais de um cliente?
-			local client, status = server:accept()
-			if client == nil then coroutine.yield() end
-			else 
-				local msg, status, partial = 0,0,0
-				client:settimeout(0)
-				repeat
-					msg, status, partial = client:receive()
-					if status then coroutine.yield()
-					else
-					--[[trata a mensagem do cliente, chama a função correspondente e devolve os retornos]]	
-					end
-				--repete até a mensagem ser recebida
-				until status==nil
+			repeat
+				--aceita conexão com cliente
+				conectado = server:accept() 
+				if conectado ~= nil then
+					--se houve conexão, armazena
+					clients[#clients+1] = conectado
+					clients[#clients]:settimeout(0)
+				end
+			until conectado == nil
+			for index,cli in pairs(clients) do
+				local msg, status, partial = cli:receive()
+				if status == "timeout" then
+					--se não foi recebido nada
+				elseif status == "closed" then
+					--se a conexão foi fechada, retira o cliente do array
+					--clients[i]:close()--se foi fechado não precisa fechar -_-
+					clients[i] = nil
+				else
+					--[[trata a msg]]
+				end
 			end
+			coroutine.yield()
 		end
 	)
 	--insere a corrotina criada na tabela "global"
