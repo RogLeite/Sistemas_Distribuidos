@@ -36,7 +36,8 @@ function M.createServant(object,interface)
 		end
 		server:settimeout(0)
 		--loop da escuta de mensagens
-		while true do --[[podemos pensar em pôr uma condição de término]]
+		while true do
+			--como que o servidor poderia estar lendo de mais de um cliente?
 			local client, status = server:accept()
 			if client == nil then coroutine.yield() end
 			else 
@@ -44,9 +45,12 @@ function M.createServant(object,interface)
 				client:settimeout(0)
 				repeat
 					msg, status, partial = client:receive()
-					
-					--[[trata a mensagem do cliente, chama a função correspondente e devolve os retornos]]
-				until m
+					if status then coroutine.yield()
+					else
+					--[[trata a mensagem do cliente, chama a função correspondente e devolve os retornos]]	
+					end
+				--repete até a mensagem ser recebida
+				until status==nil
 			end
 		end
 	)
