@@ -6,7 +6,62 @@ local readinterface = require "readinterface"
 
 --armazenará as corrotinas criadas por createServant(), para que possam ser enxergadas por waitIncoming()
 M.threads = {}
-
+local function servant()
+--código do servidor
+	--inicializa o servant, ele deve rodar uma vez antes de dormir (para ocorrer a inicialização)
+	--para cada função em object
+	print("Corrotina servant inicializada")
+	--[=[
+	for name,funct in pairs(object) do
+		--confere se funct é uma função
+		if type(funct)~="function" then
+			--trata o caso em que não é uma função
+			--[[
+			string = tostring(funct)
+			funct = function() return string end
+			]]
+		end
+	end
+	]=]
+	--loop da escuta de mensagens
+	local clients = {}
+	local conectado = 0
+	coroutine.yield()
+	print("Servant começou loop")
+	while true do
+	
+		print("corrotina começa a aguardar cliente")
+		repeat
+			--aceita conexão com cliente
+			conectado = server:accept() 
+			if conectado ~= nil then
+				--se houve conexão, armazena o cliente
+				clients[#clients+1] = conectado
+				clients[#clients]:settimeout(0)
+				print("corrotina aceitou cliente "..tostring(conectado))
+			end
+		until conectado == nil
+		print("Servant começa a escutar mensagens")
+		for index,cli in pairs(clients) do
+			local msg, status, partial = cli:receive()
+			if status == "timeout" then
+				print("Servant não escutou nada de "..tostring(cli))
+				--se não foi recebido nada
+			elseif status == "closed" then
+				--se a conexão foi fechada, retira o cliente do array
+				--clients[i]:close()--se foi fechado não precisa fechar -_-
+				print("cliente "..tostring(cli).." foi fechado")
+				clients[i] = nil
+			else
+				print("mensagem recebida de "..tostring(cli))
+				--[[trata a msg]]
+			end
+		end
+		print("Servant vai ceder controle")
+		coroutine.yield()
+		print("Servant recebeu controle")
+	end
+end
 
 function M.createServant(object,interface)
 	
@@ -18,54 +73,24 @@ function M.createServant(object,interface)
 	local server=assert(socket.bind(0,123456))
 	--[[descobrir qual porta o sistema operacional escolheu para nós, e vamos retornar, para poderem se conectar a tal porta]]
 	local l_ip,l_porta = server:getsockname()
+	server:settimeout(0)
+	--t_interface é a tabela lida do arquivo interface
+	local t_interface = readinterface.readinterface(interface)
+	print("t_interface = "..tostring(t_interface))
 	
 	--corrotina do servidor 
-	local co = coroutine.create(function ()
-	--código do servidor
-		--inicializa o servant, ele deve rodar uma vez antes de dormir (para ocorrer a inicialização)
-		--para cada função em object
-		for name,funct in pairs(object) do
-			--confere se funct é uma função
-			if type(funct)~="function" then
-				--trata o caso em que não é uma função
-				--[[
-				string = tostring(funct)
-				funct = function() return string end
-				]]
-			end
-		end
-		server:settimeout(0)
-		--loop da escuta de mensagens
-		local clients = {}
-		local conectado = 0
-		while true do
-			repeat
-				--aceita conexão com cliente
-				conectado = server:accept() 
-				if conectado ~= nil then
-					--se houve conexão, armazena
-					clients[#clients+1] = conectado
-					clients[#clients]:settimeout(0)
-				end
-			until conectado == nil
-			for index,cli in pairs(clients) do
-				local msg, status, partial = cli:receive()
-				if status == "timeout" then
-					--se não foi recebido nada
-				elseif status == "closed" then
-					--se a conexão foi fechada, retira o cliente do array
-					--clients[i]:close()--se foi fechado não precisa fechar -_-
-					clients[i] = nil
-				else
-					--[[trata a msg]]
-				end
-			end
-			coroutine.yield()
-		end
-	)
-	--insere a corrotina criada na tabela "global"
-	table.insert(M.threads,co)
-	return {ip = l_ip,porta = l_porta}
+	local co = coroutine.create(function() servant() end)
+	if co~=nil then
+		print("Corrotina servant criada")
+		--insere a corrotina criada na tabela "global"
+		table.insert(M.threads,co)
+		return {ip = l_ip,porta = l_porta}
+	else --trata o caso da corrotina não ser criada
+		print("Corrotina servant não foi criada")
+		--fecha o servidor criado
+		server:close()
+	end	
+	
 end
 
 function M.createProxy(ip, porta, interface)
