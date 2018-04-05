@@ -1,8 +1,8 @@
 local M = {}
-M.t = {}
+local t = {}
 --print("t = "..tostring(t))
 function interface(b)
-	M.t = b
+	t = b
 --[[
 	print("b = "..tostring(b))
 	print("t = "..tostring(t))
@@ -16,6 +16,7 @@ print("t = "..tostring(t))
 --dofile("interface")
 function M.readinterface(filename)
 	dofile(filename)
+	return t
 end
 
 return M

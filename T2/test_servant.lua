@@ -9,14 +9,18 @@ myobj1 = { foo =
              end
         }
 print("luarpc.threads = "..tostring(luarpc.threads))
-luarpc.createServant(myobj1,"exinterface")
+local info = luarpc.createServant(myobj1,"exinterface")
 print("luarpc.threads = "..tostring(luarpc.threads))
 for index,cli in pairs(luarpc.threads) do
 	print("\tluarpc.threads["..tostring(index).."] = "..tostring(cli))
 end
 coroutine.resume(luarpc.threads[1])
 for i=1,5000 do i=i end
-print("tentei resume a thread")
+local client = {}
+for i=1,2 do
+	client[i] = socket.connect(info.ip,info.porta)
+	print("client = "..tostring(client))
+	client[i]:send("oi"..i.."\n")
+end
 coroutine.resume(luarpc.threads[1])
-print("consegui resume a thread")
-print("mas ela aparentemente n sai do accept()!")
+

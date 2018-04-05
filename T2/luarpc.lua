@@ -2,11 +2,11 @@
 local M = {}
 --tem que ver se esse local socket n deve ser declarado como M.socket ou algo do tipo (pra ter alguma persistência depois do return M)
 local socket = require "socket"
-local readinterface = require "readinterface"
+local ri = require "readinterface"
 
 --armazenará as corrotinas criadas por createServant(), para que possam ser enxergadas por waitIncoming()
 M.threads = {}
-local function servant()
+local function servant(server)
 --código do servidor
 	--inicializa o servant, ele deve rodar uma vez antes de dormir (para ocorrer a inicialização)
 	--para cada função em object
@@ -29,7 +29,6 @@ local function servant()
 	coroutine.yield()
 	print("Servant começou loop")
 	while true do
-	
 		print("corrotina começa a aguardar cliente")
 		repeat
 			--aceita conexão com cliente
@@ -54,6 +53,7 @@ local function servant()
 				clients[i] = nil
 			else
 				print("mensagem recebida de "..tostring(cli))
+				print(msg)
 				--[[trata a msg]]
 			end
 		end
@@ -75,11 +75,11 @@ function M.createServant(object,interface)
 	local l_ip,l_porta = server:getsockname()
 	server:settimeout(0)
 	--t_interface é a tabela lida do arquivo interface
-	local t_interface = readinterface.readinterface(interface)
+	local t_interface = ri.readinterface(interface)
 	print("t_interface = "..tostring(t_interface))
 	
 	--corrotina do servidor 
-	local co = coroutine.create(function() servant() end)
+	local co = coroutine.create(function() servant(server) end)
 	if co~=nil then
 		print("Corrotina servant criada")
 		--insere a corrotina criada na tabela "global"
@@ -95,6 +95,14 @@ end
 
 function M.createProxy(ip, porta, interface)
 	--vai retornar um "objeto" que terá índices correspondentes a cada função na interface.
+
+	local cliente = socket.connect(ip,porta)
+	local t_interface = ri.readinterface(interface)
+	local proxy = {}
+	for name, details in t_interface.methods do
+		
+	end
+	--será q dá pra usar metatable?
 	--[[
 	ex.foo = function(...) <-- ESSA É A SOLUÇÃO PRA GENTE! FUNÇÕES VARIÁDICAS!!!
 		for i,n in ipairs{...} do
