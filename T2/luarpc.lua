@@ -93,17 +93,51 @@ function M.createServant(object,interface)
 	
 end
 
+function send_call(...)
+	local prox = ...[1]
+	if type(prox)~="table" then
+		print("Incorrect call (try using ':' instead of '.')")
+	else
+		--[[
+			prox.interface é onde está especificada a interface
+			prox.client é o cliente para usar :send() e :receive()
+		]]
+	
+	end	
+end
+
+function trata_indice_desconhecido(...)
+-- primeiro argumento de ... é a tabela de qual se originou a chamada
+	local t = ...[1]
+	local i = ...[2]
+	--se a função especificada existe na interface, retorna a função que enviará a mensagem
+	if t.interface.methods[i] then
+		return send_call
+	else
+		return function() print("not a specified function") end
+	end
+
+
+end
+
+local mt_proxy = {}
+mt_proxy.__index = trata_indice_desconhecido
+
 function M.createProxy(ip, porta, interface)
 	--vai retornar um "objeto" que terá índices correspondentes a cada função na interface.
 
 	local cliente = socket.connect(ip,porta)
 	local t_interface = ri.readinterface(interface)
 	local proxy = {}
+	proxy.interface = t_interface
+	proxy.client = cliente
+	print("\n\tainda falta devinir mt_proxy como metatabela de proxy\n")
+	--será q dá pra usar metatable? --DÁ!
+	
+	--[[
 	for name, details in t_interface.methods do
 		
 	end
-	--será q dá pra usar metatable?
-	--[[
 	ex.foo = function(...) <-- ESSA É A SOLUÇÃO PRA GENTE! FUNÇÕES VARIÁDICAS!!!
 		for i,n in ipairs{...} do
 			--o tratamento dos argumentos, gerado com base na interface passada
