@@ -44,8 +44,8 @@ local function servant(server)
 		for index,cli in pairs(clients) do
 			local msg, status, partial = cli:receive()
 			if status == "timeout" then
-				print("Servant não escutou nada de "..tostring(cli))
 				--se não foi recebido nada
+				print("Servant não escutou nada de "..tostring(cli))
 			elseif status == "closed" then
 				--se a conexão foi fechada, retira o cliente do array
 				--clients[i]:close()--se foi fechado não precisa fechar -_-
@@ -95,6 +95,7 @@ end
 
 function send_call(...)
 	local prox = ...[1]
+	--os argumentos de índice i >= 2 são os parâmetros da função
 	if type(prox)~="table" then
 		print("Incorrect call (try using ':' instead of '.')")
 	else
@@ -122,7 +123,7 @@ end
 
 local mt_proxy = {}
 mt_proxy.__index = trata_indice_desconhecido
-
+mt_proxy.__metatable = "Não é permitido o acesso à metatabela"
 function M.createProxy(ip, porta, interface)
 	--vai retornar um "objeto" que terá índices correspondentes a cada função na interface.
 
@@ -131,7 +132,7 @@ function M.createProxy(ip, porta, interface)
 	local proxy = {}
 	proxy.interface = t_interface
 	proxy.client = cliente
-	print("\n\tainda falta devinir mt_proxy como metatabela de proxy\n")
+	setmetatable(proxy,mt_proxy)
 	--será q dá pra usar metatable? --DÁ!
 	
 	--[[
