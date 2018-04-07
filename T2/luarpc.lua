@@ -4,6 +4,12 @@ local M = {}
 local socket = require "socket"
 local ri = require "readinterface"
 
+--se não formos testar, fica mais fácil de nos livrarmos dos prints trocando testing para false [[MICA]]
+local testing = true
+local print = print
+if not testing then
+	print = function() end
+end
 --armazenará as corrotinas criadas por createServant(), para que possam ser enxergadas por waitIncoming()
 M.threads = {}
 local function servant(server)
@@ -55,6 +61,7 @@ local function servant(server)
 				print("mensagem recebida de "..tostring(cli))
 				print(msg)
 				--[[trata a msg]]
+				--[[MICA]]
 			end
 		end
 		print("Servant vai ceder controle")
@@ -93,7 +100,7 @@ function M.createServant(object,interface)
 	
 end
 
-function send_call(...)
+local function send_call(...)
 	local prox = ...[1]
 	--os argumentos de índice i >= 2 são os parâmetros da função
 	if type(prox)~="table" then
@@ -102,12 +109,12 @@ function send_call(...)
 		--[[
 			prox.interface é onde está especificada a interface
 			prox.client é o cliente para usar :send() e :receive()
-		]]
+		]]--[[MICA]]
 	
 	end	
 end
 
-function trata_indice_desconhecido(...)
+local function trata_indice_desconhecido(...)
 -- primeiro argumento de ... é a tabela de qual se originou a chamada
 	local t = ...[1]
 	local i = ...[2]
@@ -148,7 +155,7 @@ function M.createProxy(ip, porta, interface)
 end
 
 function M.waitIncoming()
-
+	
 end
 
 return M
