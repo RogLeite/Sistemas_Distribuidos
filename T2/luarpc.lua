@@ -32,7 +32,8 @@ local function servant(server)
 	--loop da escuta de mensagens
 	local clients = {}
 	local conectado = 0
-	coroutine.yield()
+	--"yielda" true para waitIncoming ter confirmação de que a corrotina ainda está executando
+	coroutine.yield(true)
 	print("Servant começou loop")
 	while true do
 		print("corrotina começa a aguardar cliente")
@@ -65,7 +66,8 @@ local function servant(server)
 			end
 		end
 		print("Servant vai ceder controle")
-		coroutine.yield()
+		--"yielda" true para waitIncoming ter confirmação de que a corrotina ainda está executando
+		coroutine.yield(true)
 		print("Servant recebeu controle")
 	end
 end
@@ -89,6 +91,8 @@ function M.createServant(object,interface)
 	local co = coroutine.create(function() servant(server) end)
 	if co~=nil then
 		print("Corrotina servant criada")
+		--deixa a corrotina fazer sua inicialização
+		coroutine.resume(co)
 		--insere a corrotina criada na tabela "global"
 		table.insert(M.threads,co)
 		return {ip = l_ip,porta = l_porta}
@@ -155,7 +159,30 @@ function M.createProxy(ip, porta, interface)
 end
 
 function M.waitIncoming()
-	
+	local i = 1
+	local timedout = {}
+
+	while true do
+		if M.threads[i]==nil then
+			if M.threads[1] == nil then break end
+			i = 1
+			timedout = {}
+		end
+		--res será true se a corrotina ainda estiver executando
+		local status,res = coroutine.resume(M.threads[i])
+		--a thread terminou sua tarefa?
+		if not res then
+			table.remove(M.threads, i)
+		else
+			
+			i = i + 1
+			timedout[#timedout+1] = res
+			--todas as threads estão bloqueadas?
+			if #timedout == #(M.threads) then
+				socket.select(timedout)
+			end 
+		end
+	end
 end
 
 return M
