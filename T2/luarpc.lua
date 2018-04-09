@@ -104,15 +104,15 @@ function M.createServant(object,interface)
 	
 end
 
-local function send_call(proxy,...)
+local function send_call(proxy,funcname,...)
 	--os argumentos de índice i >= 2 são os parâmetros da função
 	if type(proxy)~="table" then
 		print("Incorrect call (try using ':' instead of '.')")
 	else
 		--[[
-			proxy.funcname é onde está o nome da função chamada
+			funcname é onde está o nome da função chamada
 			proxy.interface é onde está especificada a interface
-			proxy.interface.methods[proxy.funcname] acessa a especificação dos parâmetros para a função chamada
+			proxy.interface.methods[funcname] acessa a especificação dos parâmetros para a função chamada
 			proxy.client é o cliente para usar :send() e :receive()
 		]]--[[MICA]]
 	
@@ -122,8 +122,7 @@ end
 local function trata_indice_desconhecido(proxy,funcname)
 	--se a função especificada existe na interface, retorna a função que enviará a mensagem
 	if proxy.interface.methods[funcname] then
-		proxy.funcname = funcname
-		return send_call
+		return function(p,...) send_call(p,funcname,...) end
 	else
 		return function() print("not a specified function") end
 	end
@@ -145,18 +144,7 @@ function M.createProxy(ip, porta, interface)
 	proxy.interface = t_interface
 	proxy.client = cliente
 	setmetatable(proxy,mt_proxy)
-	--será q dá pra usar metatable? --DÁ!
-	
-	--[[
-	for name, details in t_interface.methods do
-		
-	end
-	ex.foo = function(...) <-- ESSA É A SOLUÇÃO PRA GENTE! FUNÇÕES VARIÁDICAS!!!
-		for i,n in ipairs{...} do
-			--o tratamento dos argumentos, gerado com base na interface passada
-		end	
-	end
-	]]
+	return proxy
 end
 
 function M.waitIncoming()
