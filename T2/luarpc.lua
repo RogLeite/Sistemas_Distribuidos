@@ -140,7 +140,6 @@ function M.createProxy(ip, porta, interface)
 	local cliente = socket.connect(ip,porta)
 	local t_interface = ri.readinterface(interface)
 	local proxy = {}
-	proxy.funcname = ""
 	proxy.interface = t_interface
 	proxy.client = cliente
 	setmetatable(proxy,mt_proxy)
