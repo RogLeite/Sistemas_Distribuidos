@@ -104,26 +104,25 @@ function M.createServant(object,interface)
 	
 end
 
-local function send_call(...)
-	local prox = ...[1]
+local function send_call(proxy,...)
 	--os argumentos de índice i >= 2 são os parâmetros da função
-	if type(prox)~="table" then
+	if type(proxy)~="table" then
 		print("Incorrect call (try using ':' instead of '.')")
 	else
 		--[[
-			prox.interface é onde está especificada a interface
-			prox.client é o cliente para usar :send() e :receive()
+			proxy.funcname é onde está o nome da função chamada
+			proxy.interface é onde está especificada a interface
+			proxy.interface.methods[proxy.funcname] acessa a especificação dos parâmetros para a função chamada
+			proxy.client é o cliente para usar :send() e :receive()
 		]]--[[MICA]]
 	
 	end	
 end
 
-local function trata_indice_desconhecido(...)
--- primeiro argumento de ... é a tabela de qual se originou a chamada
-	local t = ...[1]
-	local i = ...[2]
+local function trata_indice_desconhecido(proxy,funcname)
 	--se a função especificada existe na interface, retorna a função que enviará a mensagem
-	if t.interface.methods[i] then
+	if proxy.interface.methods[funcname] then
+		proxy.funcname = funcname
 		return send_call
 	else
 		return function() print("not a specified function") end
@@ -134,6 +133,7 @@ end
 
 local mt_proxy = {}
 mt_proxy.__index = trata_indice_desconhecido
+mt_proxy.__newindex = function (t,k,v) return "Para de tentar mexer com o proxy!" end
 mt_proxy.__metatable = "Não é permitido o acesso à metatabela"
 function M.createProxy(ip, porta, interface)
 	--vai retornar um "objeto" que terá índices correspondentes a cada função na interface.
@@ -141,6 +141,7 @@ function M.createProxy(ip, porta, interface)
 	local cliente = socket.connect(ip,porta)
 	local t_interface = ri.readinterface(interface)
 	local proxy = {}
+	proxy.funcname = ""
 	proxy.interface = t_interface
 	proxy.client = cliente
 	setmetatable(proxy,mt_proxy)
@@ -163,22 +164,29 @@ function M.waitIncoming()
 	local timedout = {}
 
 	while true do
+		print("Chegou ao fim do array das threads?")
 		if M.threads[i]==nil then
+			print("\tsim")
+			print("Não tem mais thread no array?")
 			if M.threads[1] == nil then break end
+			print("sim")
 			i = 1
 			timedout = {}
 		end
 		--res será true se a corrotina ainda estiver executando
+		print("Recomeça "..tostring(M.threads[i]))
 		local status,res = coroutine.resume(M.threads[i])
 		--a thread terminou sua tarefa?
 		if not res then
+			print("Thread terminou a sua tarefa")
 			table.remove(M.threads, i)
 		else
 			
 			i = i + 1
 			timedout[#timedout+1] = res
-			--todas as threads estão bloqueadas?
+			print("todas as threads estão bloqueadas?")
 			if #timedout == #(M.threads) then
+				print("\tsim")
 				socket.select(timedout)
 			end 
 		end
