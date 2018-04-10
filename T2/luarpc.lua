@@ -12,7 +12,7 @@ if not testing then
 end
 --armazenará as corrotinas criadas por createServant(), para que possam ser enxergadas por waitIncoming()
 M.threads = {}
-local function servant(server)
+local function servant(server,interface,object)
 --código do servidor
 	--inicializa o servant, ele deve rodar uma vez antes de dormir (para ocorrer a inicialização)
 	--para cada função em object
@@ -59,6 +59,10 @@ local function servant(server)
 				print("cliente "..tostring(cli).." foi fechado")
 				clients[i] = nil
 			else
+				--verifica se mensagem é nome de função declarada
+				if object[msg]~=nil then
+				
+				end
 				print("mensagem recebida de "..tostring(cli))
 				print(msg)
 				--[[trata a msg]]
@@ -88,7 +92,7 @@ function M.createServant(object,interface)
 	print("t_interface = "..tostring(t_interface))
 	
 	--corrotina do servidor 
-	local co = coroutine.create(function() servant(server) end)
+	local co = coroutine.create(function() servant(server,t_interface,object) end)
 	if co~=nil then
 		print("Corrotina servant criada")
 		--deixa a corrotina fazer sua inicialização
