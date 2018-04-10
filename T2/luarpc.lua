@@ -33,7 +33,7 @@ local function servant(server)
 	local clients = {}
 	local conectado = 0
 	--"yielda" true para waitIncoming ter confirmação de que a corrotina ainda está executando
-	coroutine.yield(true)
+	coroutine.yield(server)
 	print("Servant começou loop")
 	while true do
 		print("corrotina começa a aguardar cliente")
@@ -67,7 +67,7 @@ local function servant(server)
 		end
 		print("Servant vai ceder controle")
 		--"yielda" true para waitIncoming ter confirmação de que a corrotina ainda está executando
-		coroutine.yield(true)
+		coroutine.yield(server)
 		print("Servant recebeu controle")
 	end
 end
@@ -163,6 +163,8 @@ function M.waitIncoming()
 		--res será true se a corrotina ainda estiver executando
 		print("Recomeça "..tostring(M.threads[i]))
 		local status,res = coroutine.resume(M.threads[i])
+		print("\tstatus = "..tostring(status))
+		print("\tres = "..tostring(res))
 		--a thread terminou sua tarefa?
 		if not res then
 			print("Thread terminou a sua tarefa")

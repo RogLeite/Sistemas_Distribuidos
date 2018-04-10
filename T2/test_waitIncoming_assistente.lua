@@ -1,2 +1,0 @@
-local luarpc = require "luarpc"
-
