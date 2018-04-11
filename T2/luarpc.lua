@@ -32,12 +32,12 @@ end
 local function decode(tipo,valor)
 	if tipo == "char" or tipo == "string" then
 		--troca thesmile por \n
-		valor = string.gsub(valor,thesmile,"\n")
+		valor = "\""..string.gsub(valor,thesmile,"\n").."\""
 	elseif tipo == "number" then
 		--converte a string para um número
 		valor = tonumber(valor)
 	end
-	return valor or "nil"
+	return valor or "\"nil\""
 end
 
 
@@ -218,10 +218,29 @@ local function send_call(proxy,funcname,...)
 		end
 		--fim do laço de envio dos parâmetros---------------------
 		
+		local returns = {}
 		--Recebimento do retorno----------------------------------
-				
-				--[[EDIT]]
+		for i,n in pairs(proxy.interface.methods[funcname].args) do
+			--[[EDIT]]
+			if n.direction ~= "in" then
+				local msg, status, partial = proxy.client:receive()
+				if status == "timeout" or status == "closed" then
+					
+					local l_error = "__ERRORPC: connection "..status..". received only "..tostring(#returns).." results"
+					table.insert(returns,l_error,1)
+					break
+					
+				else
+					table.insert(returns,decode(n.type,msg))
+				end
+			end
+		end
 		--Fim do recebimento do retorno---------------------------
+		
+		--Retorna os argumentos-------------------
+		local returns_concat = table.concat(returns,", ")
+		local loaded = load("return "..returns_concat)
+		return loaded()
 	end	
 end
 
