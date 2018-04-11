@@ -15,7 +15,7 @@ if not testing then
 end
 
 
-
+--encode e decode retornam a string "nil" caso a conversão não seja possível
 local function encode(tipo,valor)
 	if tipo == "char" or tipo == "string" then
 		valor = string.gsub(valor,"\n",thesmile)
@@ -23,9 +23,18 @@ local function encode(tipo,valor)
 		--se resulttype é do tipo number, 
 		valor = tostring(valor)
 	end
-	return valor.."\n"
+	return (valor or "nil") .."\n"
 end
-
+local function decode(tipo,valor)
+	if tipo == "char" or tipo == "string" then
+		--troca thesmile por \n
+		valor = string.gsub(valor,thesmile,"\n")
+	elseif tipo == "number" then
+		--converte a string para um número
+		valor = tonumber(valor)
+	end
+	return valor or "nil"
+end
 
 
 --armazenará as corrotinas criadas por createServant(), para que possam ser enxergadas por waitIncoming()

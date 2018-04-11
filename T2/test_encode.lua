@@ -6,7 +6,7 @@ local function encode(tipo,valor)
 		--se resulttype é do tipo number, 
 		valor = tostring(valor)
 	end
-	return valor.."\n"
+	return (valor or "nil") .."\n"
 end
 
 
