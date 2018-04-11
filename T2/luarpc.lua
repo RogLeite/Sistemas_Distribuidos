@@ -13,6 +13,21 @@ local print = print
 if not testing then
 	print = function() end
 end
+
+
+
+local function encode(tipo,valor)
+	if tipo == "char" or tipo == "string" then
+		valor = string.gsub(valor,"\n",thesmile)
+	elseif tipo == "number" then
+		--se resulttype é do tipo number, 
+		valor = tostring(valor)
+	end
+	return valor.."\n"
+end
+
+
+
 --armazenará as corrotinas criadas por createServant(), para que possam ser enxergadas por waitIncoming()
 M.threads = {}
 local function servant(server,interface,object)
@@ -85,10 +100,12 @@ local function servant(server,interface,object)
 									--]]
 									table.insert(l_args,stringsemsmile)
 								elseif n.type == "char"
-									if #param ~= 1 then
+									--troca smile por \n
+									local charsemsmile = string.gsub(arg,thesmile,"\n")
+									if #charsemsmile ~= 1 then
 									--param não é um char
-									else
-										table.insert(l_args,param)
+									else 
+										table.insert(l_args,charsemsmile)
 									end
 								elseif n.type == "double"
 									local num = tonumber(param)
@@ -97,11 +114,32 @@ local function servant(server,interface,object)
 							end
 						end
 					end
-					--chama a função correta
+					--chama a função object[funcname]
 					local params_concat = table.concat(l_args,", ")
+					--[[o uso de load() aqui é para transformar a string params_concat em código executável como chamada de função (tendo os parâmetros como parâmetros)]]
 					local l_foo = load("local obj,funcname = ... return {obj[funcname]("..params_concat..")}")
 					local returns = l_foo(object,funcname)
-					--devolver returns para o proxy
+
+
+					--devolver returns para o proxy------------------------------
+					--[[EDIT]]
+					--discrimina result
+					local result = table.remove(returns,1)
+					result = encode(interface.methods[funcname].resulttype,result)
+					--[[
+					cli:send(result)
+					--]]
+					--devolve demais argumentos de returns
+					for i,n in pairs(interface.methods[msg].args)do
+						--devolve um argumento pro cliente, mas pula os args in
+						if n.direction ~= "in" then
+							local return_msg = encode(n.type,n)
+							--[[
+							cli:send(result_msg)
+							--]]
+						end
+					end
+					--fim de devolver returns pra proxy-------------------------
 				end
 				print("mensagem recebida de "..tostring(cli))
 				print(msg)
@@ -114,7 +152,6 @@ local function servant(server,interface,object)
 		print("Servant recebeu controle")
 	end
 end
-
 function M.createServant(object,interface)
 	
 	--[[if address is '*', the system binds to all local interfaces using the INADDR_ANY constant. If port is 0, the system automatically chooses an ephemeral port.
