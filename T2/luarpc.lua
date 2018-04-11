@@ -4,6 +4,9 @@ local M = {}
 local socket = require "socket"
 local ri = require "readinterface"
 
+--define a string que substituirá "\n" no encoding
+local thesmile = "\\smile\\"
+
 --se não formos testar, fica mais fácil de nos livrarmos dos prints trocando testing para false [[MICA]]
 local testing = true
 local print = print
@@ -61,7 +64,7 @@ local function servant(server,interface,object)
 			else
 				--verifica se mensagem é nome de função declarada
 				if object[msg]~=nil then
-					--[[por enquanto, estamos confiando que o usuário irá passar o númeoro certo de argumentos]]
+					--[[por enquanto, estamos confiando que o usuário irá passar o número certo de argumentos]]
 					--recebe a quantidade de parâmetros especificada pela interface e armazena-os em l_args
 					local l_args = {}
 					--[[EDIT]]
@@ -77,8 +80,8 @@ local function servant(server,interface,object)
 								--trata n.type
 								if n.type == "string" then
 									--troca smile por \n
-									--[[
-									local stringsemsmile = tirasmile(param)
+									---[[
+									local stringsemsmile = string.gsub(arg,thesmile,"\n")
 									--]]
 									table.insert(l_args,stringsemsmile)
 								elseif n.type == "char"
@@ -94,7 +97,11 @@ local function servant(server,interface,object)
 							end
 						end
 					end
-					
+					--chama a função correta
+					local params_concat = table.concat(l_args,", ")
+					local l_foo = load("local obj,funcname = ... return {obj[funcname]("..params_concat..")}")
+					local returns = l_foo(object,funcname)
+					--devolver returns para o proxy
 				end
 				print("mensagem recebida de "..tostring(cli))
 				print(msg)
