@@ -61,11 +61,43 @@ local function servant(server,interface,object)
 			else
 				--verifica se mensagem é nome de função declarada
 				if object[msg]~=nil then
-				
+					--[[por enquanto, estamos confiando que o usuário irá passar o númeoro certo de argumentos]]
+					--recebe a quantidade de parâmetros especificada pela interface e armazena-os em l_args
+					local l_args = {}
+					--[[EDIT]]
+					for i,n in pairs(interface.methods[msg].args)do
+						--recebe um argumento do cliente, mas pula os args out
+						if n.direction ~= "out" then
+							local param, l_status = cli:receive()
+							if l_status == "timeout" then
+							--não recebeu a quantidade esperada de parâmetros
+							elseif l_status == "closed" then
+							--não vai poder realizar a operação, o proxy fechou
+							else
+								--trata n.type
+								if n.type == "string" then
+									--troca smile por \n
+									--[[
+									local stringsemsmile = tirasmile(param)
+									--]]
+									table.insert(l_args,stringsemsmile)
+								elseif n.type == "char"
+									if #param ~= 1 then
+									--param não é um char
+									else
+										table.insert(l_args,param)
+									end
+								elseif n.type == "double"
+									local num = tonumber(param)
+									table.insert(l_args,param)
+								end
+							end
+						end
+					end
+					
 				end
 				print("mensagem recebida de "..tostring(cli))
 				print(msg)
-				--[[trata a msg]]
 				--[[MICA]]
 			end
 		end
