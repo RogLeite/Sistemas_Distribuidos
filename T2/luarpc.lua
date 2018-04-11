@@ -88,10 +88,10 @@ local function servant(server,interface,object)
 			else
 				--verifica se mensagem é nome de função declarada
 				if object[msg]~=nil then
-					--[[por enquanto, estamos confiando que o usuário irá passar o número certo de argumentos]]
 					--recebe a quantidade de parâmetros especificada pela interface e armazena-os em l_args
 					local l_args = {}
-					--[[EDIT]]
+					
+					--recebe args do proxy------------------------------
 					for i,n in pairs(interface.methods[msg].args)do
 						--recebe um argumento do cliente, mas pula os args out
 						if n.direction ~= "out" then
@@ -101,28 +101,13 @@ local function servant(server,interface,object)
 							elseif l_status == "closed" then
 							--não vai poder realizar a operação, o proxy fechou
 							else
-								--trata n.type
-								if n.type == "string" then
-									--troca smile por \n
-									---[[
-									local stringsemsmile = string.gsub(arg,thesmile,"\n")
-									--]]
-									table.insert(l_args,stringsemsmile)
-								elseif n.type == "char"
-									--troca smile por \n
-									local charsemsmile = string.gsub(arg,thesmile,"\n")
-									if #charsemsmile ~= 1 then
-									--param não é um char
-									else 
-										table.insert(l_args,charsemsmile)
-									end
-								elseif n.type == "double"
-									local num = tonumber(param)
-									table.insert(l_args,param)
-								end
+								table.insert(l_args,decode(param,n.type))
 							end
 						end
 					end
+					--fim recebe args do proxy-------------------------
+					
+					
 					--chama a função object[funcname]
 					local params_concat = table.concat(l_args,", ")
 					--[[o uso de load() aqui é para transformar a string params_concat em código executável como chamada de função (tendo os parâmetros como parâmetros)]]
@@ -131,19 +116,18 @@ local function servant(server,interface,object)
 
 
 					--devolver returns para o proxy------------------------------
-					--[[EDIT]]
 					--discrimina result
 					local result = table.remove(returns,1)
 					result = encode(interface.methods[funcname].resulttype,result)
-					--[[
+					---[[
 					cli:send(result)
 					--]]
 					--devolve demais argumentos de returns
 					for i,n in pairs(interface.methods[msg].args)do
 						--devolve um argumento pro cliente, mas pula os args in
 						if n.direction ~= "in" then
-							local return_msg = encode(n.type,n)
-							--[[
+							local return_msg = encode(n.type,table.remove(returns,1))
+							---[[
 							cli:send(result_msg)
 							--]]
 						end
@@ -204,7 +188,42 @@ local function send_call(proxy,funcname,...)
 			proxy.interface.methods[funcname] acessa a especificação dos parâmetros para a função chamada
 			proxy.client é o cliente para usar :send() e :receive()
 		]]--[[MICA]]
-	
+		local args = {...}
+		
+		--Laço de envio dos parâmetros---------------------------
+		for i,n in pairs(proxy.interface.methods[funcname].args) do
+			if n.direction ~= "out" then
+				local arg =  table.remove(args,1)
+				if arg then
+				--Trata discrepância do tipo recebido e tipo especificado
+					if n.type ~= type(arg) or not(n.type == "double" and type(arg) == "number")then
+						if n.type == "string" then
+							arg = tostring(arg)
+						elseif n.type == "char"then
+							arg = tostring(arg)
+							if #arg > 1 then
+								arg = string.sub(arg,1,1)
+							end
+						elseif n.type == "double"
+							local convert = tonumber(arg)
+							if convert == nil then
+								--[[EDIT]]--deu ruim!!
+							else
+								arg = convert
+							end
+						end
+					end
+				else
+				--arg == nil, foram passados menos argumentos
+				end
+				local msg = encode(n.type,arg)
+				proxy.client:send(msg)
+			end
+		end
+		--fim do laço de envio dos parâmetros---------------------
+		
+		
+		
 	end	
 end
 
@@ -219,13 +238,15 @@ local function trata_indice_desconhecido(proxy,funcname)
 
 end
 
+--Declaração da metatabela dos proxys---------------------------------------
 local mt_proxy = {}
 mt_proxy.__index = trata_indice_desconhecido
-mt_proxy.__newindex = function (t,k,v) return "Para de tentar mexer com o proxy!" end
+mt_proxy.__newindex = function (t,k,v) return "Não é permitido alterar o proxy!" end
 mt_proxy.__metatable = "Não é permitido o acesso à metatabela"
-function M.createProxy(ip, porta, interface)
-	--vai retornar um "objeto" que terá índices correspondentes a cada função na interface.
+--fimda declaração da metatabela dos proxys---------------------------------
 
+
+function M.createProxy(ip, porta, interface)
 	local cliente = socket.connect(ip,porta)
 	local t_interface = ri.readinterface(interface)
 	local proxy = {}
