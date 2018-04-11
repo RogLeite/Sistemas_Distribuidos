@@ -1,4 +1,5 @@
 local luarpc = require "luarpc"
+
 local myobj1 = { foo = 
              function (a, b, s)
                return a+b, "alo alo"

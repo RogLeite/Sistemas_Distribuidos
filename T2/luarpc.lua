@@ -198,7 +198,7 @@ local function send_call(proxy,funcname,...)
 						elseif n.type == "double"
 							local convert = tonumber(arg)
 							if convert == nil then
-								--[[EDIT]]--deu ruim!!
+								return "__ERRORPC: Argumento inválido - Não foi possível realizar a conversão"
 							else
 								arg = convert
 							end
