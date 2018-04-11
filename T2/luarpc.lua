@@ -138,10 +138,6 @@ local function servant(server,interface,object)
 end
 function M.createServant(object,interface)
 	
-	--[[if address is '*', the system binds to all local interfaces using the INADDR_ANY constant. If port is 0, the system automatically chooses an ephemeral port.
-	encontrei esse trecho na descrição de master:bind(), que é usado por socket.bind(), aqui:
-	http://w3.impa.br/~diego/software/luasocket/tcp.html
-	]]
 	--Acho que devemos usar 0 senão, pelo que entendi, o servidor iria se conectar a todas as portas.
 	local server=assert(socket.bind(0,123456))
 	--[[descobrir qual porta o sistema operacional escolheu para nós, e vamos retornar, para poderem se conectar a tal porta]]
@@ -159,7 +155,11 @@ function M.createServant(object,interface)
 		coroutine.resume(co)
 		--insere a corrotina criada na tabela "global"
 		table.insert(M.threads,co)
-		return {ip = l_ip,porta = l_porta}
+		
+		--retorna uma tabela com as entradas ip e port
+		return {ip = l_ip,port = l_porta}
+		
+		
 	else --trata o caso da corrotina não ser criada
 		print("Corrotina servant não foi criada")
 		--fecha o servidor criado
@@ -190,12 +190,12 @@ local function send_call(proxy,funcname,...)
 					if n.type ~= type(arg) or not(n.type == "double" and type(arg) == "number")then
 						if n.type == "string" then
 							arg = tostring(arg)
-						elseif n.type == "char"then
+						elseif n.type == "char" then
 							arg = tostring(arg)
 							if #arg > 1 then
 								arg = string.sub(arg,1,1)
 							end
-						elseif n.type == "double"
+						elseif n.type == "double" then
 							local convert = tonumber(arg)
 							if convert == nil then
 								return "__ERRORPC: Argumento inválido - Não foi possível realizar a conversão"
@@ -303,7 +303,8 @@ function M.waitIncoming()
 			print("todas as threads estão bloqueadas?")
 			if #timedout == #(M.threads) then
 				print("\tsim")
-				socket.select(timedout)
+				os.execute("sleep " .. tonumber(10))
+				--socket.select(timedout)
 			end 
 		end
 	end
