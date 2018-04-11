@@ -3,7 +3,11 @@ local M = {}
 --tem que ver se esse local socket n deve ser declarado como M.socket ou algo do tipo (pra ter alguma persistência depois do return M)
 local socket = require "socket"
 local ri = require "readinterface"
-
+local std_values = {
+	string = " ",
+	char = " ",
+	double = 0 
+}
 --define a string que substituirá "\n" no encoding
 local thesmile = "\\:-)\\"
 
@@ -39,23 +43,11 @@ end
 
 --armazenará as corrotinas criadas por createServant(), para que possam ser enxergadas por waitIncoming()
 M.threads = {}
+
 local function servant(server,interface,object)
 --código do servidor
-	--inicializa o servant, ele deve rodar uma vez antes de dormir (para ocorrer a inicialização)
-	--para cada função em object
 	print("Corrotina servant inicializada")
-	--[=[
-	for name,funct in pairs(object) do
-		--confere se funct é uma função
-		if type(funct)~="function" then
-			--trata o caso em que não é uma função
-			--[[
-			string = tostring(funct)
-			funct = function() return string end
-			]]
-		end
-	end
-	]=]
+	
 	--loop da escuta de mensagens
 	local clients = {}
 	local conectado = 0
@@ -118,7 +110,7 @@ local function servant(server,interface,object)
 					--devolver returns para o proxy------------------------------
 					--discrimina result
 					local result = table.remove(returns,1)
-					result = encode(interface.methods[funcname].resulttype,result)
+					result = encode(interface.methods[funcname].resulttype,result or std_values[interface.methods[funcname].resulttype])
 					---[[
 					cli:send(result)
 					--]]
@@ -126,10 +118,9 @@ local function servant(server,interface,object)
 					for i,n in pairs(interface.methods[msg].args)do
 						--devolve um argumento pro cliente, mas pula os args in
 						if n.direction ~= "in" then
-							local return_msg = encode(n.type,table.remove(returns,1))
-							---[[
-							cli:send(result_msg)
-							--]]
+							local ret = table.remove(returns,1)
+							local return_msg = encode(n.type,ret or std_values[n.type])
+							cli:send(return_msg)
 						end
 					end
 					--fim de devolver returns pra proxy-------------------------
@@ -214,25 +205,32 @@ local function send_call(proxy,funcname,...)
 						end
 					end
 				else
-				--arg == nil, foram passados menos argumentos
+				--arg == nil, foram passados menos argumentos que o específicado
+					arg = std_values[n.type]
 				end
 				local msg = encode(n.type,arg)
+				
+				--ENVIA PARÂMETRO----------------
 				proxy.client:send(msg)
+				---------------------------------
+				
 			end
 		end
 		--fim do laço de envio dos parâmetros---------------------
 		
-		
-		
+		--Recebimento do retorno----------------------------------
+				
+				--[[EDIT]]
+		--Fim do recebimento do retorno---------------------------
 	end	
 end
 
 local function trata_indice_desconhecido(proxy,funcname)
 	--se a função especificada existe na interface, retorna a função que enviará a mensagem
 	if proxy.interface.methods[funcname] then
-		return function(p,...) send_call(p,funcname,...) end
+		return function(p,...) return send_call(p,funcname,...) end
 	else
-		return function() print("not a specified function") end
+		return function() return "__ERRORPC: Função não especificada na interface" end
 	end
 
 
