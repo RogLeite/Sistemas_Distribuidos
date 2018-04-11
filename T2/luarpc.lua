@@ -207,7 +207,7 @@ local function send_call(proxy,funcname,...)
 						elseif n.type == "double"
 							local convert = tonumber(arg)
 							if convert == nil then
-								--[[EDIT]]--deu ruim!!
+								return "__ERRORPC: Argumento inválido - Não foi possível realizar a conversão"
 							else
 								arg = convert
 							end
@@ -230,7 +230,7 @@ end
 local function trata_indice_desconhecido(proxy,funcname)
 	--se a função especificada existe na interface, retorna a função que enviará a mensagem
 	if proxy.interface.methods[funcname] then
-		return function(p,...) send_call(p,funcname,...) end
+		return function(p,...) return send_call(p,funcname,...) end
 	else
 		return function() print("not a specified function") end
 	end
