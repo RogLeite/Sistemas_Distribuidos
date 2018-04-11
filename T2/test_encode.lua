@@ -1,4 +1,4 @@
-local thesmile = "\\smile\\"
+local thesmile = "\\:)\\"
 local function encode(tipo,valor)
 	if tipo == "char" or tipo == "string" then
 		valor = string.gsub(valor,"\n",thesmile)

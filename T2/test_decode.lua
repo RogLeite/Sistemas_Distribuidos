@@ -1,5 +1,5 @@
 
-local thesmile = "\\smile\\"
+local thesmile = "\\:)\\"
 local function decode(tipo,valor)
 	if tipo == "char" or tipo == "string" then
 		--troca thesmile por \n
