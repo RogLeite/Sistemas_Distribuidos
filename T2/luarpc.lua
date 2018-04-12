@@ -121,6 +121,15 @@ local function servant(server,interface,object)
 					--fim recebe args do proxy-------------------------
 					
 					
+
+					--chama a função object[funcname]------------------------------
+					
+					
+					local returns = {object[funcname](table.unpack(l_args))}
+					
+					--fim de chamada da função------------------------------------
+					
+					--[=[
 					--chama a função object[funcname]------------------------------
 					local params_concat = table.concat(l_args,", ")
 					print("-->params_concat = "..params_concat)
@@ -129,6 +138,7 @@ local function servant(server,interface,object)
 					local returns = l_foo(object,funcname)
 					print("-->table.concat(returns,' \\n\\ ') = "..table.concat(returns,' \\n\\ '))
 					--fim de chamada da função------------------------------------
+					--]=]
 
 					--devolver returns para o proxy------------------------------
 					if interface.methods[funcname].resulttype~="void" then
@@ -284,10 +294,14 @@ local function send_call(proxy,funcname,...)
 		--Fim do recebimento do retorno---------------------------
 		
 		--Retorna os argumentos-------------------
+		return table.unpack(returns)
+		--[=[
+		--Retorna os argumentos-------------------
 		local returns_concat = table.concat(returns,", ")
 		print("returns_concat = "..returns_concat)
 		local loaded = load("return "..returns_concat)
 		return loaded()
+		--]=]
 	end	
 end
 
