@@ -20,7 +20,6 @@ a = p1:boo(16)
 print("p1:boo(16) = "..tostring(a))
 a = p1:moo(20)
 print("p1:moo(20) = "..tostring(a))
-
 --[[
 print("\n#####IN cliente.lua#######")
 print("Cria um client conectado a serv1")
