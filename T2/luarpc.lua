@@ -10,13 +10,13 @@ local std_values = {
 }
 --define a string que substituirá "\n" no encoding
 local thesmile = "\\:-)\\"
-
+local unsmile = "\\%:%-%)\\"
 --se não formos testar, fica mais fácil de nos livrarmos dos prints trocando testing para false [[MICA]]
 local testing = false
 local print = print
 local printmaster = print
 if not testing then
-	printmaster = function() end
+	--printmaster = function() end
 	print = function() end
 end
 
@@ -40,7 +40,7 @@ local function decode(tipo,valor)
 	print("valor = "..(valor or "hey, received nil"))
 	if tipo == "char" or tipo == "string" then
 		--troca thesmile por \n
-		valor = "\""..string.gsub(valor,thesmile,"\n").."\""
+		valor = "\""..string.gsub(valor,unsmile,"\n").."\""
 		print("\ttipo == char ou string, valor decodificado = "..valor)
 	elseif tipo == "double" then
 		--converte a string para um número
@@ -166,7 +166,7 @@ local function servant(server,interface,object)
 				print("\t#t = "..#t)
 				print("\t#clients = "..#clients)
 			 	for i,n in pairs(clients) do
-			 		--printmaster("clients["..i.."] = "..tostring(n))
+			 		--print("clients["..i.."] = "..tostring(n))
 			 		table.insert(t,n)
 			 	end
 				print("\t#t = "..#t)

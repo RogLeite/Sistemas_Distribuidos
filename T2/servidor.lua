@@ -8,7 +8,11 @@ myobj1 = { foo =
           boo = 
              function (n)
                return n
-             end
+             end,
+	coo = 
+		function(s,c)
+			return s, c
+		end
         }
 myobj2 = { foo = 
              function (a, b, s)

@@ -18,6 +18,15 @@ interface {
 				{direction = "inout",
 					type = "double"},
 			}
+		},
+		coo = {
+			resulttype = "void",
+			args = {
+				{direction = "inout",
+					type = "string"},
+				{direction = "inout",
+					type = "char"},	
+				}
 		}
 	}
 }

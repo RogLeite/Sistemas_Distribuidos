@@ -1,7 +1,8 @@
-local thesmile = "\\smile\\"
+local thesmile = "\\:-)\\"
+local unsmile = "\\%:%-%)\\"
 local a = "first par\n\tsecondpar"
-local b = string.gsub(a,"\n",thesmile)
-local c = string.gsub(b,thesmile,"\n")
 print("a = "..a)
+local b = string.gsub(a,"\n",thesmile)
 print("b = "..b)
+local c = string.gsub(b,unsmile,"\n")
 print("c = "..c)
