@@ -31,18 +31,16 @@ myobj2 = { foo =
 
 -- vai para o estado passivo esperar chamadas:
 
-print("\n#####IN servidor.lua#######")
-print("-->Cria serv1")
-print("\n#####ENDIN servidor.lua#######")
 local serv1 = luarpc.createServant(myobj1,"exinterface")
---local serv2 = luarpc.createServant(myobj2,"exinterface")
-print("\n#####IN servidor.lua#######")
+local serv2 = luarpc.createServant(myobj2,"exinterface")
 if serv1 then 
-	print("Conecte o cliente no IP "..(serv1.ip).." e porta: ---------------------------------------- " ..serv1.port)
+	print("Conecte o cliente no IP serv1"..(serv1.ip).." e porta: ---------------------------------------- " ..serv1.port)
 else
 	print("serv1 é nil!!")
 end
-
-
-print("\n#####ENDIN servidor.lua#######")
+if serv2 then 
+	print("Conecte o cliente no IP serv2"..(serv2.ip).." e porta: ---------------------------------------- " ..serv2.port)
+else
+	print("serv2 é nil!!")
+end
 luarpc.waitIncoming()

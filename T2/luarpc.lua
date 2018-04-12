@@ -24,7 +24,7 @@ local testing = false
 local print = print
 local printmaster = print
 if not testing then
-	--printmaster = function() end
+	printmaster = function() end
 	print = function() end
 end
 
@@ -48,14 +48,14 @@ local function decode(tipo,valor)
 	print("valor = "..(valor or "hey, received nil"))
 	if tipo == "char" or tipo == "string" then
 		--troca thesmile por \n
-		valor = "\""..string.gsub(valor,unsmile,"\n").."\""
+		valor = string.gsub(valor,unsmile,"\n")
 		print("\ttipo == char ou string, valor decodificado = "..valor)
 	elseif tipo == "double" then
 		--converte a string para um número
 		valor = tonumber(valor)
 		print("\ttipo == double, valor decodificado = "..tostring(valor))
 	end
-	return valor or "\"nil\""
+	return valor or "nil"
 end
 
 
@@ -363,7 +363,7 @@ function M.waitIncoming()
 		print("Recomeça "..tostring(M.threads[i]))
 		local status,res = coroutine.resume(M.threads[i])
 		print("\tstatus = "..tostring(status))
-		printmaster("\tres = "..tostring(res))
+		print("\tres = "..tostring(res))
 		sockets = res(sockets)
 		--a thread terminou sua tarefa?
 		if not res then
