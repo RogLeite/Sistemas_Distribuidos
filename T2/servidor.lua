@@ -20,17 +20,32 @@ myobj2 = { foo =
              end
         }
 -- cria servidores:
-serv1 = luarpc.createServant (myobj1, "exinterface")
-serv2 = luarpc.createServant (myobj2, "exinterface")
+
+print("\n#####IN servidor.lua#######")
+print("Cria dois servants")
+
+print("\n#####ENDIN servidor.lua#######")
+local serv1 = luarpc.createServant (myobj1, "exinterface")
+local serv2 = luarpc.createServant (myobj2, "exinterface")
 -- usa as infos retornadas em serv1 e serv2 para divulgar contato 
 -- (IP e porta) dos servidores
- print("Conecte o cliente no IP "..serv1.ip.." e porta: ---------------------------------------- " .. serv1.porta)
+---[=[
+ print("Conecte o cliente no IP "..serv1.ip.." e porta: ---------------------------------------- " .. serv1.port)
 
 
 -- vai para o estado passivo esperar chamadas:
 
 --luarpc.waitIncoming()
+print("\n#####IN servidor.lua#######")
+print("repetidamente acorda o servant")
 
-os.execute("sleep " .. tonumber(20))
-coroutine.resume(luarpc.threads[1])
+repeat
+	print("----->acorda servant-------------")
+	os.execute("sleep " .. tonumber(1))
+	coroutine.resume(luarpc.threads[1])
+	counter = counter + 1
+until counter > 30
+
+print("\n#####ENDIN servidor.lua#######")
+--]=]
 

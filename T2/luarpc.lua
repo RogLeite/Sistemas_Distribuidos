@@ -12,7 +12,7 @@ local std_values = {
 local thesmile = "\\:-)\\"
 
 --se não formos testar, fica mais fácil de nos livrarmos dos prints trocando testing para false [[MICA]]
-local testing = false
+local testing = true
 local print = print
 if not testing then
 	print = function() end
@@ -21,21 +21,29 @@ end
 
 --encode e decode retornam a string "nil" caso a conversão não seja possível
 local function encode(tipo,valor)
+	print("In encode:\n")
+	print("valor = "..(valor or "hey, received nil"))
 	if tipo == "char" or tipo == "string" then
 		valor = string.gsub(valor,"\n",thesmile)
-	elseif tipo == "number" then
+		print("\ttipo == char ou string, valor codificado = "..valor)
+	elseif tipo == "double" then
 		--se resulttype é do tipo number, 
 		valor = tostring(valor)
+		print("\ttipo == double, valor codificado = "..tostring(valor))
 	end
 	return (valor or "nil") .."\n"
 end
 local function decode(tipo,valor)
+	print("In decode:\n")
+	print("valor = "..(valor or "hey, received nil"))
 	if tipo == "char" or tipo == "string" then
 		--troca thesmile por \n
 		valor = "\""..string.gsub(valor,thesmile,"\n").."\""
-	elseif tipo == "number" then
+		print("\ttipo == char ou string, valor decodificado = "..valor)
+	elseif tipo == "double" then
 		--converte a string para um número
 		valor = tonumber(valor)
+		print("\ttipo == double, valor decodificado = "..tostring(valor))
 	end
 	return valor or "\"nil\""
 end
@@ -68,7 +76,10 @@ local function servant(server,interface,object)
 		until conectado == nil
 		print("Servant começa a escutar mensagens")
 		for index,cli in pairs(clients) do
-			local msg, status, partial = cli:receive()
+			local funcname, status, partial = cli:receive()
+				print("mensagem recebida de "..tostring(cli))
+				print("->funcname = "..funcname)
+				--[[MICA]]
 			if status == "timeout" then
 				--se não foi recebido nada
 				print("Servant não escutou nada de "..tostring(cli))
@@ -79,56 +90,69 @@ local function servant(server,interface,object)
 				clients[i] = nil
 			else
 				--verifica se mensagem é nome de função declarada
-				if object[msg]~=nil then
+				if object[funcname]~=nil then
 					--recebe a quantidade de parâmetros especificada pela interface e armazena-os em l_args
 					local l_args = {}
 					
 					--recebe args do proxy------------------------------
-					for i,n in pairs(interface.methods[msg].args)do
+					for i,n in pairs(interface.methods[funcname].args)do
 						--recebe um argumento do cliente, mas pula os args out
 						if n.direction ~= "out" then
+							local param, l_status = nil,nil
 							repeat
-								local param, l_status = cli:receive()
-							until l_status ~= "timeout"
+								param, l_status = cli:receive()
+								print("------param = "..tostring(param).." ------")
+								print("------type(param) = "..tostring(type(param)).." ------")
+								print("------l_status = "..tostring(l_status).." ------")
+							until l_status ~= "timeout" or l_status == nil
 							--não recebeu a quantidade esperada de parâmetros
 							if l_status == "closed" then
 							--não vai poder realizar a operação, o proxy fechou
 							else
-								table.insert(l_args,decode(param,n.type))
+								table.insert(l_args,decode(n.type, param))
+								print("--->l_args[#l_args] = "..tostring(l_args[#l_args]))
+								print("--->type(l_args[#l_args]) = "..tostring(type(l_args[#l_args])))
 							end
 						end
 					end
+					print("-->Servant terminou de receber argumentos")
 					--fim recebe args do proxy-------------------------
 					
 					
-					--chama a função object[funcname]
+					--chama a função object[funcname]------------------------------
 					local params_concat = table.concat(l_args,", ")
+					print("-->params_concat = "..params_concat)
 					--[[o uso de load() aqui é para transformar a string params_concat em código executável como chamada de função (tendo os parâmetros como parâmetros)]]
 					local l_foo = load("local obj,funcname = ... return {obj[funcname]("..params_concat..")}")
 					local returns = l_foo(object,funcname)
-
+					print("-->table.concat(returns,' \\n\\ ') = "..table.concat(returns,' \\n\\ '))
+					--fim de chamada da função------------------------------------
 
 					--devolver returns para o proxy------------------------------
 					--discrimina result
 					local result = table.remove(returns,1)
+					print("-->result = "..tostring(result))
 					result = encode(interface.methods[funcname].resulttype,result or std_values[interface.methods[funcname].resulttype])
 					---[[
 					cli:send(result)
 					--]]
 					--devolve demais argumentos de returns
-					for i,n in pairs(interface.methods[msg].args)do
+					print("-->table.concat(returns,' \\n\\ ') = "..table.concat(returns,' \\n\\ '))
+					
+					---[[
+					for i,n in pairs(interface.methods[funcname].args)do
 						--devolve um argumento pro cliente, mas pula os args in
 						if n.direction ~= "in" then
 							local ret = table.remove(returns,1)
-							local return_msg = encode(n.type,ret or std_values[n.type])
+							--pode não ser o comportamento desejado mas garante que é retornado o número certo de argumentos
+							--[=[[[EDIT]]algo pra se cuidar é decidir o que fazer se é retornada uma quantidade menor que a esperada de argumentos --]=]
+							local return_msg = encode(n.type,ret)
 							cli:send(return_msg)
 						end
 					end
+					--]]
 					--fim de devolver returns pra proxy-------------------------
 				end
-				print("mensagem recebida de "..tostring(cli))
-				print(msg)
-				--[[MICA]]
 			end
 		end
 		print("Servant vai ceder controle")
@@ -182,6 +206,8 @@ local function send_call(proxy,funcname,...)
 		]]--[[MICA]]
 		local args = {...}
 		
+		
+		proxy.client:send(encode("string",funcname))
 		--Laço de envio dos parâmetros---------------------------
 		for i,n in pairs(proxy.interface.methods[funcname].args) do
 			if n.direction ~= "out" then

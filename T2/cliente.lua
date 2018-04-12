@@ -16,3 +16,12 @@ local p1 = luarpc.createProxy (ip, porta, "exinterface")
 print(p1:foo(3,5))
 
 
+print("\n#####IN cliente.lua#######")
+print("Cria um client conectado a serv1")
+print("\n#####ENDIN cliente.lua#######")
+local p1 = luarpc.createProxy(serv1.ip,serv1.port,"exinterface")
+
+print("\n#####IN cliente.lua#######")
+print("->p1 = "..tostring(p1))
+print("p1:foo(1,2) = "..tostring(p1:foo(1,2) ))
+print("\n#####ENDIN cliente.lua#######")
