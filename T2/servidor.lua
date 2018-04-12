@@ -19,19 +19,6 @@ myobj2 = { foo =
                return 1
              end
         }
--- cria servidores:
-
-print("\n#####IN servidor.lua#######")
-print("Cria dois servants")
-
-print("\n#####ENDIN servidor.lua#######")
-local serv1 = luarpc.createServant (myobj1, "exinterface")
-local serv2 = luarpc.createServant (myobj2, "exinterface")
--- usa as infos retornadas em serv1 e serv2 para divulgar contato 
--- (IP e porta) dos servidores
----[=[
- print("Conecte o cliente no IP "..serv1.ip.." e porta: ---------------------------------------- " .. serv1.port)
-
 
 -- vai para o estado passivo esperar chamadas:
 
