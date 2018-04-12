@@ -22,17 +22,18 @@ myobj2 = { foo =
 
 -- vai para o estado passivo esperar chamadas:
 
---luarpc.waitIncoming()
 print("\n#####IN servidor.lua#######")
-print("repetidamente acorda o servant")
+print("-->Cria serv1")
+print("\n#####ENDIN servidor.lua#######")
+local serv1 = luarpc.createServant(myobj1,"exinterface")
 
-repeat
-	print("----->acorda servant-------------")
-	os.execute("sleep " .. tonumber(1))
-	coroutine.resume(luarpc.threads[1])
-	counter = counter + 1
-until counter > 30
+print("\n#####IN servidor.lua#######")
+if serv1 then 
+	print("Conecte o cliente no IP "..(serv1.ip).." e porta: ---------------------------------------- " ..serv1.port)
+else
+	print("serv1 é nil!!")
+end
+
 
 print("\n#####ENDIN servidor.lua#######")
---]=]
-
+luarpc.waitIncoming()

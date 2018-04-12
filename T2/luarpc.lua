@@ -12,9 +12,11 @@ local std_values = {
 local thesmile = "\\:-)\\"
 
 --se não formos testar, fica mais fácil de nos livrarmos dos prints trocando testing para false [[MICA]]
-local testing = true
+local testing = false
 local print = print
+local printmaster = print
 if not testing then
+	printmaster = function() end
 	print = function() end
 end
 
@@ -69,8 +71,8 @@ local function servant(server,interface,object)
 			conectado = server:accept() 
 			if conectado ~= nil then
 				--se houve conexão, armazena o cliente
-				clients[#clients+1] = conectado
-				clients[#clients]:settimeout(0)
+				conectado:settimeout(0)
+				table.insert(clients,conectado)
 				print("corrotina aceitou cliente "..tostring(conectado))
 			end
 		until conectado == nil
@@ -78,7 +80,7 @@ local function servant(server,interface,object)
 		for index,cli in pairs(clients) do
 			local funcname, status, partial = cli:receive()
 				print("mensagem recebida de "..tostring(cli))
-				print("->funcname = "..funcname)
+				print("->funcname = "..tostring(funcname))
 				--[[MICA]]
 			if status == "timeout" then
 				--se não foi recebido nada
@@ -87,7 +89,7 @@ local function servant(server,interface,object)
 				--se a conexão foi fechada, retira o cliente do array
 				--clients[i]:close()--se foi fechado não precisa fechar -_-
 				print("cliente "..tostring(cli).." foi fechado")
-				clients[i] = nil
+				table.remove(clients,i)
 			else
 				--verifica se mensagem é nome de função declarada
 				if object[funcname]~=nil then
@@ -129,13 +131,15 @@ local function servant(server,interface,object)
 					--fim de chamada da função------------------------------------
 
 					--devolver returns para o proxy------------------------------
-					--discrimina result
-					local result = table.remove(returns,1)
-					print("-->result = "..tostring(result))
-					result = encode(interface.methods[funcname].resulttype,result or std_values[interface.methods[funcname].resulttype])
-					---[[
-					cli:send(result)
-					--]]
+					if interface.methods[funcname].resulttype~="void" then
+						--discrimina result
+						local result = table.remove(returns,1)
+						print("-->result = "..tostring(result))
+						result = encode(interface.methods[funcname].resulttype,result or std_values[interface.methods[funcname].resulttype])
+						---[[
+						cli:send(result)
+						--]]
+					end
 					--devolve demais argumentos de returns
 					print("-->table.concat(returns,' \\n\\ ') = "..table.concat(returns,' \\n\\ '))
 					
@@ -157,7 +161,19 @@ local function servant(server,interface,object)
 		end
 		print("Servant vai ceder controle")
 		--"yielda" true para waitIncoming ter confirmação de que a corrotina ainda está executando
-		coroutine.yield(clients)
+		coroutine.yield(function(t) 
+				print("######IN coroutine.yield#####")
+				print("\t#t = "..#t)
+				print("\t#clients = "..#clients)
+			 	for i,n in pairs(clients) do
+			 		--printmaster("clients["..i.."] = "..tostring(n))
+			 		table.insert(t,n)
+			 	end
+				print("\t#t = "..#t)
+				--for i,n in pairs(t)do print("\t\tt["..i.."] = "..n) end
+				print("######ENDIN coroutine.yield#####")
+			 	return t
+			 end)
 		print("Servant recebeu controle")
 	end
 end
@@ -247,14 +263,17 @@ local function send_call(proxy,funcname,...)
 		
 		local returns = {}
 		--Recebimento do retorno----------------------------------
+		if proxy.interface.methods[funcname].resulttype ~= "void" then
+			local msg, status, partial = proxy.client:receive()
+			table.insert(returns,decode(proxy.interface.methods[funcname].resulttype,msg))
+		end
 		for i,n in pairs(proxy.interface.methods[funcname].args) do
-			--[[EDIT]]
 			if n.direction ~= "in" then
 				local msg, status, partial = proxy.client:receive()
 				if status == "timeout" or status == "closed" then
 					
 					local l_error = "__ERRORPC: connection "..status..". received only "..tostring(#returns).." results"
-					table.insert(returns,l_error,1)
+					table.insert(returns,1,"\""..l_error.."\"")
 					break
 					
 				else
@@ -266,6 +285,7 @@ local function send_call(proxy,funcname,...)
 		
 		--Retorna os argumentos-------------------
 		local returns_concat = table.concat(returns,", ")
+		print("returns_concat = "..returns_concat)
 		local loaded = load("return "..returns_concat)
 		return loaded()
 	end	
@@ -303,36 +323,41 @@ end
 function M.waitIncoming()
 	local i = 1
 	local timedout = {}
-
+	local sockets = {}
 	while true do
 		print("Chegou ao fim do array das threads?")
 		if M.threads[i]==nil then
 			print("\tsim")
 			print("Não tem mais thread no array?")
 			if M.threads[1] == nil then break end
-			print("sim")
 			i = 1
 			timedout = {}
+			sockets = {}
 		end
 		--res será true se a corrotina ainda estiver executando
 		print("Recomeça "..tostring(M.threads[i]))
 		local status,res = coroutine.resume(M.threads[i])
 		print("\tstatus = "..tostring(status))
-		print("\tres = "..tostring(res))
+		printmaster("\tres = "..tostring(res))
+		sockets = res(sockets)
 		--a thread terminou sua tarefa?
 		if not res then
 			print("Thread terminou a sua tarefa")
 			table.remove(M.threads, i)
 		else
 			
+			timedout[#timedout+1] = M.threads[i]
 			i = i + 1
-			timedout[#timedout+1] = res
 			print("todas as threads estão bloqueadas?")
 			if #timedout == #(M.threads) then
-				print("\tsim")
-				os.execute("sleep " .. tonumber(20))
-				--Trabalhos Futuros
-				--socket.select(timedout)
+				print("\tsim||#sockets = "..#sockets)
+				if #sockets < 1 then
+					print("\twaitIncoming vai dormir")
+					os.execute("sleep "..tonumber(1))
+				else
+					print("\twaitIncoming vai usar select")
+					socket.select(sockets)
+				end
 			end 
 		end
 	end
