@@ -11,3 +11,5 @@ local myobj1 = { foo =
         }
 print("luarpc.threads = "..tostring(luarpc.threads))
 local info = luarpc.createServant(myobj1,"exinterface")
+
+

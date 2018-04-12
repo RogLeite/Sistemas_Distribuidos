@@ -1,3 +1,11 @@
+--[[
+----------------Dupla----------------
+Maria Micaele Vieira Chaves
+Rodrigo Leite da Silva
+
+]]--
+
+
 --M (o módulo) é a tabela que será retornada ao chamar require "luarpc"
 local M = {}
 --tem que ver se esse local socket n deve ser declarado como M.socket ou algo do tipo (pra ter alguma persistência depois do return M)
@@ -210,6 +218,8 @@ function M.createServant(object,interface)
 end
 
 local function send_call(proxy,funcname,...)
+local returns = {}
+
 	--os argumentos de índice i >= 2 são os parâmetros da função
 	if type(proxy)~="table" then
 		print("Incorrect call (try using ':' instead of '.')")
@@ -241,7 +251,8 @@ local function send_call(proxy,funcname,...)
 						elseif n.type == "double" then
 							local convert = tonumber(arg)
 							if convert == nil then
-								return "__ERRORPC: Argumento inválido - Não foi possível realizar a conversão"
+								table.insert(returns,"__ERRORPC: Argumento inválido - Não foi possível realizar a conversão")
+								arg=std_values[n.type]
 							else
 								arg = convert
 							end
@@ -261,7 +272,7 @@ local function send_call(proxy,funcname,...)
 		end
 		--fim do laço de envio dos parâmetros---------------------
 		
-		local returns = {}
+		
 		--Recebimento do retorno----------------------------------
 		if proxy.interface.methods[funcname].resulttype ~= "void" then
 			local msg, status, partial = proxy.client:receive()
