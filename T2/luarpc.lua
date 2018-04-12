@@ -12,7 +12,7 @@ local std_values = {
 local thesmile = "\\:-)\\"
 
 --se não formos testar, fica mais fácil de nos livrarmos dos prints trocando testing para false [[MICA]]
-local testing = true
+local testing = false
 local print = print
 if not testing then
 	print = function() end
@@ -52,7 +52,7 @@ local function servant(server,interface,object)
 	local clients = {}
 	local conectado = 0
 	--"yielda" true para waitIncoming ter confirmação de que a corrotina ainda está executando
-	coroutine.yield(server)
+	coroutine.yield(true)
 	print("Servant começou loop")
 	while true do
 		print("corrotina começa a aguardar cliente")
@@ -87,10 +87,11 @@ local function servant(server,interface,object)
 					for i,n in pairs(interface.methods[msg].args)do
 						--recebe um argumento do cliente, mas pula os args out
 						if n.direction ~= "out" then
-							local param, l_status = cli:receive()
-							if l_status == "timeout" then
+							repeat
+								local param, l_status = cli:receive()
+							until l_status ~= "timeout"
 							--não recebeu a quantidade esperada de parâmetros
-							elseif l_status == "closed" then
+							if l_status == "closed" then
 							--não vai poder realizar a operação, o proxy fechou
 							else
 								table.insert(l_args,decode(param,n.type))
@@ -132,14 +133,14 @@ local function servant(server,interface,object)
 		end
 		print("Servant vai ceder controle")
 		--"yielda" true para waitIncoming ter confirmação de que a corrotina ainda está executando
-		coroutine.yield(server)
+		coroutine.yield(clients)
 		print("Servant recebeu controle")
 	end
 end
 function M.createServant(object,interface)
 	
 	--Acho que devemos usar 0 senão, pelo que entendi, o servidor iria se conectar a todas as portas.
-	local server=assert(socket.bind(0,123456))
+	local server=assert(socket.bind(0,0))
 	--[[descobrir qual porta o sistema operacional escolheu para nós, e vamos retornar, para poderem se conectar a tal porta]]
 	local l_ip,l_porta = server:getsockname()
 	server:settimeout(0)
@@ -303,7 +304,8 @@ function M.waitIncoming()
 			print("todas as threads estão bloqueadas?")
 			if #timedout == #(M.threads) then
 				print("\tsim")
-				os.execute("sleep " .. tonumber(10))
+				os.execute("sleep " .. tonumber(20))
+				--Trabalhos Futuros
 				--socket.select(timedout)
 			end 
 		end
