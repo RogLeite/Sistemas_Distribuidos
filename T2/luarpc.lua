@@ -198,7 +198,7 @@ end
 function M.createServant(object,interface)
 	
 	--Acho que devemos usar 0 senão, pelo que entendi, o servidor iria se conectar a todas as portas.
-	local server=assert(socket.bind(0,0))
+	local server=assert(socket.bind(0,5507))
 	--[[descobrir qual porta o sistema operacional escolheu para nós, e vamos retornar, para poderem se conectar a tal porta]]
 	local l_ip,l_porta = server:getsockname()
 	server:settimeout(0)
