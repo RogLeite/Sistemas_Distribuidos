@@ -14,7 +14,7 @@ var ushort nodeId = getNodeId();
 var ushort alta_temp = 0;
 var ushort[TEMP_MEM] temps;
 var ushort temp = 0;
-var ushort med_temp = 0
+var ushort med_temp = 0;
 
 //define mensagem tipo MSG_TYPE_PATHING
 pktype pathMsg from radioMsg with

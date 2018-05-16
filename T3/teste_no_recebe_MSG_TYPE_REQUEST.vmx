@@ -1,4 +1,4 @@
-415 777 1 0 0 0 0 2 0
+407 988 1 0 0 0 0 2 0
 00 | 00000 0 track 0
 00 | 00001 0
 00 | 00002 0
@@ -8,37 +8,37 @@
 00 | 00006 0
 00 | 00007 0
 00 | 00008 0000 inEvt 041 : SEND_DONE
-00 | 00009 0001           : 08 gates
+00 | 00009 0001           : 02 gates
 00 | 00010 0002
 00 | 00011 0003
 00 | 00012 0004
 00 | 00013 0005
-00 | 00014 0006
-00 | 00015 0007
+00 | 00014 0006 inEvt 044 : RECEIVE()
+00 | 00015 0007           : 01 gates
 00 | 00016 0008
 00 | 00017 0009
 00 | 00018 0010
-00 | 00019 0011
-00 | 00020 0012
-00 | 00021 0013
-00 | 00022 0014
-00 | 00023 0015
-00 | 00024 0016
-00 | 00025 0017
-00 | 00026 0018 inEvt 044 : RECEIVE()
-00 | 00027 0019           : 01 gates
-00 | 00028 0020
-00 | 00029 0021
-00 | 00030 0022
-00 | 00031 0023 $ret:1, 
-00 | 00032 0024 fila:1, 
-00 | 00033 0025 progenitor:2, 
+00 | 00019 0011 $ret:1, 
+00 | 00020 0012 fila:1, 
+00 | 00021 0013 progenitor:2, 
+00 | 00022 0014 
+00 | 00023 0015 nodeId:2, 
+00 | 00024 0016 
+00 | 00025 0017 alta_temp:2, 
+00 | 00026 0018 
+00 | 00027 0019 temps:8, 
+00 | 00028 0020 
+00 | 00029 0021 
+00 | 00030 0022 
+00 | 00031 0023 
+00 | 00032 0024 
+00 | 00033 0025 
 00 | 00034 0026 
-00 | 00035 0027 nodeId:2, 
+00 | 00035 0027 temp:2, 
 00 | 00036 0028 
-00 | 00037 0029 alta_temp:2, 
+00 | 00037 0029 med_temp:2, 
 00 | 00038 0030 
-00 | 00039 0031 temps:8, 
+00 | 00039 0031 sendPath:25, 
 00 | 00040 0032 
 00 | 00041 0033 
 00 | 00042 0034 
@@ -46,11 +46,11 @@
 00 | 00044 0036 
 00 | 00045 0037 
 00 | 00046 0038 
-00 | 00047 0039 temp:2, 
+00 | 00047 0039 
 00 | 00048 0040 
-00 | 00049 0041 med_temp:2, 
+00 | 00049 0041 
 00 | 00050 0042 
-00 | 00051 0043 sendPath:25, 
+00 | 00051 0043 
 00 | 00052 0044 
 00 | 00053 0045 
 00 | 00054 0046 
@@ -63,7 +63,7 @@
 00 | 00061 0053 
 00 | 00062 0054 
 00 | 00063 0055 
-00 | 00064 0056 
+00 | 00064 0056 recPath:25, 
 00 | 00065 0057 
 00 | 00066 0058 
 00 | 00067 0059 
@@ -75,7 +75,7 @@
 00 | 00073 0065 
 00 | 00074 0066 
 00 | 00075 0067 
-00 | 00076 0068 recPath:25, 
+00 | 00076 0068 
 00 | 00077 0069 
 00 | 00078 0070 
 00 | 00079 0071 
@@ -88,7 +88,7 @@
 00 | 00086 0078 
 00 | 00087 0079 
 00 | 00088 0080 
-00 | 00089 0081 
+00 | 00089 0081 sucessor1:16, 
 00 | 00090 0082 
 00 | 00091 0083 
 00 | 00092 0084 
@@ -100,11 +100,11 @@
 00 | 00098 0090 
 00 | 00099 0091 
 00 | 00100 0092 
-00 | 00101 0093 sucessor1:16, 
+00 | 00101 0093 
 00 | 00102 0094 
 00 | 00103 0095 
 00 | 00104 0096 
-00 | 00105 0097 
+00 | 00105 0097 sucessor2:16, 
 00 | 00106 0098 
 00 | 00107 0099 
 00 | 00108 0100 
@@ -116,11 +116,11 @@
 00 | 00114 0106 
 00 | 00115 0107 
 00 | 00116 0108 
-00 | 00117 0109 sucessor2:16, 
+00 | 00117 0109 
 00 | 00118 0110 
 00 | 00119 0111 
 00 | 00120 0112 
-00 | 00121 0113 
+00 | 00121 0113 sucessor3:16, 
 00 | 00122 0114 
 00 | 00123 0115 
 00 | 00124 0116 
@@ -132,11 +132,11 @@
 00 | 00130 0122 
 00 | 00131 0123 
 00 | 00132 0124 
-00 | 00133 0125 sucessor3:16, 
+00 | 00133 0125 
 00 | 00134 0126 
 00 | 00135 0127 
 00 | 00136 0128 
-00 | 00137 0129 
+00 | 00137 0129 sucessor4:16, 
 00 | 00138 0130 
 00 | 00139 0131 
 00 | 00140 0132 
@@ -148,11 +148,11 @@
 00 | 00146 0138 
 00 | 00147 0139 
 00 | 00148 0140 
-00 | 00149 0141 sucessor4:16, 
+00 | 00149 0141 
 00 | 00150 0142 
 00 | 00151 0143 
 00 | 00152 0144 
-00 | 00153 0145 
+00 | 00153 0145 sucessor5:16, 
 00 | 00154 0146 
 00 | 00155 0147 
 00 | 00156 0148 
@@ -164,11 +164,11 @@
 00 | 00162 0154 
 00 | 00163 0155 
 00 | 00164 0156 
-00 | 00165 0157 sucessor5:16, 
+00 | 00165 0157 
 00 | 00166 0158 
 00 | 00167 0159 
 00 | 00168 0160 
-00 | 00169 0161 
+00 | 00169 0161 sucessor6:16, 
 00 | 00170 0162 
 00 | 00171 0163 
 00 | 00172 0164 
@@ -180,11 +180,11 @@
 00 | 00178 0170 
 00 | 00179 0171 
 00 | 00180 0172 
-00 | 00181 0173 sucessor6:16, 
+00 | 00181 0173 
 00 | 00182 0174 
 00 | 00183 0175 
 00 | 00184 0176 
-00 | 00185 0177 
+00 | 00185 0177 sucessor7:16, 
 00 | 00186 0178 
 00 | 00187 0179 
 00 | 00188 0180 
@@ -196,11 +196,11 @@
 00 | 00194 0186 
 00 | 00195 0187 
 00 | 00196 0188 
-00 | 00197 0189 sucessor7:16, 
+00 | 00197 0189 
 00 | 00198 0190 
 00 | 00199 0191 
 00 | 00200 0192 
-00 | 00201 0193 
+00 | 00201 0193 sendPos:25, 
 00 | 00202 0194 
 00 | 00203 0195 
 00 | 00204 0196 
@@ -212,7 +212,7 @@
 00 | 00210 0202 
 00 | 00211 0203 
 00 | 00212 0204 
-00 | 00213 0205 sendPos:25, 
+00 | 00213 0205 
 00 | 00214 0206 
 00 | 00215 0207 
 00 | 00216 0208 
@@ -225,7 +225,7 @@
 00 | 00223 0215 
 00 | 00224 0216 
 00 | 00225 0217 
-00 | 00226 0218 
+00 | 00226 0218 recPos:25, 
 00 | 00227 0219 
 00 | 00228 0220 
 00 | 00229 0221 
@@ -237,7 +237,7 @@
 00 | 00235 0227 
 00 | 00236 0228 
 00 | 00237 0229 
-00 | 00238 0230 recPos:25, 
+00 | 00238 0230 
 00 | 00239 0231 
 00 | 00240 0232 
 00 | 00241 0233 
@@ -250,7 +250,7 @@
 00 | 00248 0240 
 00 | 00249 0241 
 00 | 00250 0242 
-00 | 00251 0243 
+00 | 00251 0243 sendAlert:25, 
 00 | 00252 0244 
 00 | 00253 0245 
 00 | 00254 0246 
@@ -262,7 +262,7 @@
 00 | 00260 0252 
 00 | 00261 0253 
 00 | 00262 0254 
-00 | 00263 0255 sendAlert:25, 
+00 | 00263 0255 
 00 | 00264 0256 
 00 | 00265 0257 
 00 | 00266 0258 
@@ -275,7 +275,7 @@
 00 | 00273 0265 
 00 | 00274 0266 
 00 | 00275 0267 
-00 | 00276 0268 
+00 | 00276 0268 recAlert:25, 
 00 | 00277 0269 
 00 | 00278 0270 
 00 | 00279 0271 
@@ -287,7 +287,7 @@
 00 | 00285 0277 
 00 | 00286 0278 
 00 | 00287 0279 
-00 | 00288 0280 recAlert:25, 
+00 | 00288 0280 
 00 | 00289 0281 
 00 | 00290 0282 
 00 | 00291 0283 
@@ -300,7 +300,7 @@
 00 | 00298 0290 
 00 | 00299 0291 
 00 | 00300 0292 
-00 | 00301 0293 
+00 | 00301 0293 sendReq:25, 
 00 | 00302 0294 
 00 | 00303 0295 
 00 | 00304 0296 
@@ -312,7 +312,7 @@
 00 | 00310 0302 
 00 | 00311 0303 
 00 | 00312 0304 
-00 | 00313 0305 sendReq:25, 
+00 | 00313 0305 
 00 | 00314 0306 
 00 | 00315 0307 
 00 | 00316 0308 
@@ -325,7 +325,7 @@
 00 | 00323 0315 
 00 | 00324 0316 
 00 | 00325 0317 
-00 | 00326 0318 
+00 | 00326 0318 recReq:25, 
 00 | 00327 0319 
 00 | 00328 0320 
 00 | 00329 0321 
@@ -337,7 +337,7 @@
 00 | 00335 0327 
 00 | 00336 0328 
 00 | 00337 0329 
-00 | 00338 0330 recReq:25, 
+00 | 00338 0330 
 00 | 00339 0331 
 00 | 00340 0332 
 00 | 00341 0333 
@@ -350,7 +350,7 @@
 00 | 00348 0340 
 00 | 00349 0341 
 00 | 00350 0342 
-00 | 00351 0343 
+00 | 00351 0343 sendAns:25, 
 00 | 00352 0344 
 00 | 00353 0345 
 00 | 00354 0346 
@@ -362,7 +362,7 @@
 00 | 00360 0352 
 00 | 00361 0353 
 00 | 00362 0354 
-00 | 00363 0355 sendAns:25, 
+00 | 00363 0355 
 00 | 00364 0356 
 00 | 00365 0357 
 00 | 00366 0358 
@@ -375,7 +375,7 @@
 00 | 00373 0365 
 00 | 00374 0366 
 00 | 00375 0367 
-00 | 00376 0368 
+00 | 00376 0368 recAns:25, 
 00 | 00377 0369 
 00 | 00378 0370 
 00 | 00379 0371 
@@ -387,7 +387,7 @@
 00 | 00385 0377 
 00 | 00386 0378 
 00 | 00387 0379 
-00 | 00388 0380 recAns:25, 
+00 | 00388 0380 
 00 | 00389 0381 
 00 | 00390 0382 
 00 | 00391 0383 
@@ -400,379 +400,590 @@
 00 | 00398 0390 
 00 | 00399 0391 
 00 | 00400 0392 
-00 | 00401 0393 
+00 | 00401 0393 reqId:2, 
 00 | 00402 0394 
-00 | 00403 0395 
+00 | 00403 0395 decidedId:2, 
 00 | 00404 0396 
-00 | 00405 0397 
-00 | 00406 0398 
-00 | 00407 0399 
-00 | 00408 0400 
-00 | 00409 0401 
-00 | 00410 0402 
-00 | 00411 0403 
-00 | 00412 0404 
-00 | 00413 0405 reqId:2, 
-00 | 00414 0406 
-d1 | 00415 d1 set_c ushort 0 10504          | config gate SEND_DONE with 8 await(s) - 0x2908 = 10504
-00 | 00416 00 
-29 | 00417 29 
-08 | 00418 08 
-d1 | 00419 d1 set_c ushort 18 11393         | config gate RECEIVE() with 1 await(s) - 0x2c81 = 11393
-12 | 00420 12 
-2c | 00421 2c 
-81 | 00422 81 
-c1 | 00423 c1 set_c ushort 25 0             | progenitor = 0
-19 | 00424 19 
-00 | 00425 00 
-24 | 00426 24 func 0                        | func getNodeId
+00 | 00405 0397 i:1, 
+00 | 00406 0398 __i_0x842dd18:1, 
+d1 | 00407 d1 set_c ushort 0 10498          | config gate SEND_DONE with 2 await(s) - 0x2902 = 10498
+00 | 00408 00 
+29 | 00409 29 
+02 | 00410 02 
+d1 | 00411 d1 set_c ushort 6 11393          | config gate RECEIVE() with 1 await(s) - 0x2c81 = 11393
+06 | 00412 06 
+2c | 00413 2c 
+81 | 00414 81 
+c1 | 00415 c1 set_c ushort 13 0             | progenitor = 0
+0d | 00416 0d 
+00 | 00417 00 
+24 | 00418 24 func 0                        | func getNodeId
+00 | 00419 00 
+a1 | 00420 a1 pop ushort 15                 | pop nodeId
+0f | 00421 0f 
+c1 | 00422 c1 set_c ushort 17 0             | alta_temp = 0
+11 | 00423 11 
+00 | 00424 00 
+c1 | 00425 c1 set_c ushort 27 0             | temp = 0
+1b | 00426 1b 
 00 | 00427 00 
-a1 | 00428 a1 pop ushort 27                 | pop nodeId
-1b | 00429 1b 
-c1 | 00430 c1 set_c ushort 29 0             | alta_temp = 0
-1d | 00431 1d 
-00 | 00432 00 
-c1 | 00433 c1 set_c ushort 39 0             | temp = 0
-27 | 00434 27 
-00 | 00435 00 
-c1 | 00436 c1 set_c ushort 41 0             | med_temp = 0
-29 | 00437 29 
-00 | 00438 00 
-c0 | 00439 c0 set_c ubyte 43 1              | sendPath.type = 1
-2b | 00440 2b 
-01 | 00441 01 
-d1 | 00442 d1 set_c ushort 46 0xffff        | sendPath.target = 0xffff
-2e | 00443 2e 
-ff | 00444 ff 
-ff | 00445 ff 
-2a | 00446 2a set_v ushort 44 ushort 27     | sendPath.source = nodeId
-11 | 00447 11 
-2c | 00448 2c 
-1b | 00449 1b 
-c0 | 00450 c0 set_c ubyte 48 0              | sendPath.num_saltos = 0
-30 | 00451 30 
-00 | 00452 00 
-c2 | 00453 c2 set_c ulong 49 0              | sendPath.versao_rota = 0
-31 | 00454 31 
-00 | 00455 00 
-c0 | 00456 c0 set_c ubyte 205 3             | sendPos.type = 3
-cd | 00457 cd 
-03 | 00458 03 
-d1 | 00459 d1 set_c ushort 208 0xffff       | sendPos.target = 0xffff
-d0 | 00460 d0 
+c1 | 00428 c1 set_c ushort 29 0             | med_temp = 0
+1d | 00429 1d 
+00 | 00430 00 
+c0 | 00431 c0 set_c ubyte 31 1              | sendPath.type = 1
+1f | 00432 1f 
+01 | 00433 01 
+d1 | 00434 d1 set_c ushort 34 0xffff        | sendPath.target = 0xffff
+22 | 00435 22 
+ff | 00436 ff 
+ff | 00437 ff 
+2a | 00438 2a set_v ushort 32 ushort 15     | sendPath.source = nodeId
+11 | 00439 11 
+20 | 00440 20 
+0f | 00441 0f 
+c0 | 00442 c0 set_c ubyte 36 0              | sendPath.num_saltos = 0
+24 | 00443 24 
+00 | 00444 00 
+c2 | 00445 c2 set_c ulong 37 0              | sendPath.versao_rota = 0
+25 | 00446 25 
+00 | 00447 00 
+c0 | 00448 c0 set_c ubyte 193 3             | sendPos.type = 3
+c1 | 00449 c1 
+03 | 00450 03 
+d1 | 00451 d1 set_c ushort 196 0xffff       | sendPos.target = 0xffff
+c4 | 00452 c4 
+ff | 00453 ff 
+ff | 00454 ff 
+2a | 00455 2a set_v ushort 194 ushort 15    | sendPos.source = nodeId
+11 | 00456 11 
+c2 | 00457 c2 
+0f | 00458 0f 
+d1 | 00459 d1 set_c ushort 246 0xffff       | sendAlert.target = 0xffff
+f6 | 00460 f6 
 ff | 00461 ff 
 ff | 00462 ff 
-2a | 00463 2a set_v ushort 206 ushort 27    | sendPos.source = nodeId
-11 | 00464 11 
-ce | 00465 ce 
-1b | 00466 1b 
-d9 | 00467 d9 set_c ushort 258 0xffff       | sendAlert.target = 0xffff
-01 | 00468 01 
-02 | 00469 02 
-ff | 00470 ff 
-ff | 00471 ff 
-c0 | 00472 c0 set_c ubyte 255 2             | sendAlert.type = 2
+c0 | 00463 c0 set_c ubyte 243 2             | sendAlert.type = 2
+f3 | 00464 f3 
+02 | 00465 02 
+2a | 00466 2a set_v ushort 244 ushort 15    | sendAlert.source = nodeId
+11 | 00467 11 
+f4 | 00468 f4 
+0f | 00469 0f 
+d9 | 00470 d9 set_c ushort 296 0xffff       | sendReq.target = 0xffff
+01 | 00471 01 
+28 | 00472 28 
 ff | 00473 ff 
-02 | 00474 02 
-2a | 00475 2a set_v ushort 256 ushort 27    | sendAlert.source = nodeId
-91 | 00476 91 
-01 | 00477 01 
-00 | 00478 00 
-1b | 00479 1b 
-d9 | 00480 d9 set_c ushort 308 0xffff       | sendReq.target = 0xffff
+ff | 00474 ff 
+c8 | 00475 c8 set_c ubyte 293 4             | sendReq.type = 4
+01 | 00476 01 
+25 | 00477 25 
+04 | 00478 04 
+2a | 00479 2a set_v ushort 294 ushort 15    | sendReq.source = nodeId
+91 | 00480 91 
 01 | 00481 01 
-34 | 00482 34 
-ff | 00483 ff 
-ff | 00484 ff 
-c8 | 00485 c8 set_c ubyte 305 4             | sendReq.type = 4
-01 | 00486 01 
-31 | 00487 31 
-04 | 00488 04 
-2a | 00489 2a set_v ushort 306 ushort 27    | sendReq.source = nodeId
-91 | 00490 91 
-01 | 00491 01 
-32 | 00492 32 
-1b | 00493 1b 
-d9 | 00494 d9 set_c ushort 358 0xffff       | sendAns.target = 0xffff
+26 | 00482 26 
+0f | 00483 0f 
+d9 | 00484 d9 set_c ushort 346 0xffff       | sendAns.target = 0xffff
+01 | 00485 01 
+5a | 00486 5a 
+ff | 00487 ff 
+ff | 00488 ff 
+c8 | 00489 c8 set_c ubyte 343 4             | sendAns.type = 4
+01 | 00490 01 
+57 | 00491 57 
+04 | 00492 04 
+2a | 00493 2a set_v ushort 344 ushort 15    | sendAns.source = nodeId
+91 | 00494 91 
 01 | 00495 01 
-66 | 00496 66 
-ff | 00497 ff 
-ff | 00498 ff 
-c8 | 00499 c8 set_c ubyte 355 4             | sendAns.type = 4
-01 | 00500 01 
-63 | 00501 63 
-04 | 00502 04 
-2a | 00503 2a set_v ushort 356 ushort 27    | sendAns.source = nodeId
-91 | 00504 91 
-01 | 00505 01 
-64 | 00506 64 
-1b | 00507 1b 
-40 | 00508 40 push_c 4                      | push 4
-04 | 00509 04 
-a0 | 00510 a0 pop ubyte 20                  | evt RECEIVE() auxId = pop
-14 | 00511 14 
-d1 | 00512 d1 set_c ushort 21 18            | await RECEIVE()[0]
-15 | 00513 15 
-02 | 00514 .00 addr:517
-05 | 00515 .12 
-01 | 00516 01 end                           | end
-5e | 00517 5e getextdt_v 330 25             | getExtData recReq 25
+58 | 00496 58 
+0f | 00497 0f 
+40 | 00498 40 push_c 4                      | push 4
+04 | 00499 04 
+a0 | 00500 a0 pop ubyte 8                   | evt RECEIVE() auxId = pop
+08 | 00501 08 
+d1 | 00502 d1 set_c ushort 9 18             | await RECEIVE()[0]
+09 | 00503 09 
+01 | 00504 .00 addr:507
+fb | 00505 .12 
+01 | 00506 01 end                           | end
+5e | 00507 5e getextdt_v 318 25             | getExtData recReq 25
+01 | 00508 01 
+3e | 00509 3e 
+19 | 00510 19 
+2a | 00511 2a set_v ushort 393 ushort 323   | reqId = recReq.requestedId
+99 | 00512 99 
+01 | 00513 01 
+89 | 00514 89 
+01 | 00515 01 
+43 | 00516 43 
+c9 | 00517 c9 set_c ushort 395 0            | decidedId = 0
 01 | 00518 01 
-4a | 00519 4a 
-19 | 00520 19 
-2a | 00521 2a set_v ushort 405 ushort 335   | reqId = recReq.requestedId
-99 | 00522 99 
-01 | 00523 01 
-95 | 00524 95 
-01 | 00525 01 
-4f | 00526 4f 
-91 | 00527 91 push_v ushort 27              | push nodeId:ushort
-1b | 00528 1b 
-99 | 00529 99 push_v ushort 405             | push reqId:ushort
-01 | 00530 01 
-95 | 00531 95 
-0f | 00532 0f eq                            | eq
-4f | 00533 4f ifelse 105 106                | ifelse True_105 False_106
-02 | 00534 .00 addr:538
-1a | 00535 .69 
-02 | 00536 .00 addr:552
-28 | 00537 .6a 
-2a | 00538 2a set_v ushort 360 ushort 41    | sendAns.temp = med_temp
-91 | 00539 91 
-01 | 00540 01 
-68 | 00541 68 
-29 | 00542 29 
-b9 | 00543 b9 outevt_v 40 355               | emit SEND len=25 var=sendAns
-28 | 00544 28 
-01 | 00545 01 
-63 | 00546 63 
-d1 | 00547 d1 set_c ushort 2 27             | await SEND_DONE[0]
-02 | 00548 02 
-01 | 00549 .00 addr:508
-fc | 00550 .0f 
-01 | 00551 01 end                           | end
-99 | 00552 99 push_v ushort 405             | push reqId:ushort
-01 | 00553 01 
-95 | 00554 95 
-91 | 00555 91 push_v ushort 93                     | push sucessor1.id [Optm:: push_c addr + deref]
-5d | 00556 5d 
-0f | 00557 0f eq                            | eq
-4f | 00558 4f ifelse 102 103                | ifelse True_102 False_103
-02 | 00559 .00 addr:563
-33 | 00560 .66 
-02 | 00561 .00 addr:583
-47 | 00562 .67 
-2a | 00563 2a set_v ushort 310 ushort 405   | sendReq.requestedId = reqId
-99 | 00564 99 
-01 | 00565 01 
-36 | 00566 36 
-01 | 00567 01 
-95 | 00568 95 
-2a | 00569 2a set_v ushort 308 ushort 93    | sendReq.target = sucessor1.id
-91 | 00570 91 
-01 | 00571 01 
-34 | 00572 34 
-5d | 00573 5d 
-b9 | 00574 b9 outevt_v 40 305               | emit SEND len=25 var=sendReq
-28 | 00575 28 
-01 | 00576 01 
-31 | 00577 31 
-d1 | 00578 d1 set_c ushort 4 35             | await SEND_DONE[1]
-04 | 00579 04 
-01 | 00580 .00 addr:508
-fc | 00581 .0f 
-01 | 00582 01 end                           | end
-99 | 00583 99 push_v ushort 405             | push reqId:ushort
-01 | 00584 01 
-95 | 00585 95 
-91 | 00586 91 push_v ushort 109                    | push sucessor2.id [Optm:: push_c addr + deref]
-6d | 00587 6d 
-0f | 00588 0f eq                            | eq
-4f | 00589 4f ifelse 99 100                 | ifelse True_99 False_100
-02 | 00590 .00 addr:594
-52 | 00591 .63 
-02 | 00592 .00 addr:614
-66 | 00593 .64 
-2a | 00594 2a set_v ushort 310 ushort 405   | sendReq.requestedId = reqId
-99 | 00595 99 
-01 | 00596 01 
-36 | 00597 36 
-01 | 00598 01 
-95 | 00599 95 
-2a | 00600 2a set_v ushort 308 ushort 109   | sendReq.target = sucessor2.id
-91 | 00601 91 
-01 | 00602 01 
-34 | 00603 34 
-6d | 00604 6d 
-b9 | 00605 b9 outevt_v 40 305               | emit SEND len=25 var=sendReq
-28 | 00606 28 
-01 | 00607 01 
-31 | 00608 31 
-d1 | 00609 d1 set_c ushort 6 43             | await SEND_DONE[2]
-06 | 00610 06 
-01 | 00611 .00 addr:508
-fc | 00612 .0f 
-01 | 00613 01 end                           | end
-99 | 00614 99 push_v ushort 405             | push reqId:ushort
-01 | 00615 01 
-95 | 00616 95 
-91 | 00617 91 push_v ushort 125                    | push sucessor3.id [Optm:: push_c addr + deref]
-7d | 00618 7d 
-0f | 00619 0f eq                            | eq
-4f | 00620 4f ifelse 96 97                  | ifelse True_96 False_97
-02 | 00621 .00 addr:625
-71 | 00622 .60 
-02 | 00623 .00 addr:645
-85 | 00624 .61 
-2a | 00625 2a set_v ushort 310 ushort 405   | sendReq.requestedId = reqId
-99 | 00626 99 
-01 | 00627 01 
-36 | 00628 36 
-01 | 00629 01 
-95 | 00630 95 
-2a | 00631 2a set_v ushort 308 ushort 125   | sendReq.target = sucessor3.id
-91 | 00632 91 
-01 | 00633 01 
-34 | 00634 34 
-7d | 00635 7d 
-b9 | 00636 b9 outevt_v 40 305               | emit SEND len=25 var=sendReq
-28 | 00637 28 
-01 | 00638 01 
-31 | 00639 31 
-d1 | 00640 d1 set_c ushort 8 51             | await SEND_DONE[3]
-08 | 00641 08 
-01 | 00642 .00 addr:508
-fc | 00643 .0f 
-01 | 00644 01 end                           | end
-99 | 00645 99 push_v ushort 405             | push reqId:ushort
-01 | 00646 01 
-95 | 00647 95 
-91 | 00648 91 push_v ushort 141                    | push sucessor4.id [Optm:: push_c addr + deref]
-8d | 00649 8d 
-0f | 00650 0f eq                            | eq
-4f | 00651 4f ifelse 93 94                  | ifelse True_93 False_94
-02 | 00652 .00 addr:656
-90 | 00653 .5d 
-02 | 00654 .00 addr:676
-a4 | 00655 .5e 
-2a | 00656 2a set_v ushort 310 ushort 405   | sendReq.requestedId = reqId
-99 | 00657 99 
-01 | 00658 01 
-36 | 00659 36 
-01 | 00660 01 
-95 | 00661 95 
-2a | 00662 2a set_v ushort 308 ushort 141   | sendReq.target = sucessor4.id
-91 | 00663 91 
-01 | 00664 01 
-34 | 00665 34 
-8d | 00666 8d 
-b9 | 00667 b9 outevt_v 40 305               | emit SEND len=25 var=sendReq
-28 | 00668 28 
-01 | 00669 01 
-31 | 00670 31 
-d1 | 00671 d1 set_c ushort 10 59            | await SEND_DONE[4]
-0a | 00672 0a 
-01 | 00673 .00 addr:508
-fc | 00674 .0f 
-01 | 00675 01 end                           | end
-99 | 00676 99 push_v ushort 405             | push reqId:ushort
-01 | 00677 01 
-95 | 00678 95 
-91 | 00679 91 push_v ushort 157                    | push sucessor5.id [Optm:: push_c addr + deref]
-9d | 00680 9d 
-0f | 00681 0f eq                            | eq
-4f | 00682 4f ifelse 90 91                  | ifelse True_90 False_91
-02 | 00683 .00 addr:687
-af | 00684 .5a 
-02 | 00685 .00 addr:707
-c3 | 00686 .5b 
-2a | 00687 2a set_v ushort 310 ushort 405   | sendReq.requestedId = reqId
-99 | 00688 99 
-01 | 00689 01 
-36 | 00690 36 
+8b | 00519 8b 
+00 | 00520 00 
+91 | 00521 91 push_v ushort 15              | push nodeId:ushort
+0f | 00522 0f 
+99 | 00523 99 push_v ushort 393             | push reqId:ushort
+01 | 00524 01 
+89 | 00525 89 
+0f | 00526 0f eq                            | eq
+4f | 00527 4f ifelse 131 132                | ifelse True_131 False_132
+02 | 00528 .00 addr:532
+14 | 00529 .83 
+02 | 00530 .00 addr:546
+22 | 00531 .84 
+2a | 00532 2a set_v ushort 348 ushort 29    | sendAns.temp = med_temp
+91 | 00533 91 
+01 | 00534 01 
+5c | 00535 5c 
+1d | 00536 1d 
+b9 | 00537 b9 outevt_v 40 343               | emit SEND len=25 var=sendAns
+28 | 00538 28 
+01 | 00539 01 
+57 | 00540 57 
+d1 | 00541 d1 set_c ushort 2 28             | await SEND_DONE[0]
+02 | 00542 02 
+01 | 00543 .00 addr:498
+f2 | 00544 .0f 
+01 | 00545 01 end                           | end
+99 | 00546 99 push_v ushort 393             | push reqId:ushort
+01 | 00547 01 
+89 | 00548 89 
+91 | 00549 91 push_v ushort 81                     | push sucessor1.id [Optm:: push_c addr + deref]
+51 | 00550 51 
+0f | 00551 0f eq                            | eq
+4f | 00552 4f ifelse 122 123                | ifelse True_122 False_123
+02 | 00553 .00 addr:557
+2d | 00554 .7a 
+02 | 00555 .00 addr:565
+35 | 00556 .7b 
+2a | 00557 2a set_v ushort 395 ushort 81    | decidedId = sucessor1.id
+91 | 00558 91 
+01 | 00559 01 
+8b | 00560 8b 
+51 | 00561 51 
+39 | 00562 39 exec 124                      | goto  124
+03 | 00563 .00 addr:959
+bf | 00564 .7c 
+99 | 00565 99 push_v ushort 393             | push reqId:ushort
+01 | 00566 01 
+89 | 00567 89 
+91 | 00568 91 push_v ushort 97                     | push sucessor2.id [Optm:: push_c addr + deref]
+61 | 00569 61 
+0f | 00570 0f eq                            | eq
+4f | 00571 4f ifelse 119 120                | ifelse True_119 False_120
+02 | 00572 .00 addr:576
+40 | 00573 .77 
+02 | 00574 .00 addr:584
+48 | 00575 .78 
+2a | 00576 2a set_v ushort 395 ushort 97    | decidedId = sucessor2.id
+91 | 00577 91 
+01 | 00578 01 
+8b | 00579 8b 
+61 | 00580 61 
+39 | 00581 39 exec 121                      | goto  121
+03 | 00582 .00 addr:959
+bf | 00583 .7c 
+99 | 00584 99 push_v ushort 393             | push reqId:ushort
+01 | 00585 01 
+89 | 00586 89 
+91 | 00587 91 push_v ushort 113                    | push sucessor3.id [Optm:: push_c addr + deref]
+71 | 00588 71 
+0f | 00589 0f eq                            | eq
+4f | 00590 4f ifelse 116 117                | ifelse True_116 False_117
+02 | 00591 .00 addr:595
+53 | 00592 .74 
+02 | 00593 .00 addr:603
+5b | 00594 .75 
+2a | 00595 2a set_v ushort 395 ushort 113   | decidedId = sucessor3.id
+91 | 00596 91 
+01 | 00597 01 
+8b | 00598 8b 
+71 | 00599 71 
+39 | 00600 39 exec 118                      | goto  118
+03 | 00601 .00 addr:959
+bf | 00602 .7c 
+99 | 00603 99 push_v ushort 393             | push reqId:ushort
+01 | 00604 01 
+89 | 00605 89 
+91 | 00606 91 push_v ushort 129                    | push sucessor4.id [Optm:: push_c addr + deref]
+81 | 00607 81 
+0f | 00608 0f eq                            | eq
+4f | 00609 4f ifelse 113 114                | ifelse True_113 False_114
+02 | 00610 .00 addr:614
+66 | 00611 .71 
+02 | 00612 .00 addr:622
+6e | 00613 .72 
+2a | 00614 2a set_v ushort 395 ushort 129   | decidedId = sucessor4.id
+91 | 00615 91 
+01 | 00616 01 
+8b | 00617 8b 
+81 | 00618 81 
+39 | 00619 39 exec 115                      | goto  115
+03 | 00620 .00 addr:959
+bf | 00621 .7c 
+99 | 00622 99 push_v ushort 393             | push reqId:ushort
+01 | 00623 01 
+89 | 00624 89 
+91 | 00625 91 push_v ushort 145                    | push sucessor5.id [Optm:: push_c addr + deref]
+91 | 00626 91 
+0f | 00627 0f eq                            | eq
+4f | 00628 4f ifelse 110 111                | ifelse True_110 False_111
+02 | 00629 .00 addr:633
+79 | 00630 .6e 
+02 | 00631 .00 addr:641
+81 | 00632 .6f 
+2a | 00633 2a set_v ushort 395 ushort 145   | decidedId = sucessor5.id
+91 | 00634 91 
+01 | 00635 01 
+8b | 00636 8b 
+91 | 00637 91 
+39 | 00638 39 exec 112                      | goto  112
+03 | 00639 .00 addr:959
+bf | 00640 .7c 
+99 | 00641 99 push_v ushort 393             | push reqId:ushort
+01 | 00642 01 
+89 | 00643 89 
+91 | 00644 91 push_v ushort 161                    | push sucessor6.id [Optm:: push_c addr + deref]
+a1 | 00645 a1 
+0f | 00646 0f eq                            | eq
+4f | 00647 4f ifelse 107 108                | ifelse True_107 False_108
+02 | 00648 .00 addr:652
+8c | 00649 .6b 
+02 | 00650 .00 addr:660
+94 | 00651 .6c 
+2a | 00652 2a set_v ushort 395 ushort 161   | decidedId = sucessor6.id
+91 | 00653 91 
+01 | 00654 01 
+8b | 00655 8b 
+a1 | 00656 a1 
+39 | 00657 39 exec 109                      | goto  109
+03 | 00658 .00 addr:959
+bf | 00659 .7c 
+99 | 00660 99 push_v ushort 393             | push reqId:ushort
+01 | 00661 01 
+89 | 00662 89 
+91 | 00663 91 push_v ushort 177                    | push sucessor7.id [Optm:: push_c addr + deref]
+b1 | 00664 b1 
+0f | 00665 0f eq                            | eq
+4f | 00666 4f ifelse 104 105                | ifelse True_104 False_105
+02 | 00667 .00 addr:671
+9f | 00668 .68 
+02 | 00669 .00 addr:679
+a7 | 00670 .69 
+2a | 00671 2a set_v ushort 395 ushort 177   | decidedId = sucessor7.id
+91 | 00672 91 
+01 | 00673 01 
+8b | 00674 8b 
+b1 | 00675 b1 
+39 | 00676 39 exec 106                      | goto  106
+03 | 00677 .00 addr:959
+bf | 00678 .7c 
+c8 | 00679 c8 set_c ubyte 397 0             | i = 0
+01 | 00680 01 
+8d | 00681 8d 
+00 | 00682 00 
+c8 | 00683 c8 set_c ubyte 398 7             | __i_0x842dd18 = 7
+01 | 00684 01 
+8e | 00685 8e 
+07 | 00686 07 
+98 | 00687 98 push_v ubyte 398              | push __i_0x842dd18:ubyte
+01 | 00688 01 
+8e | 00689 8e 
+98 | 00690 98 push_v ubyte 397              | push i:ubyte
 01 | 00691 01 
-95 | 00692 95 
-2a | 00693 2a set_v ushort 308 ushort 157   | sendReq.target = sucessor5.id
-91 | 00694 91 
-01 | 00695 01 
-34 | 00696 34 
-9d | 00697 9d 
-b9 | 00698 b9 outevt_v 40 305               | emit SEND len=25 var=sendReq
-28 | 00699 28 
-01 | 00700 01 
-31 | 00701 31 
-d1 | 00702 d1 set_c ushort 12 67            | await SEND_DONE[5]
-0c | 00703 0c 
-01 | 00704 .00 addr:508
-fc | 00705 .0f 
-01 | 00706 01 end                           | end
-99 | 00707 99 push_v ushort 405             | push reqId:ushort
+8d | 00692 8d 
+11 | 00693 11 gte                           | gte
+4f | 00694 4f ifelse 101 102                | ifelse True_101 False_102
+02 | 00695 .00 addr:699
+bb | 00696 .65 
+02 | 00697 .00 addr:707
+c3 | 00698 .66 
+3d | 00699 3d tkins_z 1 19 54               | insert track Loop_out_54 tree 19
+93 | 00700 93 
+03 | 00701 .00 addr:959
+bf | 00702 .7c 
+01 | 00703 01 end                           | end
+39 | 00704 39 exec 103                      | goto  103
+02 | 00705 .00 addr:687
+af | 00706 .34 
+99 | 00707 99 push_v ushort 393             | push reqId:ushort
 01 | 00708 01 
-95 | 00709 95 
-91 | 00710 91 push_v ushort 173                    | push sucessor6.id [Optm:: push_c addr + deref]
-ad | 00711 ad 
-0f | 00712 0f eq                            | eq
-4f | 00713 4f ifelse 87 88                  | ifelse True_87 False_88
-02 | 00714 .00 addr:718
-ce | 00715 .57 
-02 | 00716 .00 addr:738
-e2 | 00717 .58 
-2a | 00718 2a set_v ushort 310 ushort 405   | sendReq.requestedId = reqId
-99 | 00719 99 
-01 | 00720 01 
-36 | 00721 36 
-01 | 00722 01 
-95 | 00723 95 
-2a | 00724 2a set_v ushort 308 ushort 173   | sendReq.target = sucessor6.id
-91 | 00725 91 
-01 | 00726 01 
-34 | 00727 34 
-ad | 00728 ad 
-b9 | 00729 b9 outevt_v 40 305               | emit SEND len=25 var=sendReq
-28 | 00730 28 
+89 | 00709 89 
+40 | 00710 40 push_c 83                     | push sucessor1.sucessores
+53 | 00711 53 
+40 | 00712 40 push_c 7                      | push idx max 7
+07 | 00713 07 
+98 | 00714 98 push_v ubyte 397              | push i:ubyte
+01 | 00715 01 
+8d | 00716 8d 
+07 | 00717 07 mod                           | mod: limmit idx
+40 | 00718 40 push_c 2                      | push var len ushort
+02 | 00719 02 
+08 | 00720 08 mult                          | mult: varlen * idx
+06 | 00721 06 add                           | add: array base addr + len position
+71 | 00722 71 deref ushort                  | deref ushort
+0f | 00723 0f eq                            | eq
+4f | 00724 4f ifelse 63 64                  | ifelse True_63 EndIf_64
+02 | 00725 .00 addr:729
+d9 | 00726 .3f 
+02 | 00727 .00 addr:742
+e6 | 00728 .40 
+2a | 00729 2a set_v ushort 395 ushort 81    | decidedId = sucessor1.id
+91 | 00730 91 
 01 | 00731 01 
-31 | 00732 31 
-d1 | 00733 d1 set_c ushort 14 75            | await SEND_DONE[6]
-0e | 00734 0e 
-01 | 00735 .00 addr:508
-fc | 00736 .0f 
-01 | 00737 01 end                           | end
-99 | 00738 99 push_v ushort 405             | push reqId:ushort
-01 | 00739 01 
-95 | 00740 95 
-91 | 00741 91 push_v ushort 189                    | push sucessor7.id [Optm:: push_c addr + deref]
-bd | 00742 bd 
-0f | 00743 0f eq                            | eq
-4f | 00744 4f ifelse 84 85                  | ifelse True_84 False_85
-02 | 00745 .00 addr:749
-ed | 00746 .54 
-01 | 00747 .00 addr:508
-fc | 00748 .0f 
-2a | 00749 2a set_v ushort 310 ushort 405   | sendReq.requestedId = reqId
-99 | 00750 99 
-01 | 00751 01 
-36 | 00752 36 
-01 | 00753 01 
-95 | 00754 95 
-2a | 00755 2a set_v ushort 308 ushort 189   | sendReq.target = sucessor7.id
-91 | 00756 91 
-01 | 00757 01 
-34 | 00758 34 
-bd | 00759 bd 
-b9 | 00760 b9 outevt_v 40 305               | emit SEND len=25 var=sendReq
-28 | 00761 28 
-01 | 00762 01 
-31 | 00763 31 
-d1 | 00764 d1 set_c ushort 16 83            | await SEND_DONE[7]
-10 | 00765 10 
-01 | 00766 .00 addr:508
-fc | 00767 .0f 
-01 | 00768 01 end                           | end
-48 | 00769 48 memclr 2 16                   | clear EXT gates for SEND_DONE
-02 | 00770 02 
-10 | 00771 10 
-48 | 00772 48 memclr 20 2                   | clear EXT gates for RECEIVE()
-14 | 00773 14 
-02 | 00774 02 
-01 | 00775 01 end                           | end
-01 | 00776 01 end                           | end
+8b | 00732 8b 
+51 | 00733 51 
+3d | 00734 3d tkins_z 1 19 54               | insert track Loop_out_54 tree 19
+93 | 00735 93 
+03 | 00736 .00 addr:959
+bf | 00737 .7c 
+01 | 00738 01 end                           | end
+39 | 00739 39 exec 64                       | goto  64
+02 | 00740 .00 addr:742
+e6 | 00741 .40 
+99 | 00742 99 push_v ushort 393             | push reqId:ushort
+01 | 00743 01 
+89 | 00744 89 
+40 | 00745 40 push_c 99                     | push sucessor2.sucessores
+63 | 00746 63 
+40 | 00747 40 push_c 7                      | push idx max 7
+07 | 00748 07 
+98 | 00749 98 push_v ubyte 397              | push i:ubyte
+01 | 00750 01 
+8d | 00751 8d 
+07 | 00752 07 mod                           | mod: limmit idx
+40 | 00753 40 push_c 2                      | push var len ushort
+02 | 00754 02 
+08 | 00755 08 mult                          | mult: varlen * idx
+06 | 00756 06 add                           | add: array base addr + len position
+71 | 00757 71 deref ushort                  | deref ushort
+0f | 00758 0f eq                            | eq
+4f | 00759 4f ifelse 69 70                  | ifelse True_69 EndIf_70
+02 | 00760 .00 addr:764
+fc | 00761 .45 
+03 | 00762 .00 addr:777
+09 | 00763 .46 
+2a | 00764 2a set_v ushort 395 ushort 97    | decidedId = sucessor2.id
+91 | 00765 91 
+01 | 00766 01 
+8b | 00767 8b 
+61 | 00768 61 
+3d | 00769 3d tkins_z 1 19 54               | insert track Loop_out_54 tree 19
+93 | 00770 93 
+03 | 00771 .00 addr:959
+bf | 00772 .7c 
+01 | 00773 01 end                           | end
+39 | 00774 39 exec 70                       | goto  70
+03 | 00775 .00 addr:777
+09 | 00776 .46 
+99 | 00777 99 push_v ushort 393             | push reqId:ushort
+01 | 00778 01 
+89 | 00779 89 
+40 | 00780 40 push_c 115                    | push sucessor3.sucessores
+73 | 00781 73 
+40 | 00782 40 push_c 7                      | push idx max 7
+07 | 00783 07 
+98 | 00784 98 push_v ubyte 397              | push i:ubyte
+01 | 00785 01 
+8d | 00786 8d 
+07 | 00787 07 mod                           | mod: limmit idx
+40 | 00788 40 push_c 2                      | push var len ushort
+02 | 00789 02 
+08 | 00790 08 mult                          | mult: varlen * idx
+06 | 00791 06 add                           | add: array base addr + len position
+71 | 00792 71 deref ushort                  | deref ushort
+0f | 00793 0f eq                            | eq
+4f | 00794 4f ifelse 75 76                  | ifelse True_75 EndIf_76
+03 | 00795 .00 addr:799
+1f | 00796 .4b 
+03 | 00797 .00 addr:812
+2c | 00798 .4c 
+2a | 00799 2a set_v ushort 395 ushort 113   | decidedId = sucessor3.id
+91 | 00800 91 
+01 | 00801 01 
+8b | 00802 8b 
+71 | 00803 71 
+3d | 00804 3d tkins_z 1 19 54               | insert track Loop_out_54 tree 19
+93 | 00805 93 
+03 | 00806 .00 addr:959
+bf | 00807 .7c 
+01 | 00808 01 end                           | end
+39 | 00809 39 exec 76                       | goto  76
+03 | 00810 .00 addr:812
+2c | 00811 .4c 
+99 | 00812 99 push_v ushort 393             | push reqId:ushort
+01 | 00813 01 
+89 | 00814 89 
+40 | 00815 40 push_c 131                    | push sucessor4.sucessores
+83 | 00816 83 
+40 | 00817 40 push_c 7                      | push idx max 7
+07 | 00818 07 
+98 | 00819 98 push_v ubyte 397              | push i:ubyte
+01 | 00820 01 
+8d | 00821 8d 
+07 | 00822 07 mod                           | mod: limmit idx
+40 | 00823 40 push_c 2                      | push var len ushort
+02 | 00824 02 
+08 | 00825 08 mult                          | mult: varlen * idx
+06 | 00826 06 add                           | add: array base addr + len position
+71 | 00827 71 deref ushort                  | deref ushort
+0f | 00828 0f eq                            | eq
+4f | 00829 4f ifelse 81 82                  | ifelse True_81 EndIf_82
+03 | 00830 .00 addr:834
+42 | 00831 .51 
+03 | 00832 .00 addr:847
+4f | 00833 .52 
+2a | 00834 2a set_v ushort 395 ushort 129   | decidedId = sucessor4.id
+91 | 00835 91 
+01 | 00836 01 
+8b | 00837 8b 
+81 | 00838 81 
+3d | 00839 3d tkins_z 1 19 54               | insert track Loop_out_54 tree 19
+93 | 00840 93 
+03 | 00841 .00 addr:959
+bf | 00842 .7c 
+01 | 00843 01 end                           | end
+39 | 00844 39 exec 82                       | goto  82
+03 | 00845 .00 addr:847
+4f | 00846 .52 
+99 | 00847 99 push_v ushort 393             | push reqId:ushort
+01 | 00848 01 
+89 | 00849 89 
+40 | 00850 40 push_c 147                    | push sucessor5.sucessores
+93 | 00851 93 
+40 | 00852 40 push_c 7                      | push idx max 7
+07 | 00853 07 
+98 | 00854 98 push_v ubyte 397              | push i:ubyte
+01 | 00855 01 
+8d | 00856 8d 
+07 | 00857 07 mod                           | mod: limmit idx
+40 | 00858 40 push_c 2                      | push var len ushort
+02 | 00859 02 
+08 | 00860 08 mult                          | mult: varlen * idx
+06 | 00861 06 add                           | add: array base addr + len position
+71 | 00862 71 deref ushort                  | deref ushort
+0f | 00863 0f eq                            | eq
+4f | 00864 4f ifelse 87 88                  | ifelse True_87 EndIf_88
+03 | 00865 .00 addr:869
+65 | 00866 .57 
+03 | 00867 .00 addr:882
+72 | 00868 .58 
+2a | 00869 2a set_v ushort 395 ushort 145   | decidedId = sucessor5.id
+91 | 00870 91 
+01 | 00871 01 
+8b | 00872 8b 
+91 | 00873 91 
+3d | 00874 3d tkins_z 1 19 54               | insert track Loop_out_54 tree 19
+93 | 00875 93 
+03 | 00876 .00 addr:959
+bf | 00877 .7c 
+01 | 00878 01 end                           | end
+39 | 00879 39 exec 88                       | goto  88
+03 | 00880 .00 addr:882
+72 | 00881 .58 
+99 | 00882 99 push_v ushort 393             | push reqId:ushort
+01 | 00883 01 
+89 | 00884 89 
+40 | 00885 40 push_c 163                    | push sucessor6.sucessores
+a3 | 00886 a3 
+40 | 00887 40 push_c 7                      | push idx max 7
+07 | 00888 07 
+98 | 00889 98 push_v ubyte 397              | push i:ubyte
+01 | 00890 01 
+8d | 00891 8d 
+07 | 00892 07 mod                           | mod: limmit idx
+40 | 00893 40 push_c 2                      | push var len ushort
+02 | 00894 02 
+08 | 00895 08 mult                          | mult: varlen * idx
+06 | 00896 06 add                           | add: array base addr + len position
+71 | 00897 71 deref ushort                  | deref ushort
+0f | 00898 0f eq                            | eq
+4f | 00899 4f ifelse 93 94                  | ifelse True_93 EndIf_94
+03 | 00900 .00 addr:904
+88 | 00901 .5d 
+03 | 00902 .00 addr:917
+95 | 00903 .5e 
+2a | 00904 2a set_v ushort 395 ushort 161   | decidedId = sucessor6.id
+91 | 00905 91 
+01 | 00906 01 
+8b | 00907 8b 
+a1 | 00908 a1 
+3d | 00909 3d tkins_z 1 19 54               | insert track Loop_out_54 tree 19
+93 | 00910 93 
+03 | 00911 .00 addr:959
+bf | 00912 .7c 
+01 | 00913 01 end                           | end
+39 | 00914 39 exec 94                       | goto  94
+03 | 00915 .00 addr:917
+95 | 00916 .5e 
+99 | 00917 99 push_v ushort 393             | push reqId:ushort
+01 | 00918 01 
+89 | 00919 89 
+40 | 00920 40 push_c 179                    | push sucessor7.sucessores
+b3 | 00921 b3 
+40 | 00922 40 push_c 7                      | push idx max 7
+07 | 00923 07 
+98 | 00924 98 push_v ubyte 397              | push i:ubyte
+01 | 00925 01 
+8d | 00926 8d 
+07 | 00927 07 mod                           | mod: limmit idx
+40 | 00928 40 push_c 2                      | push var len ushort
+02 | 00929 02 
+08 | 00930 08 mult                          | mult: varlen * idx
+06 | 00931 06 add                           | add: array base addr + len position
+71 | 00932 71 deref ushort                  | deref ushort
+0f | 00933 0f eq                            | eq
+4f | 00934 4f ifelse 99 100                 | ifelse True_99 EndIf_100
+03 | 00935 .00 addr:939
+ab | 00936 .63 
+03 | 00937 .00 addr:952
+b8 | 00938 .64 
+2a | 00939 2a set_v ushort 395 ushort 177   | decidedId = sucessor7.id
+91 | 00940 91 
+01 | 00941 01 
+8b | 00942 8b 
+b1 | 00943 b1 
+3d | 00944 3d tkins_z 1 19 54               | insert track Loop_out_54 tree 19
+93 | 00945 93 
+03 | 00946 .00 addr:959
+bf | 00947 .7c 
+01 | 00948 01 end                           | end
+39 | 00949 39 exec 100                      | goto  100
+03 | 00950 .00 addr:952
+b8 | 00951 .64 
+41 | 00952 41 push_c 397                    | push &i
+01 | 00953 01 
+8d | 00954 8d 
+60 | 00955 60 inc ubyte                     | inc ubyte
+39 | 00956 39 exec 103                      | goto  103
+02 | 00957 .00 addr:687
+af | 00958 .34 
+2a | 00959 2a set_v ushort 298 ushort 393   | sendReq.requestedId = reqId
+99 | 00960 99 
+01 | 00961 01 
+2a | 00962 2a 
+01 | 00963 01 
+89 | 00964 89 
+2a | 00965 2a set_v ushort 296 ushort 395   | sendReq.target = decidedId
+99 | 00966 99 
+01 | 00967 01 
+28 | 00968 28 
+01 | 00969 01 
+8b | 00970 8b 
+b9 | 00971 b9 outevt_v 40 293               | emit SEND len=25 var=sendReq
+28 | 00972 28 
+01 | 00973 01 
+25 | 00974 25 
+d1 | 00975 d1 set_c ushort 4 130            | await SEND_DONE[1]
+04 | 00976 04 
+01 | 00977 .00 addr:498
+f2 | 00978 .0f 
+01 | 00979 01 end                           | end
+48 | 00980 48 memclr 2 4                    | clear EXT gates for SEND_DONE
+02 | 00981 02 
+04 | 00982 04 
+48 | 00983 48 memclr 8 2                    | clear EXT gates for RECEIVE()
+08 | 00984 08 
+02 | 00985 02 
+01 | 00986 01 end                           | end
+01 | 00987 01 end                           | end

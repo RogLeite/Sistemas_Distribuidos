@@ -10,10 +10,16 @@
 #define ANSWER_TIMEOUT 2
 #define ALERT_REPEAT 4
 #define TEMP_MEM 4
-//NOVIDADES--------------------------
 #define MSG_TYPE_REQUEST 4
 #define MSG_TYPE_ANSWER 5
-//NOVIDADES++++++++++++++++++++++++++
+//NOVO----------------------------------
+#define WAIT_REQUEST 15
+	// valor de photo para gerar request
+#define REQ_12 500
+#define REQ_23 520
+#define REQ_31 540
+#define REQ_33 560
+//NOVO++++++++++++++++++++++++++++++++++
 //#define TESTE 1
 var ubyte fila;
 var ushort progenitor=0;
@@ -96,78 +102,28 @@ var answerMsg recAns;
 sendAns.target = BROADCAST;
 sendAns.type = MSG_TYPE_REQUEST;
 sendAns.source = nodeId;
-/*
-//[[EDIT]] era isso que queria pôr numa função
-loop i, QTD_SUCESSORES do
-	if sucessorN.sucessores[i] == reqId then
-//		envia pra sucessorN;
-	end
-end
-*/
 
-//NOVIDADES---------------------------
-//fica escutando recReq
-loop do
-	recReq = await RECEIVE(MSG_TYPE_REQUEST);
-	var ushort reqId = recReq.requestedId;
-	var ushort decidedId = 0;
-	if reqId == nodeId then
-		sendAns.temp = med_temp;
-		emit SEND(sendAns);
-		await SEND_DONE();
-	else
-		if sucessor1.id==reqId then
-			decidedId = sucessor1.id;
-		else/if sucessor2.id==reqId then
-			decidedId = sucessor2.id;
-		else/if sucessor3.id==reqId then
-			decidedId = sucessor3.id;
-		else/if sucessor4.id==reqId then
-			decidedId = sucessor4.id;
-		else/if sucessor5.id==reqId then
-			decidedId = sucessor5.id;
-		else/if sucessor6.id==reqId then
-			decidedId = sucessor6.id;
-		else/if sucessor7.id==reqId then
-			decidedId = sucessor7.id;
-		else
-		// é aqui que vou procurar dentre os sucessores dos sucessores
-			loop i, QTD_SUCESSORES do
-				if sucessor1.sucessores[i] == reqId then
-					decidedId = sucessor1.id;
-					break;
-				end
-				if sucessor2.sucessores[i] == reqId then
-					decidedId = sucessor2.id;
-					break;
-				end
-				if sucessor3.sucessores[i] == reqId then
-					decidedId = sucessor3.id;
-					break;
-				end
-				if sucessor4.sucessores[i] == reqId then
-					decidedId = sucessor4.id;
-					break;
-				end
-				if sucessor5.sucessores[i] == reqId then
-					decidedId = sucessor5.id;
-					break;
-				end
-				if sucessor6.sucessores[i] == reqId then
-					decidedId = sucessor6.id;
-					break;
-				end
-				if sucessor7.sucessores[i] == reqId then
-					decidedId = sucessor7.id;
-					break;
-				end
-			end
+if nodeId==11 then
+	var ushort reqId = 0;
+	loop do
+		await WAIT_REQUEST s;
+		var ushort photo;
+		emit REQ_PHOTO();
+		photo = await PHOTO();
+
+		//Gera REQUEST
+		if photo == REQ_12 then reqId = 12;
+		else/if photo == REQ_23 then reqId = 23;
+		else/if photo == REQ_31 then reqId = 31;
+		else/if photo == REQ_33 then reqId = 33;
+		else reqId = 0;
 		end
-		sendReq.requestedId = reqId;
-		sendReq.target = decidedId;
-		emit SEND(sendReq);
-		await SEND_DONE();
+		
+		//envia REQUEST
+		if reqId != 0 and reqId!= 11 then
+			sendReq.requestedId = reqId;
+			emit SEND(sendReq);
+			await SEND_DONE();
+		end
 	end
 end
-
-//NOVIDADES++++++++++++++++++++++++++
