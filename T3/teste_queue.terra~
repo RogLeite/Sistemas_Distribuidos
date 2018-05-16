@@ -1,0 +1,18 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+
+
+var ushort nodeId = getNodeId();
+pktype myMsg from radioMsg with end
+var myMsg msg;
+if nodeId == 22 then
+	msg.type = 1;
+	msg.target = BROADCAST;
+	msg.source = nodeId;
+	await 5 s;
+	emit SEND(msg);
+	await SEND_DONE();
+else
+	msg = await RECEIVE();
+	qPut(myMsg msg);
+	msg = qGet(myMsg);
+end
