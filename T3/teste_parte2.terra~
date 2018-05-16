@@ -14,7 +14,7 @@
 var ubyte fila;
 
 var ushort nodeId = getNodeId();
-
+var ushort[QTD_SUCESSORES][QTD_SUCESSORES] sucessores;
 
 //define mensagem tipo MSG_TYPE_PATHING
 pktype pathMsg from radioMsg with
@@ -67,15 +67,26 @@ loop do
 		emit SEND(sendPath);
 		await SEND_DONE();
 		//ESCUTA-SUCESSORES-----------------------------
+		loop i,QTD_SUCESSORES do
+			loop j,QTD_SUCESSORES do sucessores[i][j] = 0; end
+		end
+
 		par/or do
 			loop i,QTD_SUCESSORES do
-
+				recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+				sucessores[i] = recPos.source;
+				//Armazena sucessores do sucessor recebido
+				loop j,QTD_SUCESSORES do sucessores[i][j] = recPos.sucessores[j]; end
 			end
 		with
 			await ANSWER_TIMEOUT s;
 		end
 
 		//FIM-ESCUTA-SUCESSORES-------------------------
+		//RESPONDE-AO-PROGENITOR-----------------------------
+		
+		//END-RESPONDE-AO-PROGENITOR-------------------------
+		
 
 
 	else

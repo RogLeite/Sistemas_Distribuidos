@@ -1,0 +1,14 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+#define QTD_SUCESSORES 7
+regtype sucessor with
+	var ushort id;
+	var ushort[QTD_SUCESSORES] sucessores;
+end
+
+var sucessor sucessor1;
+var sucessor sucessor2;
+var sucessor sucessor3;
+var sucessor sucessor4;
+var sucessor sucessor5;
+var sucessor sucessor6;
+var sucessor sucessor7;
