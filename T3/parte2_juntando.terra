@@ -1,13 +1,12 @@
 #include "/home/terra/TerraNG/terra/TerraNet.defs"
-#define TESTE 1
+//#define TESTE 1
+#define ANTI_TIGHT 1
 #define LED_VIEW 2 //Define o tempo em que os leds ficam acesos
 #define ROOT_TIME 15
 #define SOMETHING 3
 #define TEMP_LIM 500
 #define MSG_TYPE_PATHING 1
-#define MSG_TYPE_ALERT 2
 #define MSG_TYPE_SUCESSORES 3
-#define ALERT_REPEAT 4
 #define TEMP_MEM 4
 //GENERIC-RESUMIR----------------------------------------------
 #define QTD_SUCESSORES 5 //20-2 = 18-> 18/2 = 9 é a quantidade máxima de sucessores adjacentes a um nó
@@ -42,6 +41,22 @@ var ushort[TEMP_MEM] temps;
 var ushort temp = 0;
 var ushort med_temp = 0;
 
+//define mensagem tipo MSG_TYPE_SUCESSORES
+
+
+pktype posMsg from radioMsg with
+	var ushort[QTD_SUCESSORES] sucessores;
+end
+
+var posMsg sendPos;
+var posMsg recPos;
+
+sendPos.type = MSG_TYPE_SUCESSORES;
+sendPos.target = BROADCAST;
+sendPos.source = nodeId;
+
+
+/*
 //define mensagem tipo MSG_TYPE_PATHING
 pktype pathMsg from radioMsg with
 	var ubyte num_saltos;
@@ -56,35 +71,6 @@ sendPath.target = BROADCAST;
 sendPath.source = nodeId;
 sendPath.num_saltos = 0;
 sendPath.versao_rota = 0;
-
-//define mensagem tipo MSG_TYPE_SUCESSORES
-
-regtype sucessor with
-	var ushort id;
-	var ushort[QTD_SUCESSORES] sucessores;
-end
-
-pktype posMsg from radioMsg with
-	var ushort[QTD_SUCESSORES] sucessores;
-end
-
-var posMsg sendPos;
-var posMsg recPos;
-
-sendPos.type = MSG_TYPE_SUCESSORES;
-sendPos.target = BROADCAST;
-sendPos.source = nodeId;
-
-
-//define mensagem tipo MSG_TYPE_ALERT
-pktype alertMsg from radioMsg with end
-
-var alertMsg sendAlert;
-var alertMsg recAlert;
-sendAlert.target = BROADCAST;
-sendAlert.type = MSG_TYPE_ALERT;
-sendAlert.source = nodeId;
-
 
 
 //GENERIC-REQUEST----------------------------------------------
@@ -113,7 +99,37 @@ sendAns.target = BROADCAST;
 sendAns.type = MSG_TYPE_ANSWER;
 sendAns.source = nodeId;
 
+//GENERIC+ANSWER++++++++++++++++++++++++++++++++++++++++++++++
+*/
 
+//GENERIC-ANSWER-REQUEST-PATHING----------------------------------------------
+pktype reqanspathMsg from radioMsg with 
+	var ushort requestedId;
+	var ushort temp;
+	var ubyte num_saltos;
+	var ulong versao_rota;
+end
+
+var reqanspathMsg sendPath;
+var reqanspathMsg recPath;
+sendPath.type = MSG_TYPE_PATHING;
+sendPath.target = BROADCAST;
+sendPath.source = nodeId;
+sendPath.num_saltos = 0;
+sendPath.versao_rota = 0;
+
+var reqanspathMsg sendReq;
+var reqanspathMsg recReq;
+sendReq.target = 0;
+sendReq.type = MSG_TYPE_REQUEST;
+sendReq.source = nodeId;
+
+var reqanspathMsg sendAns;
+var reqanspathMsg recAns;
+sendAns.target = BROADCAST;
+sendAns.type = MSG_TYPE_ANSWER;
+sendAns.source = nodeId;
+//GENERIC+ANSWER+REQUEST+PATHING++++++++++++++++++++++++++++++++++++++++++++++
 
 //GENERIC-JUNTANDO----------------------------------------------
 par do
@@ -177,9 +193,6 @@ with
 with
 	//GENERIC-PATHING----------------------------------------------
 	loop do
-		#ifdef TESTE		
-			await 1ms;
-		#endif
 		var ubyte updated = FALSE;
 		if nodeId == 11 then
 			sendPath.versao_rota = sendPath.versao_rota + 1;
@@ -187,8 +200,8 @@ with
 			recPath = await RECEIVE(MSG_TYPE_PATHING);
 			if recPath.versao_rota > sendPath.versao_rota then
 				progenitor = recPath.source;
-				sendAlert.target = progenitor;
 				sendPos.target = progenitor;
+				sendAns.target = progenitor;
 				sendPath.num_saltos = recPath.num_saltos + 1;
 				sendPath.versao_rota = recPath.versao_rota;
 				updated = TRUE;
@@ -247,6 +260,10 @@ with
 					await SEND_DONE();
 				end
 			end
+		else			
+			#ifdef ANTI_TIGHT		
+				await 1ms;
+			#endif
 		end
 		//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	end
@@ -254,56 +271,24 @@ with
 with
 	//GENERIC-TEMP----------------------------------------------
 	loop do
-		#ifdef TESTE		
-			await 1ms;
-		#endif
-		loop i, TEMP_MEM do temps[i] = 0; end
 		if nodeId != 11 then
+			loop i, TEMP_MEM do temps[i] = 0; end
 			loop i,TEMP_MEM do
 				await SOMETHING s;
-				//fica esperando tempo passar do limite
+				//fica esperando tempo passar pra leitura
 				emit REQ_TEMP();
 				temps[i] = await TEMP();
 				temp = 0;
 				loop j,TEMP_MEM do temp = temp+temps[i]; end
 				med_temp = temp/TEMP_MEM;
-				if med_temp > TEMP_LIM then
-					//temperatura excedeu limite
-					alta_temp = med_temp;
-					emit LED2(ON);
-					//emitir mensagem tipo MSG_TYPE_ALERT
-					emit SEND(sendAlert);
-					await SEND_DONE();
-					await ALERT_REPEAT s;
-				else
-					emit LED2(OFF);			
-				end
 			end
+		else
+			#ifdef ANTI_TIGHT		
+				await 1ms;
+			#endif
 		end
 	end
 	//GENERIC+TEMP++++++++++++++++++++++++++++++++++++++++++++++
-
-with
-
-	//GENERIC-ALERT----------------------------------------------
-	loop do
-		recAlert = await RECEIVE(MSG_TYPE_ALERT);	
-		if nodeId == 11 then
-			//Raiz recebendo alertas
-			emit LED0(ON);
-			emit LED1(ON);
-			emit LED2(ON);
-			await 3s;
-			emit LED0(OFF);
-			emit LED1(OFF);
-			emit LED2(OFF);
-		else
-			//Recebendo alertas e enviando para o progenitor
-			emit SEND(sendAlert);
-			await SEND_DONE();
-		end
-	end
-	//GENERIC+ALERT++++++++++++++++++++++++++++++++++++++++++++++
 
 end
 
