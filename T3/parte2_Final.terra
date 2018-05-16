@@ -1,15 +1,19 @@
 #include "/home/terra/TerraNG/terra/TerraNet.defs"
 #define LED_VIEW 2 //Define o tempo em que os leds ficam acesos
 #define ROOT_TIME 15
-#define SOMETHING 1
+#define SOMETHING 3
 #define TEMP_LIM 500
 #define MSG_TYPE_PATHING 1
 #define MSG_TYPE_ALERT 2
 #define ALERT_REPEAT 4
+#define TEMP_MEM 4
 //#define TESTE 1
 var ubyte fila;
 
 var ushort nodeId = getNodeId();
+
+
+//define mensagem tipo MSG_TYPE_PATHING
 pktype pathMsg from radioMsg with
 	var ubyte num_saltos;
 	var ulong versao_rota;
@@ -25,70 +29,72 @@ sendPath.num_saltos = 0;
 sendPath.versao_rota = 0;
 
 
-//define mensagem tipo 2, alerta
+//define mensagem tipo MSG_TYPE_ALERT
 pktype alertMsg from radioMsg with end
 
 var alertMsg sendAlert;
 var alertMsg recAlert;
-//sendAlert.target deve ser devinido durante execução
+sendAlert.target = BROADCAST;
 sendAlert.type = MSG_TYPE_ALERT;
 sendAlert.source = nodeId;
 recAlert.type = MSG_TYPE_ALERT;
 
 
 
-
+par do
+//NORMAL-EXECUTION---------------------------------------------------
 if nodeId == 11 then  //se é a raiz:
 //espera e manda o criar path
-		par do		
-			loop do
-	
-				//dorme até o próximo envio
-				await ROOT_TIME s;
+	par do		
+		loop do
+			//incrementa a versao da rota
+			sendPath.versao_rota = sendPath.versao_rota + 1;
 
-				//incrementa a versao da rota
-				sendPath.versao_rota = sendPath.versao_rota + 1;
+			//envia sendPath e acende LED0 para vermos isso
+			/*fila = */qPut(sendPath);
+			emit LED0(ON);
 
-				//envia sendPath e acende LED0 para vermos isso
-				emit SEND(sendPath);
+			//confirma que foi enviado e apaga o LED0 depois de dormir 1 segg para vermos o led aceso
+			await SEND_DONE();
+			await LED_VIEW s;
+			emit LED0(OFF);
+
+			//dorme até o próximo envio
+			await ROOT_TIME s;
+		end
+	with
+		//Raiz recebendo alertas
+		loop do
+			recAlert = await RECEIVE(MSG_TYPE_ALERT);	
+			if recAlert.type == MSG_TYPE_ALERT then
 				emit LED0(ON);
-
-				//confirma que foi enviado e apaga o LED0 depois de dormir 1 segg para vermos o led aceso
-				await SEND_DONE();
-				await LED_VIEW s;
+				emit LED1(ON);
+				emit LED2(ON);
+				await 3s;
 				emit LED0(OFF);
-			end
-		with
-			//Raiz recebendo alertas
-			loop do
-				recAlert = await RECEIVE(2);	
-				if recAlert.type == MSG_TYPE_ALERT then
-					emit LED0(ON);
-					emit LED1(ON);
-					emit LED2(ON);
-					await 3s;
-					emit LED0(OFF);
-					emit LED1(OFF);
-					emit LED2(OFF);
-				end
+				emit LED1(OFF);
+				emit LED2(OFF);
 			end
 		end
+	end
 
 
 else //se não é a raiz
 	var ushort progenitor;
 	par do 
+		//LISTENING--------------------------------------------------
 		par do
 			//fica escutando recPath
 			loop do
-				recPath = await RECEIVE(1);
+				recPath = await RECEIVE(MSG_TYPE_PATHING);
 				emit LED0(ON);
 				if recPath.versao_rota > sendPath.versao_rota then
 					emit LED1(ON);
 					progenitor = recPath.source;
+					sendAlert.target = progenitor;
 					sendPath.versao_rota = recPath.versao_rota;
 					sendPath.num_saltos = recPath.num_saltos + 1;
-					emit SEND(sendPath);
+					/*fila = */qPut(sendPath);
 					await SEND_DONE();
 					await LED_VIEW s;
 					emit LED1(OFF);
@@ -103,40 +109,60 @@ else //se não é a raiz
 		with 
 			//Recebendo alertas e enviando para o progenitor
 			loop do
-				recAlert = await RECEIVE(2);	
+				recAlert = await RECEIVE(MSG_TYPE_ALERT);	
 				if recAlert.type == MSG_TYPE_ALERT then
-					sendAlert.target = progenitor;
-					emit SEND(sendAlert);
+					/*fila = */qPut(sendAlert);
 					await SEND_DONE();
 				end
 				emit LED0(OFF);
 			end
 		end
+		//END-LISTENING----------------------------------------------
 	with
 		//READING-TEMP-------------------------------------
-			var ushort alta_temp;
-			loop do
+		var ushort alta_temp = 0;
+		var ushort[TEMP_MEM] temps;
+		var ushort temp = 0;
+		loop i, TEMP_MEM do temps[i] = 0; end
+		loop do
+			loop i,TEMP_MEM do
 				await SOMETHING s;
 				//fica esperando tempo passar do limite
 				emit REQ_TEMP();
-				var ushort temp = await TEMP();
+				temps[i] = await TEMP();
+				temp = 0;
+				loop j,TEMP_MEM do temp = temp+temps[i]; end
+				temp = temp/TEMP_MEM;
 				if temp > TEMP_LIM then
 					//temperatura excedeu limite
 					alta_temp = temp;
 					emit LED2(ON);
 					//emitir mensagem tipo MSG_TYPE_ALERT
-					sendAlert.target = progenitor;
-					emit SEND(sendAlert);
+					/*fila = */qPut(sendAlert);
 					await SEND_DONE();
 					await ALERT_REPEAT s;
-
 				else
 					emit LED2(OFF);			
 				end
-		
 			end
-			//END-READING-TEMP---------------------------------
+		end
+		//END-READING-TEMP---------------------------------
 	end
+end
+//END-NORMAL-EXECUTION-----------------------------------------------
+with
+//QUEUE-SEND---------------------------------------------------------
+
+loop do
+	loop do
+		fila = qGet(sendPath);
+		if fila != FAIL then break; else await 500ms; end
+	end
+	emit SEND(sendPath);
+	await SEND_DONE();
+end
+
+//END-QUEUE-SEND-----------------------------------------------------
 end
 
 

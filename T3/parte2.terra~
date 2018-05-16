@@ -180,7 +180,6 @@ with
 						emit SEND(sendAlert);
 						await SEND_DONE();
 						await ALERT_REPEAT s;
-
 					else
 						emit LED2(OFF);			
 					end
