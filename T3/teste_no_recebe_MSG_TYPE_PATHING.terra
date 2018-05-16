@@ -5,14 +5,14 @@
 #define TEMP_LIM 500
 #define MSG_TYPE_PATHING 1
 #define MSG_TYPE_ALERT 2
-#define ANSWER_TIMEOUT 2
-#define ALERT_REPEAT 4
-#define TEMP_MEM 4
-
 //NOVIDADES--------------------------
 #define MSG_TYPE_SUCESSORES 3
 #define QTD_SUCESSORES 7
 //NOVIDADES++++++++++++++++++++++++++
+#define ANSWER_TIMEOUT 2
+#define ALERT_REPEAT 4
+#define TEMP_MEM 4
+
 
 //#define TESTE 1
 var ubyte fila;

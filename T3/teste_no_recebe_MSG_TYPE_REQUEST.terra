@@ -1,0 +1,82 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+#define LED_VIEW 2 //Define o tempo em que os leds ficam acesos
+#define ROOT_TIME 15
+#define SOMETHING 3
+#define TEMP_LIM 500
+#define MSG_TYPE_PATHING 1
+#define MSG_TYPE_ALERT 2
+#define MSG_TYPE_SUCESSORES 3
+#define QTD_SUCESSORES 7
+#define ANSWER_TIMEOUT 2
+#define ALERT_REPEAT 4
+#define TEMP_MEM 4
+//NOVIDADES--------------------------
+#define MSG_TYPE_REQUEST 4
+//NOVIDADES++++++++++++++++++++++++++
+//#define TESTE 1
+var ubyte fila;
+
+var ushort nodeId = getNodeId();
+
+//define mensagem tipo MSG_TYPE_PATHING
+pktype pathMsg from radioMsg with
+	var ubyte num_saltos;
+	var ulong versao_rota;
+end
+
+var pathMsg sendPath;
+var pathMsg recPath;
+
+sendPath.type = MSG_TYPE_PATHING;
+sendPath.target = BROADCAST;
+sendPath.source = nodeId;
+sendPath.num_saltos = 0;
+sendPath.versao_rota = 0;
+
+
+//define mensagem tipo MSG_TYPE_SUCESSORES
+
+regtype sucessor with
+	var ushort id;
+	var ushort[QTD_SUCESSORES] sucessores;
+end
+
+var sucessor sucessor1;
+var sucessor sucessor2;
+var sucessor sucessor3;
+var sucessor sucessor4;
+var sucessor sucessor5;
+var sucessor sucessor6;
+var sucessor sucessor7;
+
+pktype posMsg from radioMsg with
+	var ushort[QTD_SUCESSORES] sucessores;
+end
+
+var posMsg sendPos;
+var posMsg recPos;
+
+sendPos.type = MSG_TYPE_SUCESSORES;
+sendPos.target = BROADCAST;
+sendPos.source = nodeId;
+
+//define mensagem tipo MSG_TYPE_ALERT
+pktype alertMsg from radioMsg with end
+
+var alertMsg sendAlert;
+var alertMsg recAlert;
+sendAlert.target = BROADCAST;
+sendAlert.type = MSG_TYPE_ALERT;
+sendAlert.source = nodeId;
+
+
+var ushort progenitor=0;
+
+//NOVIDADES---------------------------
+//fica escutando recReq
+loop do
+	recReq = await RECEIVE(MSG_TYPE_REQUEST);
+	
+end
+
+//NOVIDADES++++++++++++++++++++++++++
