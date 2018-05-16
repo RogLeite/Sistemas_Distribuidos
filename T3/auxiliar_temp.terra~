@@ -1,0 +1,34 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+
+//GENERIC-TEMP----------------------------------------------
+//GENERIC+TEMP++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//GENERIC-TEMP----------------------------------------------
+if nodeId != 11 then
+	loop i, TEMP_MEM do temps[i] = 0; end
+	loop do
+		loop i,TEMP_MEM do
+			await SOMETHING s;
+			//fica esperando tempo passar do limite
+			emit REQ_TEMP();
+			temps[i] = await TEMP();
+			temp = 0;
+			loop j,TEMP_MEM do temp = temp+temps[i]; end
+			med_temp = temp/TEMP_MEM;
+			if med_temp > TEMP_LIM then
+				//temperatura excedeu limite
+				alta_temp = med_temp;
+				emit LED2(ON);
+				//emitir mensagem tipo MSG_TYPE_ALERT
+				emit SEND(sendAlert);
+				await SEND_DONE();
+				await ALERT_REPEAT s;
+			else
+				emit LED2(OFF);			
+			end
+		end
+	end
+end
+//GENERIC+TEMP++++++++++++++++++++++++++++++++++++++++++++++
+

@@ -92,7 +92,7 @@ end
 var answerMsg sendAns;
 var answerMsg recAns;
 sendAns.target = BROADCAST;
-sendAns.type = MSG_TYPE_REQUEST;
+sendAns.type = MSG_TYPE_ANSWER;
 sendAns.source = nodeId;
 
 if nodeId==11 then

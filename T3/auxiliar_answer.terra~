@@ -1,0 +1,39 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+
+
+//GENERIC-ANSWER----------------------------------------------
+//GENERIC+ANSWER++++++++++++++++++++++++++++++++++++++++++++++
+
+//GENERIC-ANSWER----------------------------------------------
+#define MSG_TYPE_ANSWER 5
+//GENERIC+ANSWER++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//GENERIC-ANSWER----------------------------------------------
+//define mensagem tipo MSG_TYPE_ANSWER
+pktype answerMsg from radioMsg with 
+	var ushort temp;
+end
+
+var answerMsg sendAns;
+var answerMsg recAns;
+sendAns.target = BROADCAST;
+sendAns.type = MSG_TYPE_ANSWER;
+sendAns.source = nodeId;
+//GENERIC+ANSWER++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+//GENERIC-ANSWER----------------------------------------------
+loop do
+	if nodeId==11 then
+		recAns = await RECEIVE(MSG_TYPE_ANSWER);
+		emit LED0(TOGGLE);
+	else
+		recAns = await RECEIVE(MSG_TYPE_ANSWER);
+		sendAns.temp = recAns.temp;
+		emit SEND(sendAns);
+		await SEND_DONE();
+	end
+end
+//GENERIC+ANSWER++++++++++++++++++++++++++++++++++++++++++++++

@@ -10,9 +10,9 @@
 #define ANSWER_TIMEOUT 2
 #define ALERT_REPEAT 4
 #define TEMP_MEM 4
-#define MSG_TYPE_REQUEST 4
 #define MSG_TYPE_ANSWER 5
 //NOVO----------------------------------
+#define MSG_TYPE_REQUEST 4
 #define WAIT_REQUEST 15
 	// valor de photo para gerar request
 #define REQ_12 500

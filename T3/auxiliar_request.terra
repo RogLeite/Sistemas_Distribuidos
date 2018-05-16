@@ -1,0 +1,70 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+
+//GENERIC-REQUEST----------------------------------------------
+//GENERIC+REQUEST++++++++++++++++++++++++++++++++++++++++++++++
+
+//GENERIC-REQUEST----------------------------------------------
+#define MSG_TYPE_REQUEST 4
+#define WAIT_REQUEST 15
+	// valor de photo para gerar request
+#define REQ_12 500
+#define REQ_23 520
+#define REQ_31 540
+#define REQ_33 560
+//GENERIC+REQUEST++++++++++++++++++++++++++++++++++++++++++++++
+
+//GENERIC-REQUEST----------------------------------------------
+//define mensagem tipo MSG_TYPE_REQUEST
+pktype requestMsg from radioMsg with 
+	var ushort requestedId;
+end
+
+var requestMsg sendReq;
+var requestMsg recReq;
+sendReq.target = 0;
+sendReq.type = MSG_TYPE_REQUEST;
+sendReq.source = nodeId;
+
+//GENERIC+REQUEST++++++++++++++++++++++++++++++++++++++++++++++
+
+//GENERAL-REQUEST----------------------------------------------
+loop do
+	if nodeId==11 then
+		var ushort reqId = 0;
+		await WAIT_REQUEST s;
+		var ushort photo;
+		emit REQ_PHOTO();
+		photo = await PHOTO();
+
+		//Gera REQUEST
+		if photo == REQ_12 then reqId = 12;
+		else/if photo == REQ_23 then reqId = 23;
+		else/if photo == REQ_31 then reqId = 31;
+		else/if photo == REQ_33 then reqId = 33;
+		else reqId = 0;
+		end	
+	else	//se é node
+		recReq = await RECEIVE(MSG_TYPE_REQUEST);
+	end
+	//envia REQUEST
+	if reqId == nodeId then
+		sendAns.temp = med_temp;
+		emit SEND(sendAns);
+		await SEND_DONE();
+	else/if reqId != 0 and reqId!= 11 then
+		sendReq.requestedId = reqId;
+		sendReq.target = 0;
+		loop i,QTD_SUCESSORES do
+			loop j,QTD_SUCSUC do
+				if sucessores[i*QTD_SUCSUC+j]==reqId then
+					sendReq.target = sucessores[i*QTD_SUCSUC];
+					break;
+				end
+			end
+			if sendReq.target != 0 then break; end
+		end
+		emit SEND(sendReq);
+		await SEND_DONE();
+	end
+end
+//GENERAL+REQUEST++++++++++++++++++++++++++++++++++++++++++++++

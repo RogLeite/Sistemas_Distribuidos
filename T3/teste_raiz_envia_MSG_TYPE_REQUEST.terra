@@ -10,9 +10,9 @@
 #define ANSWER_TIMEOUT 2
 #define ALERT_REPEAT 4
 #define TEMP_MEM 4
-#define MSG_TYPE_REQUEST 4
 #define MSG_TYPE_ANSWER 5
 //NOVO----------------------------------
+#define MSG_TYPE_REQUEST 4
 #define WAIT_REQUEST 15
 	// valor de photo para gerar request
 #define REQ_12 500
@@ -88,7 +88,7 @@ end
 
 var requestMsg sendReq;
 var requestMsg recReq;
-sendReq.target = BROADCAST;
+sendReq.target = 0;
 sendReq.type = MSG_TYPE_REQUEST;
 sendReq.source = nodeId;
 
@@ -122,6 +122,16 @@ if nodeId==11 then
 		//envia REQUEST
 		if reqId != 0 and reqId!= 11 then
 			sendReq.requestedId = reqId;
+			sendReq.target = 0;
+			loop i,QTD_SUCESSORES do
+				loop j,QTD_SUCSUC do
+					if sucessores[i*QTD_SUCSUC+j]==reqId then
+						sendReq.target = sucessores[i*QTD_SUCSUC];
+						break;
+					end
+				end
+				if sendReq.target != 0 then break; end
+			end
 			emit SEND(sendReq);
 			await SEND_DONE();
 		end

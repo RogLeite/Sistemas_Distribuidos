@@ -1,0 +1,32 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+
+//GENERIC-ALERT----------------------------------------------
+//GENERIC+ALERT++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+//GENERIC-ALERT----------------------------------------------
+loop do
+	recAlert = await RECEIVE(MSG_TYPE_ALERT);	
+	if nodeId == 11 then
+		if recAlert.type == MSG_TYPE_ALERT then
+			emit LED0(ON);
+			emit LED1(ON);
+			emit LED2(ON);
+			await 3s;
+			emit LED0(OFF);
+			emit LED1(OFF);
+			emit LED2(OFF);
+		end
+	else
+		//Recebendo alertas e enviando para o progenitor
+		if recAlert.type == MSG_TYPE_ALERT then
+			emit SEND(sendAlert);
+			await SEND_DONE();
+		end
+		emit LED0(OFF);
+	end
+end
+
+//GENERIC+ALERT++++++++++++++++++++++++++++++++++++++++++++++
+

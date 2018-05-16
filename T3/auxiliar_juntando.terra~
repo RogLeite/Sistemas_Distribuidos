@@ -1,0 +1,158 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+
+//GENERIC-JUNTANDO----------------------------------------------
+//GENERIC+JUNTANDO++++++++++++++++++++++++++++++++++++++++++++++
+
+//GENERIC-JUNTANDO----------------------------------------------
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+//[[EDIT]] Usar o evento custom
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//GENERIC+JUNTANDO++++++++++++++++++++++++++++++++++++++++++++++
+
+par do
+	//GENERIC-ANSWER----------------------------------------------
+	loop do
+		if nodeId==11 then
+			recAns = await RECEIVE(MSG_TYPE_ANSWER);
+			emit LED0(TOGGLE);
+		else
+			recAns = await RECEIVE(MSG_TYPE_ANSWER);
+			sendAns.temp = recAns.temp;
+			emit SEND(sendAns);
+			await SEND_DONE();
+		end
+	end
+	//GENERIC+ANSWER++++++++++++++++++++++++++++++++++++++++++++++
+
+with
+
+	//GENERAL-REQUEST----------------------------------------------
+	loop do
+		if nodeId==11 then
+			var ushort reqId = 0;
+			await WAIT_REQUEST s;
+			var ushort photo;
+			emit REQ_PHOTO();
+			photo = await PHOTO();
+
+			//Gera REQUEST
+			if photo == REQ_12 then reqId = 12;
+			else/if photo == REQ_23 then reqId = 23;
+			else/if photo == REQ_31 then reqId = 31;
+			else/if photo == REQ_33 then reqId = 33;
+			else reqId = 0;
+			end	
+		else	//se é node
+			recReq = await RECEIVE(MSG_TYPE_REQUEST);
+		end
+		//envia REQUEST
+		if reqId == nodeId then
+			sendAns.temp = med_temp;
+			emit SEND(sendAns);
+			await SEND_DONE();
+		else/if reqId != 0 and reqId!= 11 then
+			sendReq.requestedId = reqId;
+			sendReq.target = 0;
+			loop i,QTD_SUCESSORES do
+				loop j,QTD_SUCSUC do
+					if sucessores[i*QTD_SUCSUC+j]==reqId then
+						sendReq.target = sucessores[i*QTD_SUCSUC];
+						break;
+					end
+				end
+				if sendReq.target != 0 then break; end
+			end
+			emit SEND(sendReq);
+			await SEND_DONE();
+		end
+	end
+	//GENERAL+REQUEST++++++++++++++++++++++++++++++++++++++++++++++
+with
+
+	//GENERIC-PATHING----------------------------------------------
+	loop do
+		if nodeId == 11 then
+			sendPath.versao_rota = sendPath.versao_rota + 1;
+			//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+								//auxiliar_resumir.terra
+			//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+		else
+			recPath = await RECEIVE(MSG_TYPE_PATHING);
+			if recPath.versao_rota > sendPath.versao_rota then
+				progenitor = recPath.source;
+
+				sendAlert.target = progenitor;
+				sendPos.target = progenitor;
+
+				sendPath.num_saltos = recPath.num_saltos + 1;
+				sendPath.versao_rota = recPath.versao_rota;
+
+				//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+									//auxiliar_resumir.terra
+				//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+				//FIM-ESCUTA-SUCESSORES-------------------------
+				//RESPONDE-AO-PROGENITOR-----------------------------
+				sendPos.target = progenitor;
+				emit SEND(sendPos); 
+				await SEND_DONE();
+				//END-RESPONDE-AO-PROGENITOR-------------------------
+			end
+		end
+	end
+	//GENERIC+PATHING++++++++++++++++++++++++++++++++++++++++++++++
+
+with
+	//GENERIC-TEMP----------------------------------------------
+	loop do
+		loop i, TEMP_MEM do temps[i] = 0; end
+		if nodeId != 11 then
+			loop i,TEMP_MEM do
+				await SOMETHING s;
+				//fica esperando tempo passar do limite
+				emit REQ_TEMP();
+				temps[i] = await TEMP();
+				temp = 0;
+				loop j,TEMP_MEM do temp = temp+temps[i]; end
+				med_temp = temp/TEMP_MEM;
+				if med_temp > TEMP_LIM then
+					//temperatura excedeu limite
+					alta_temp = med_temp;
+					emit LED2(ON);
+					//emitir mensagem tipo MSG_TYPE_ALERT
+					emit SEND(sendAlert);
+					await SEND_DONE();
+					await ALERT_REPEAT s;
+				else
+					emit LED2(OFF);			
+				end
+			end
+		end
+	end
+	//GENERIC+TEMP++++++++++++++++++++++++++++++++++++++++++++++
+
+with
+
+	//GENERIC-ALERT----------------------------------------------
+	loop do
+		recAlert = await RECEIVE(MSG_TYPE_ALERT);	
+		if nodeId == 11 then
+			//Raiz recebendo alertas
+			emit LED0(ON);
+			emit LED1(ON);
+			emit LED2(ON);
+			await 3s;
+			emit LED0(OFF);
+			emit LED1(OFF);
+			emit LED2(OFF);
+		else
+			//Recebendo alertas e enviando para o progenitor
+			emit SEND(sendAlert);
+			await SEND_DONE();
+		end
+	end
+	//GENERIC+ALERT++++++++++++++++++++++++++++++++++++++++++++++
+
+end
+
+
+
