@@ -9,11 +9,11 @@
 #define TEMP_MEM 4
 //GENERIC-RESUMIR----------------------------------------------
 #define QTD_SUCESSORES 5 //20-2 = 18-> 18/2 = 9 é a quantidade máxima de sucessores adjacentes a um nó
-#define QTD_SUCSUC 12 //meio arbitrário, definido pra uma rede 5x5
-#define QTD_SUCESSORES_SQUARED 60//QTD_SUCESSORES*QTD_SUCSUC
+#define QTD_SUCSUC 4 //meio arbitrário, definido pra uma rede 5x5
+#define QTD_SUCESSORES_SQUARED 20//QTD_SUCESSORES*QTD_SUCSUC
 #define TAM_MSG 10
 #define MUITO_GRANDE 1000
-var ubyte[QTD_SUCESSORES_SQUARED] sucessores;
+var ushort[QTD_SUCESSORES_SQUARED] sucessores;
 var ubyte progenitor;
 //GENERIC+RESUMIR++++++++++++++++++++++++++++++++++++++++++++++
 //GENERIC-REQUEST----------------------------------------------
@@ -42,7 +42,7 @@ var ubyte med_temp = 0;
 
 
 pktype posMsg from radioMsg with
-	var ubyte[QTD_SUCESSORES] sucessores;
+	var ushort[QTD_SUCESSORES] sucessores;
 end
 
 var posMsg sendPos;
@@ -101,7 +101,7 @@ sendAns.source = nodeId;
 
 //GENERIC-ANSWER-REQUEST-PATHING----------------------------------------------
 pktype reqanspathMsg from radioMsg with 
-	var ubyte requestedId;
+	var ushort requestedId;
 	var ubyte temp;
 	var ubyte num_saltos;
 	var ulong versao_rota;
@@ -162,7 +162,7 @@ with
 			else/if photo == REQ_23 then reqId = 23;
 			else/if photo == REQ_31 then reqId = 31;
 			else/if photo == REQ_33 then reqId = 33;
-			else reqId = 0;
+			else reqId = 0; emit LED0(TOGGLE);
 			end	
 		else	//se é node
 			recReq = await RECEIVE(MSG_TYPE_REQUEST);
