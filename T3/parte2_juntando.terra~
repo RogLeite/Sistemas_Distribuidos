@@ -2,7 +2,7 @@
 //#define TESTE 1
 #define ANTI_TIGHT 1
 #define LED_VIEW 2 //Define o tempo em que os leds ficam acesos
-#define ROOT_TIME 15
+#define ROOT_TIME 20
 #define SOMETHING 3
 #define MSG_TYPE_PATHING 1
 #define MSG_TYPE_SUCESSORES 3
@@ -159,8 +159,6 @@ with
 
 			//Gera REQUEST
 			if photo == REQ_12 then reqId = 12;
-			else/if photo == REQ_23 then reqId = 23;
-			else/if photo == REQ_31 then reqId = 31;
 			else/if photo == REQ_33 then reqId = 33;
 			else reqId = 0; emit LED0(TOGGLE);
 			end	
