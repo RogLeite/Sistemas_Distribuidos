@@ -149,8 +149,6 @@ loop do
 		emit SEND(sendReq);
 		await SEND_DONE();
 	else
-	//[[EDIT]] é aqui que vou procurar dentre os sucessores dos sucessores?
-		
 	end
 end
 

@@ -11,7 +11,10 @@
 var ubyte fila;
 
 var ushort nodeId = getNodeId();
-
+var ushort alta_temp = 0;
+var ushort[TEMP_MEM] temps;
+var ushort temp = 0;
+var ushort med_temp = 0;
 
 //define mensagem tipo MSG_TYPE_PATHING
 pktype pathMsg from radioMsg with
@@ -89,6 +92,7 @@ else //se não é a raiz
 					emit LED1(ON);
 					progenitor = recPath.source;
 					sendAlert.target = progenitor;
+					//[[EDIT]] send para cada tipo deve ser adaptado
 					sendPath.versao_rota = recPath.versao_rota;
 					sendPath.num_saltos = recPath.num_saltos + 1;
 					emit SEND(sendPath);
@@ -117,9 +121,6 @@ else //se não é a raiz
 		//END-LISTENING----------------------------------------------
 	with
 		//READING-TEMP-------------------------------------
-		var ushort alta_temp = 0;
-		var ushort[TEMP_MEM] temps;
-		var ushort temp = 0;
 		loop i, TEMP_MEM do temps[i] = 0; end
 		loop do
 			loop i,TEMP_MEM do
@@ -129,10 +130,10 @@ else //se não é a raiz
 				temps[i] = await TEMP();
 				temp = 0;
 				loop j,TEMP_MEM do temp = temp+temps[i]; end
-				temp = temp/TEMP_MEM;
-				if temp > TEMP_LIM then
+				med_temp = temp/TEMP_MEM;
+				if med_temp > TEMP_LIM then
 					//temperatura excedeu limite
-					alta_temp = temp;
+					alta_temp = med_temp;
 					emit LED2(ON);
 					//emitir mensagem tipo MSG_TYPE_ALERT
 					emit SEND(sendAlert);

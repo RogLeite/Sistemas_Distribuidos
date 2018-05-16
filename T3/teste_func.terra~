@@ -1,0 +1,9 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+
+code Foo (var ushort n)
+	vai ushort v=0;
+	loop i,10 do
+		v = v+n;
+	end
+	escape v;
+end
