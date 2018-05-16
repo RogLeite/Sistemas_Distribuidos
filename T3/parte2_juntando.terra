@@ -2,7 +2,7 @@
 //#define TESTE 1
 #define ANTI_TIGHT 1
 #define LED_VIEW 2 //Define o tempo em que os leds ficam acesos
-#define ROOT_TIME 20
+#define ROOT_TIME 11
 #define SOMETHING 3
 #define MSG_TYPE_PATHING 1
 #define MSG_TYPE_SUCESSORES 3
@@ -13,12 +13,12 @@
 #define QTD_SUCESSORES_SQUARED 20//QTD_SUCESSORES*QTD_SUCSUC
 #define TAM_MSG 10
 #define MUITO_GRANDE 255
-var ubyte[QTD_SUCESSORES_SQUARED] sucessores;
+var ushort[QTD_SUCESSORES_SQUARED] sucessores;
 var ubyte progenitor;
 //GENERIC+RESUMIR++++++++++++++++++++++++++++++++++++++++++++++
 //GENERIC-REQUEST----------------------------------------------
 #define MSG_TYPE_REQUEST 4
-#define WAIT_REQUEST 15
+#define WAIT_REQUEST 17
 	// valor de photo para gerar request
 #define REQ_12 100
 #define REQ_23 120
