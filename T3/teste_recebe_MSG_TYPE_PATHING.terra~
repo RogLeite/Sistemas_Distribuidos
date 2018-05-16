@@ -5,15 +5,11 @@
 #define TEMP_LIM 500
 #define MSG_TYPE_PATHING 1
 #define MSG_TYPE_ALERT 2
+#define MSG_TYPE_SUCESSORES 3
 #define ANSWER_TIMEOUT 2
 #define ALERT_REPEAT 4
 #define TEMP_MEM 4
-
-//NOVIDADES--------------------------
-#define MSG_TYPE_SUCESSORES 3
 #define QTD_SUCESSORES 7
-//NOVIDADES++++++++++++++++++++++++++
-
 //#define TESTE 1
 var ubyte fila;
 
@@ -33,8 +29,6 @@ sendPath.target = BROADCAST;
 sendPath.source = nodeId;
 sendPath.num_saltos = 0;
 sendPath.versao_rota = 0;
-
-//NOVIDADES--------------------------
 
 //define mensagem tipo MSG_TYPE_SUCESSORES
 
@@ -61,7 +55,7 @@ var posMsg recPos;
 sendPos.type = MSG_TYPE_SUCESSORES;
 sendPos.target = BROADCAST;
 sendPos.source = nodeId;
-//NOVIDADES++++++++++++++++++++++++++
+
 
 //define mensagem tipo MSG_TYPE_ALERT
 pktype alertMsg from radioMsg with end
@@ -76,7 +70,7 @@ sendAlert.source = nodeId;
 //fica escutando recPath
 var ushort progenitor=0;
 
-//NOVIDADES--------------------------
+
 loop do
 	recPath = await RECEIVE(MSG_TYPE_PATHING);
 	emit LED0(ON);
@@ -165,4 +159,4 @@ loop do
 	end
 	emit LED0(OFF);
 end
-//NOVIDADES+++++++++++++++++++++++++++
+
