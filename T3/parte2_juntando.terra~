@@ -4,18 +4,17 @@
 #define LED_VIEW 2 //Define o tempo em que os leds ficam acesos
 #define ROOT_TIME 15
 #define SOMETHING 3
-#define TEMP_LIM 500
 #define MSG_TYPE_PATHING 1
 #define MSG_TYPE_SUCESSORES 3
 #define TEMP_MEM 4
 //GENERIC-RESUMIR----------------------------------------------
 #define QTD_SUCESSORES 5 //20-2 = 18-> 18/2 = 9 é a quantidade máxima de sucessores adjacentes a um nó
-#define QTD_SUCSUC 21 //meio arbitrário, definido pra uma rede 5x5
-#define QTD_SUCESSORES_SQUARED 105//QTD_SUCESSORES*QTD_SUCSUC
+#define QTD_SUCSUC 12 //meio arbitrário, definido pra uma rede 5x5
+#define QTD_SUCESSORES_SQUARED 60//QTD_SUCESSORES*QTD_SUCSUC
 #define TAM_MSG 10
 #define MUITO_GRANDE 1000
-var ushort[QTD_SUCESSORES_SQUARED] sucessores;
-var ushort progenitor;
+var ubyte[QTD_SUCESSORES_SQUARED] sucessores;
+var ubyte progenitor;
 //GENERIC+RESUMIR++++++++++++++++++++++++++++++++++++++++++++++
 //GENERIC-REQUEST----------------------------------------------
 #define MSG_TYPE_REQUEST 4
@@ -33,19 +32,17 @@ var ushort progenitor;
 #define ANSWER_TIMEOUT 2
 
 
-var ubyte fila;
+//var ubyte fila;
 
-var ushort nodeId = getNodeId();
-var ushort alta_temp = 0;
-var ushort[TEMP_MEM] temps;
-var ushort temp = 0;
-var ushort med_temp = 0;
+var ubyte nodeId = getNodeId();
+var ubyte[TEMP_MEM] temps;
+var ubyte med_temp = 0;
 
 //define mensagem tipo MSG_TYPE_SUCESSORES
 
 
 pktype posMsg from radioMsg with
-	var ushort[QTD_SUCESSORES] sucessores;
+	var ubyte[QTD_SUCESSORES] sucessores;
 end
 
 var posMsg sendPos;
@@ -104,8 +101,8 @@ sendAns.source = nodeId;
 
 //GENERIC-ANSWER-REQUEST-PATHING----------------------------------------------
 pktype reqanspathMsg from radioMsg with 
-	var ushort requestedId;
-	var ushort temp;
+	var ubyte requestedId;
+	var ubyte temp;
 	var ubyte num_saltos;
 	var ulong versao_rota;
 end
@@ -120,6 +117,7 @@ sendPath.versao_rota = 0;
 
 var reqanspathMsg sendReq;
 var reqanspathMsg recReq;
+
 sendReq.target = 0;
 sendReq.type = MSG_TYPE_REQUEST;
 sendReq.source = nodeId;
@@ -151,10 +149,10 @@ with
 
 	//GENERAL-REQUEST----------------------------------------------
 	loop do
-		var ushort reqId = 0;
+		var ubyte reqId = 0;
 		if nodeId==11 then
 			await WAIT_REQUEST s;
-			var ushort photo;
+			var ubyte photo;
 			emit REQ_PHOTO();
 			photo = await PHOTO();
 
@@ -167,6 +165,7 @@ with
 			end	
 		else	//se é node
 			recReq = await RECEIVE(MSG_TYPE_REQUEST);
+			reqId = recReq.requestedId;
 		end
 		//envia REQUEST
 		if reqId == nodeId then
@@ -185,6 +184,7 @@ with
 				end
 				if sendReq.target != 0 then break; end
 			end
+			emit LED0(TOGGLE);
 			emit SEND(sendReq);
 			await SEND_DONE();
 		end
@@ -217,7 +217,7 @@ with
 			end
 			par/or do
 				loop do //loop de aguardar o retorno dos sucessores
-					var ushort index = 0;
+					var ubyte index = 0;
 					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
 					loop i,QTD_SUCESSORES do
 						if sucessores[i*QTD_SUCSUC]==recPos.source then
@@ -244,9 +244,9 @@ with
 			//agora enviar pro progenitor TEUS sucessores
 			if nodeId != 11 then
 				sendPos.target = progenitor;
-				var ushort index = 0;
+				var ubyte index = 0;
 				loop do
-					var ushort i=0;
+					var ubyte i=0;
 					if index >= QTD_SUCESSORES_SQUARED then break; end
 					loop n, MUITO_GRANDE do
 						if index >= QTD_SUCESSORES_SQUARED or i>=10 then break;
@@ -278,9 +278,9 @@ with
 				//fica esperando tempo passar pra leitura
 				emit REQ_TEMP();
 				temps[i] = await TEMP();
-				temp = 0;
-				loop j,TEMP_MEM do temp = temp+temps[i]; end
-				med_temp = temp/TEMP_MEM;
+				med_temp = 0;
+				loop j,TEMP_MEM do med_temp = med_temp+temps[i]; end
+				med_temp = med_temp/TEMP_MEM;
 			end
 		else
 			#ifdef ANTI_TIGHT		

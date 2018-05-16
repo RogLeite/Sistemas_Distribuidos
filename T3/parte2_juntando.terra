@@ -109,6 +109,7 @@ end
 
 var reqanspathMsg sendPath;
 var reqanspathMsg recPath;
+
 sendPath.type = MSG_TYPE_PATHING;
 sendPath.target = BROADCAST;
 sendPath.source = nodeId;
@@ -116,6 +117,7 @@ sendPath.num_saltos = 0;
 sendPath.versao_rota = 0;
 
 var reqanspathMsg sendReq;
+var reqanspathMsg recReq;
 
 sendReq.target = 0;
 sendReq.type = MSG_TYPE_REQUEST;
@@ -163,7 +165,8 @@ with
 			else reqId = 0;
 			end	
 		else	//se é node
-			await RECEIVE(MSG_TYPE_REQUEST);
+			recReq = await RECEIVE(MSG_TYPE_REQUEST);
+			reqId = recReq.requestedId;
 		end
 		//envia REQUEST
 		if reqId == nodeId then
@@ -182,6 +185,7 @@ with
 				end
 				if sendReq.target != 0 then break; end
 			end
+			emit LED0(TOGGLE);
 			emit SEND(sendReq);
 			await SEND_DONE();
 		end
