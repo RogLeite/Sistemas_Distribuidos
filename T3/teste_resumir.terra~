@@ -1,18 +1,35 @@
 #include "/home/terra/TerraNG/terra/TerraNet.defs"
-#define QTD_SUCESSORES 7
 #define MSG_TYPE_SUCESSORES 3
 #define ANSWER_TIMEOUT 2
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-#define QTD_SUCESSORES_SQUARED 56 //QTD_SUCESSORES*(QTD_SUCESSORES+Id) = 56 = 7*(7+1)
+//teste máximo é 5x5
+#define QTD_SUCESSORES 5 //20-2 = 18-> 18/2 = 9 é a quantidade máxima de sucessores adjacentes a um nó
+#define QTD_SUCSUC 21 //meio arbitrário, 
+#define QTD_SUCESSORES_SQUARED 105//QTD_SUCESSORES*QTD_SUCSUC
+#define TAM_MSG 10
+#define MUITO_GRANDE 1000
 var ushort[QTD_SUCESSORES_SQUARED] sucessores;
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 var ushort nodeId = getNodeId();
 
+
+var ushort progenitor;
+//define mensagem tipo MSG_TYPE_PATHING
+pktype pathMsg from radioMsg with
+	var ubyte num_saltos;
+	var ulong versao_rota;
+end
+
+var pathMsg sendPath;
+var pathMsg recPath;
+
+
+
 //define mensagem tipo MSG_TYPE_SUCESSORES
 
 pktype posMsg from radioMsg with
-	var ushort[QTD_SUCESSORES] sucessores;
+	var ushort[TAM_MSG] sucessores;
 end
 
 var posMsg sendPos;
@@ -26,87 +43,56 @@ sendPos.source = nodeId;
 
 //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
-
+emit SEND(sendPath);
+await SEND_DONE();
 loop i,QTD_SUCESSORES_SQUARED do
 	sucessores[i] = 0;
 end
+
+
 par/or do
-	loop i,QTD_SUCESSORES do
+	loop do //loop de aguardar o retorno dos sucessores
+		var ushort index = 0;
 		recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-		sucessores[i*(QTD_SUCESSORES+1)] = recPos.source;
-		loop j,QTD_SUCESSORES do
-			sucessores[i*(QTD_SUCESSORES+1)+1+j] = recPos.sucessores[j];
+		loop i,QTD_SUCESSORES do
+			if sucessores[i*QTD_SUCSUC]==recPos.source then
+				index = i*QTD_SUCSUC;
+				loop j,QTD_SUCSUC do
+					if sucessores[index]==0 then break; end
+					index = index+1;
+				end
+				break; //index está no primeiro espaço vazio para se adicionar id's 
+			else/if sucessores[i*QTD_SUCSUC]==0 then //não encontrou o source no vetor
+				sucessores[i*QTD_SUCSUC] = recPos.source;
+				index = i*QTD_SUCSUC+1;
+				break;
+			end
+		end
+		//se sai do loop, está "garantido" que index está num espaço para preencher
+		loop i,TAM_MSG do
+			sucessores[index] = recPos.sucessores[i];
 		end
 	end
 with
 	await ANSWER_TIMEOUT s;
 end
+//agora enviar pro progenitor TEUS sucessores
+
+sendPos.target = progenitor;
+var ushort index = 0;
+loop do
+	var ushort i=0;
+	if index >= QTD_SUCESSORES_SQUARED then break; end
+	loop n, MUITO_GRANDE do
+		if index >= QTD_SUCESSORES_SQUARED or i>=10 then break;
+		else/if sucessores[index]!=0 then
+			sendPos.sucessores[i] = sucessores[index];
+			i = i+1;
+		end
+		index = index+1;
+	end
+	emit SEND(sendPos);
+	await SEND_DONE();
+end
 
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-
-/*/vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-
-loop i,QTD_SUCESSORES do sendPos.sucessores[i] = 0; end
-//sucessor1.id = 0;
-loop i,QTD_SUCESSORES do sucessor1.sucessores[i] = 0; end
-//sucessor2.id = 0;
-loop i,QTD_SUCESSORES do sucessor2.sucessores[i] = 0; end
-//sucessor3.id = 0;
-loop i,QTD_SUCESSORES do sucessor3.sucessores[i] = 0; end
-//sucessor4.id = 0;
-loop i,QTD_SUCESSORES do sucessor4.sucessores[i] = 0; end
-//sucessor5.id = 0;
-loop i,QTD_SUCESSORES do sucessor5.sucessores[i] = 0; end
-//sucessor6.id = 0;
-loop i,QTD_SUCESSORES do sucessor6.sucessores[i] = 0; end
-//sucessor7.id = 0;
-loop i,QTD_SUCESSORES do sucessor7.sucessores[i] = 0; end
-
-par/or do
-	//1o---------------------------------------
-	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-	//Armazena sucessores do sucessor recebido
-	//sucessor1.id = recPos.source;
-	sendPos.sucessores[0] = recPos.source;
-	loop i,QTD_SUCESSORES do sucessor1.sucessores[i] = recPos.sucessores[i]; end
-	//2o---------------------------------------
-	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-		//Armazena sucessores do sucessor recebido
-	//sucessor2.id = recPos.source;
-	sendPos.sucessores[1] = recPos.source;
-	loop i,QTD_SUCESSORES do sucessor2.sucessores[i] = recPos.sucessores[i]; end
-	//3o---------------------------------------
-	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-		//Armazena sucessores do sucessor recebido
-	//sucessor3.id = recPos.source;
-	sendPos.sucessores[2] = recPos.source;
-	loop i,QTD_SUCESSORES do sucessor3.sucessores[i] = recPos.sucessores[i]; end
-	//4o---------------------------------------
-	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-		//Armazena sucessores do sucessor recebido
-	//sucessor4.id = recPos.source;
-	sendPos.sucessores[3] = recPos.source;
-	loop i,QTD_SUCESSORES do sucessor4.sucessores[i] = recPos.sucessores[i]; end
-	//5o---------------------------------------
-	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-		//Armazena sucessores do sucessor recebido
-	//sucessor5.id = recPos.source;
-	sendPos.sucessores[4] = recPos.source;
-	loop i,QTD_SUCESSORES do sucessor5.sucessores[i] = recPos.sucessores[i]; end
-	//6o---------------------------------------
-	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-		//Armazena sucessores do sucessor recebido
-	//sucessor6.id = recPos.source;
-	sendPos.sucessores[5] = recPos.source;
-	loop i,QTD_SUCESSORES do sucessor6.sucessores[i] = recPos.sucessores[i]; end
-	//7o---------------------------------------
-	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-		//Armazena sucessores do sucessor recebido
-	//sucessor7.id = recPos.source;
-	sendPos.sucessores[6] = recPos.source;
-	loop i,QTD_SUCESSORES do sucessor7.sucessores[i] = recPos.sucessores[i]; end
-with
-	await ANSWER_TIMEOUT s;
-end
-*///^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
