@@ -13,7 +13,7 @@
 #define QTD_SUCESSORES_SQUARED 20//QTD_SUCESSORES*QTD_SUCSUC
 #define TAM_MSG 10
 #define MUITO_GRANDE 1000
-var ushort[QTD_SUCESSORES_SQUARED] sucessores;
+var ubyte[QTD_SUCESSORES_SQUARED] sucessores;
 var ubyte progenitor;
 //GENERIC+RESUMIR++++++++++++++++++++++++++++++++++++++++++++++
 //GENERIC-REQUEST----------------------------------------------
@@ -136,7 +136,7 @@ par do
 	loop do
 		if nodeId==11 then
 			recAns = await RECEIVE(MSG_TYPE_ANSWER);
-			emit LED0(TOGGLE);
+			emit LED2(TOGGLE);
 		else
 			recAns = await RECEIVE(MSG_TYPE_ANSWER);
 			sendAns.temp = recAns.temp;
@@ -153,9 +153,9 @@ with
 		var ubyte reqId = 0;
 		if nodeId==11 then
 			await WAIT_REQUEST s;
-			var ubyte photo;
-			emit REQ_PHOTO();
-			photo = await PHOTO();
+			var ushort photo;
+			emit REQ_TEMP();
+			photo = await TEMP();
 
 			//Gera REQUEST
 			if photo == REQ_12 then reqId = 12;
@@ -171,6 +171,7 @@ with
 		//envia REQUEST
 		if reqId == nodeId then
 			sendAns.temp = med_temp;
+			emit LED1(TOGGLE);
 			emit SEND(sendAns);
 			await SEND_DONE();
 		else/if reqId != 0 and reqId!= 11 then
@@ -185,7 +186,7 @@ with
 				end
 				if sendReq.target != 0 then break; end
 			end
-			emit LED0(TOGGLE);
+			emit LED1(TOGGLE);
 			emit SEND(sendReq);
 			await SEND_DONE();
 		end
