@@ -8,6 +8,10 @@
 #define MSG_TYPE_SUCESSORES 3
 #define ALERT_REPEAT 4
 #define TEMP_MEM 4
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+#define QTD_SUCESSORES_SQUARED 56 //QTD_SUCESSORES*(QTD_SUCESSORES+Id) = 56 = 7*(7+1)
+var ushort[QTD_SUCESSORES_SQUARED] sucessores;
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 //#define TESTE 1
 #define QTD_SUCESSORES 7
 #define ANSWER_TIMEOUT 2
@@ -77,81 +81,28 @@ loop do
 	//espera e manda o criar path
 		par do		
 			loop do
-				//incrementa a versao da rota
 				sendPath.versao_rota = sendPath.versao_rota + 1;
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+				//incrementa a versao da rota
 				emit SEND(sendPath);
 				await SEND_DONE();
-				loop i,QTD_SUCESSORES do sendPos.sucessores[i] = 0; end
-
-				//sucessor1.id = 0;
-				loop i,QTD_SUCESSORES do sucessor1.sucessores[i] = 0; end
-				//sucessor2.id = 0;
-				loop i,QTD_SUCESSORES do sucessor2.sucessores[i] = 0; end
-				//sucessor3.id = 0;
-				loop i,QTD_SUCESSORES do sucessor3.sucessores[i] = 0; end
-				//sucessor4.id = 0;
-				loop i,QTD_SUCESSORES do sucessor4.sucessores[i] = 0; end
-				//sucessor5.id = 0;
-				loop i,QTD_SUCESSORES do sucessor5.sucessores[i] = 0; end
-				//sucessor6.id = 0;
-				loop i,QTD_SUCESSORES do sucessor6.sucessores[i] = 0; end
-				//sucessor7.id = 0;
-				loop i,QTD_SUCESSORES do sucessor7.sucessores[i] = 0; end
-
+				loop i,QTD_SUCESSORES_SQUARED do
+					sucessores[i] = 0;
+				end
 				par/or do
-					//1o---------------------------------------
-					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-					//Armazena sucessores do sucessor recebido
-					//sucessor1.id = recPos.source;
-					sendPos.sucessores[0] = recPos.source;
-					loop i,QTD_SUCESSORES do sucessor1.sucessores[i] = recPos.sucessores[i]; end
-					//2o---------------------------------------
-					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-						//Armazena sucessores do sucessor recebido
-					//sucessor2.id = recPos.source;
-					sendPos.sucessores[1] = recPos.source;
-					loop i,QTD_SUCESSORES do sucessor2.sucessores[i] = recPos.sucessores[i]; end
-					//3o---------------------------------------
-					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-						//Armazena sucessores do sucessor recebido
-					//sucessor3.id = recPos.source;
-					sendPos.sucessores[2] = recPos.source;
-					loop i,QTD_SUCESSORES do sucessor3.sucessores[i] = recPos.sucessores[i]; end
-					//4o---------------------------------------
-					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-						//Armazena sucessores do sucessor recebido
-					//sucessor4.id = recPos.source;
-					sendPos.sucessores[3] = recPos.source;
-					loop i,QTD_SUCESSORES do sucessor4.sucessores[i] = recPos.sucessores[i]; end
-					//5o---------------------------------------
-					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-						//Armazena sucessores do sucessor recebido
-					//sucessor5.id = recPos.source;
-					sendPos.sucessores[4] = recPos.source;
-					loop i,QTD_SUCESSORES do sucessor5.sucessores[i] = recPos.sucessores[i]; end
-					//6o---------------------------------------
-					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-						//Armazena sucessores do sucessor recebido
-					//sucessor6.id = recPos.source;
-					sendPos.sucessores[5] = recPos.source;
-					loop i,QTD_SUCESSORES do sucessor6.sucessores[i] = recPos.sucessores[i]; end
-					//7o---------------------------------------
-					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-						//Armazena sucessores do sucessor recebido
-					//sucessor7.id = recPos.source;
-					sendPos.sucessores[6] = recPos.source;
-					loop i,QTD_SUCESSORES do sucessor7.sucessores[i] = recPos.sucessores[i]; end
+					loop i,QTD_SUCESSORES do
+						recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+						sucessores[i*(QTD_SUCESSORES+1)] = recPos.source;
+						loop j,QTD_SUCESSORES do
+							sucessores[i*(QTD_SUCESSORES+1)+1+j] = recPos.sucessores[j];
+						end
+					end
 				with
 					await ANSWER_TIMEOUT s;
 				end
 
-				//FIM-ESCUTA-SUCESSORES-------------------------
-
-				//dorme até o próximo envio
-				await ROOT_TIME s;
-				
-			end 
-
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+			end
 		with
 			//Raiz recebendo alertas
 			loop do
@@ -180,76 +131,29 @@ loop do
 					if recPath.versao_rota > sendPath.versao_rota then
 						progenitor = recPath.source;
 						sendAlert.target = progenitor;
-						sendPath.versao_rota = recPath.versao_rota;
 						sendPath.num_saltos = recPath.num_saltos + 1;
+						sendPath.versao_rota = recPath.versao_rota;
+
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 						emit SEND(sendPath);
 						await SEND_DONE();
 						//ESCUTA-SUCESSORES-----------------------------
-
-						loop i,QTD_SUCESSORES do sendPos.sucessores[i] = 0; end
-
-						//sucessor1.id = 0;
-						loop i,QTD_SUCESSORES do sucessor1.sucessores[i] = 0; end
-						//sucessor2.id = 0;
-						loop i,QTD_SUCESSORES do sucessor2.sucessores[i] = 0; end
-						//sucessor3.id = 0;
-						loop i,QTD_SUCESSORES do sucessor3.sucessores[i] = 0; end
-						//sucessor4.id = 0;
-						loop i,QTD_SUCESSORES do sucessor4.sucessores[i] = 0; end
-						//sucessor5.id = 0;
-						loop i,QTD_SUCESSORES do sucessor5.sucessores[i] = 0; end
-						//sucessor6.id = 0;
-						loop i,QTD_SUCESSORES do sucessor6.sucessores[i] = 0; end
-						//sucessor7.id = 0;
-						loop i,QTD_SUCESSORES do sucessor7.sucessores[i] = 0; end
-						
+						loop i,QTD_SUCESSORES_SQUARED do
+							sucessores[i] = 0;
+						end
 						par/or do
-							//1o---------------------------------------
-							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-							//Armazena sucessores do sucessor recebido
-							//sucessor1.id = recPos.source;
-							sendPos.sucessores[0] = recPos.source;
-							loop i,QTD_SUCESSORES do sucessor1.sucessores[i] = recPos.sucessores[i]; end
-							//2o---------------------------------------
-							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-								//Armazena sucessores do sucessor recebido
-							//sucessor2.id = recPos.source;
-							sendPos.sucessores[1] = recPos.source;
-							loop i,QTD_SUCESSORES do sucessor2.sucessores[i] = recPos.sucessores[i]; end
-							//3o---------------------------------------
-							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-								//Armazena sucessores do sucessor recebido
-							//sucessor3.id = recPos.source;
-							sendPos.sucessores[2] = recPos.source;
-							loop i,QTD_SUCESSORES do sucessor3.sucessores[i] = recPos.sucessores[i]; end
-							//4o---------------------------------------
-							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-								//Armazena sucessores do sucessor recebido
-							//sucessor4.id = recPos.source;
-							sendPos.sucessores[3] = recPos.source;
-							loop i,QTD_SUCESSORES do sucessor4.sucessores[i] = recPos.sucessores[i]; end
-							//5o---------------------------------------
-							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-								//Armazena sucessores do sucessor recebido
-							//sucessor5.id = recPos.source;
-							sendPos.sucessores[4] = recPos.source;
-							loop i,QTD_SUCESSORES do sucessor5.sucessores[i] = recPos.sucessores[i]; end
-							//6o---------------------------------------
-							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-								//Armazena sucessores do sucessor recebido
-							//sucessor6.id = recPos.source;
-							sendPos.sucessores[5] = recPos.source;
-							loop i,QTD_SUCESSORES do sucessor6.sucessores[i] = recPos.sucessores[i]; end
-							//7o---------------------------------------
-							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-								//Armazena sucessores do sucessor recebido
-							//sucessor7.id = recPos.source;
-							sendPos.sucessores[6] = recPos.source;
-							loop i,QTD_SUCESSORES do sucessor7.sucessores[i] = recPos.sucessores[i]; end
+							loop i,QTD_SUCESSORES do
+								recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+								sucessores[i*(QTD_SUCESSORES+1)] = recPos.source;
+								loop j,QTD_SUCESSORES do
+									sucessores[i*(QTD_SUCESSORES+1)+1+j] = recPos.sucessores[j];
+								end
+							end
 						with
 							await ANSWER_TIMEOUT s;
 						end
 
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 						//FIM-ESCUTA-SUCESSORES-------------------------
 						//RESPONDE-AO-PROGENITOR-----------------------------
 						sendPos.target = progenitor;
