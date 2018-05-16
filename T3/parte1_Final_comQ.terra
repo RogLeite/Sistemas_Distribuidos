@@ -1,0 +1,136 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+#define LED_VIEW 2 //Define o tempo em que os leds ficam acesos
+#define ROOT_TIME 15
+#define SOMETHING 1
+#define TEMP_LIM 500
+#define MSG_TYPE_PATHING 1
+#define MSG_TYPE_ALERT 2
+#define ALERT_REPEAT 4
+//#define TESTE 1
+var ubyte fila;
+
+var ushort nodeId = getNodeId();
+pktype pathMsg from radioMsg with
+	var ubyte num_saltos;
+	var ulong versao_rota;
+end
+
+var pathMsg sendPath;
+var pathMsg recPath;
+
+sendPath.type = MSG_TYPE_PATHING;
+sendPath.target = BROADCAST;
+sendPath.source = nodeId;
+sendPath.num_saltos = 0;
+sendPath.versao_rota = 0;
+
+
+//define mensagem tipo 2, alerta
+pktype alertMsg from radioMsg with end
+
+var alertMsg sendAlert;
+var alertMsg recAlert;
+//sendAlert.target deve ser devinido durante execução
+sendAlert.type = MSG_TYPE_ALERT;
+sendAlert.source = nodeId;
+recAlert.type = MSG_TYPE_ALERT;
+
+par do
+	var alertMsg msgRadio;
+	loop do
+		qGet(msgRadio);
+		emit SEND(msgRadio);
+		await SEND_DONE();
+	end
+with
+	if nodeId == 11 then  //se é a raiz:
+	//espera e manda o criar path
+			par do		
+				loop do
+	
+
+					//incrementa a versao da rota
+					sendPath.versao_rota = sendPath.versao_rota + 1;
+
+					//envia sendPath e acende LED0 para vermos isso
+					qPut(sendPath);
+
+					//dorme até o próximo envio
+					await ROOT_TIME s;
+				end
+			with
+				//Raiz recebendo alertas
+				loop do
+					recAlert = await RECEIVE(2);	
+					if recAlert.type == MSG_TYPE_ALERT then
+						emit LED0(ON);
+						emit LED1(ON);
+						emit LED2(ON);
+						await 3s;
+						emit LED0(OFF);
+						emit LED1(OFF);
+						emit LED2(OFF);
+					end
+				end
+			end
+
+
+	else //se não é a raiz
+		var ushort progenitor;
+		par do 
+			par do
+				//fica escutando recPath
+				loop do
+					recPath = await RECEIVE(1);
+					emit LED0(ON);
+					if recPath.versao_rota > sendPath.versao_rota or (recPath.versao_rota == sendPath.versao_rota and sendPath.num_saltos > recPath.num_saltos+1) then
+						progenitor = recPath.source;
+						sendPath.versao_rota = recPath.versao_rota;
+						sendPath.num_saltos = recPath.num_saltos + 1;
+						qPut(sendPath);
+					else
+						//se recebeu uma rota obsoleta, pisca led amarelo
+						emit LED2(ON);
+						await LED_VIEW s;
+						emit LED2(OFF);
+					end
+					emit LED0(OFF);
+				end
+			with 
+				//Recebendo alertas e enviando para o progenitor
+				loop do
+					recAlert = await RECEIVE(2);	
+					if recAlert.type == MSG_TYPE_ALERT then
+						sendAlert.target = progenitor;
+						qPut(sendAlert);
+					end
+					emit LED0(OFF);
+				end
+			end
+		with
+			//READING-TEMP-------------------------------------
+				var ushort alta_temp;
+				loop do
+					await SOMETHING s;
+					//fica esperando tempo passar do limite
+					emit REQ_TEMP();
+					var ushort temp = await TEMP();
+					if temp > TEMP_LIM then
+						//temperatura excedeu limite
+						alta_temp = temp;
+						emit LED2(ON);
+						//emitir mensagem tipo MSG_TYPE_ALERT
+						sendAlert.target = progenitor;
+						qPut(sendAlert);
+						await ALERT_REPEAT s;
+
+					else
+						emit LED2(OFF);			
+					end
+		
+				end
+				//END-READING-TEMP---------------------------------
+		end
+	end
+end
+

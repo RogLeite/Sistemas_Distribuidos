@@ -217,9 +217,9 @@
 00 | 00215 0199 progenitor:2, 
 00 | 00216 0200 
 00 | 00217 0201 i:1, i:1, 
-00 | 00218 0202 __i_0x983ce20:1, __i_0x984d1b8:1, 
+00 | 00218 0202 __i_0x814fe20:1, __i_0x81601b8:1, 
 00 | 00219 0203 j:1, 
-00 | 00220 0204 __j_0x9840108:1, 
+00 | 00220 0204 __j_0x8153108:1, 
 d1 | 00221 d1 set_c ushort 56 1281          | config gate TEMP with 1 await(s) - 0x0501 = 1281
 38 | 00222 38 
 05 | 00223 05 
@@ -554,10 +554,10 @@ fd | 00544 .5c
 c0 | 00552 c0 set_c ubyte 201 0             | i = 0
 c9 | 00553 c9 
 00 | 00554 00 
-c0 | 00555 c0 set_c ubyte 202 4             | __i_0x983ce20 = 4
+c0 | 00555 c0 set_c ubyte 202 4             | __i_0x814fe20 = 4
 ca | 00556 ca 
 04 | 00557 04 
-90 | 00558 90 push_v ubyte 202              | push __i_0x983ce20:ubyte
+90 | 00558 90 push_v ubyte 202              | push __i_0x814fe20:ubyte
 ca | 00559 ca 
 90 | 00560 90 push_v ubyte 201              | push i:ubyte
 c9 | 00561 c9 
@@ -591,10 +591,10 @@ c9 | 00584 c9
 c0 | 00589 c0 set_c ubyte 201 0             | i = 0
 c9 | 00590 c9 
 00 | 00591 00 
-c0 | 00592 c0 set_c ubyte 202 4             | __i_0x984d1b8 = 4
+c0 | 00592 c0 set_c ubyte 202 4             | __i_0x81601b8 = 4
 ca | 00593 ca 
 04 | 00594 04 
-90 | 00595 90 push_v ubyte 202              | push __i_0x984d1b8:ubyte
+90 | 00595 90 push_v ubyte 202              | push __i_0x81601b8:ubyte
 ca | 00596 ca 
 90 | 00597 90 push_v ubyte 201              | push i:ubyte
 c9 | 00598 c9 
@@ -640,10 +640,10 @@ c1 | 00635 c1 set_c ushort 95 0             | temp = 0
 c0 | 00638 c0 set_c ubyte 203 0             | j = 0
 cb | 00639 cb 
 00 | 00640 00 
-c0 | 00641 c0 set_c ubyte 204 4             | __j_0x9840108 = 4
+c0 | 00641 c0 set_c ubyte 204 4             | __j_0x8153108 = 4
 cc | 00642 cc 
 04 | 00643 04 
-90 | 00644 90 push_v ubyte 204              | push __j_0x9840108:ubyte
+90 | 00644 90 push_v ubyte 204              | push __j_0x8153108:ubyte
 cc | 00645 cc 
 90 | 00646 90 push_v ubyte 203              | push j:ubyte
 cb | 00647 cb 

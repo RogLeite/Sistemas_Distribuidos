@@ -1,0 +1,69 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+#define QTD_SUCESSORES 7
+#define QTD_SUCESSORES_SQUARED QTD_SUCESSORES*QTD_SUCESSORES
+var ushort[QTD_SUCESSORES_SQUARED] sucessores;
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+loop i,QTD_SUCESSORES do sendPos.sucessores[i] = 0; end
+//sucessor1.id = 0;
+loop i,QTD_SUCESSORES do sucessor1.sucessores[i] = 0; end
+//sucessor2.id = 0;
+loop i,QTD_SUCESSORES do sucessor2.sucessores[i] = 0; end
+//sucessor3.id = 0;
+loop i,QTD_SUCESSORES do sucessor3.sucessores[i] = 0; end
+//sucessor4.id = 0;
+loop i,QTD_SUCESSORES do sucessor4.sucessores[i] = 0; end
+//sucessor5.id = 0;
+loop i,QTD_SUCESSORES do sucessor5.sucessores[i] = 0; end
+//sucessor6.id = 0;
+loop i,QTD_SUCESSORES do sucessor6.sucessores[i] = 0; end
+//sucessor7.id = 0;
+loop i,QTD_SUCESSORES do sucessor7.sucessores[i] = 0; end
+
+par/or do
+	//1o---------------------------------------
+	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+	//Armazena sucessores do sucessor recebido
+	//sucessor1.id = recPos.source;
+	sendPos.sucessores[0] = recPos.source;
+	loop i,QTD_SUCESSORES do sucessor1.sucessores[i] = recPos.sucessores[i]; end
+	//2o---------------------------------------
+	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+		//Armazena sucessores do sucessor recebido
+	//sucessor2.id = recPos.source;
+	sendPos.sucessores[1] = recPos.source;
+	loop i,QTD_SUCESSORES do sucessor2.sucessores[i] = recPos.sucessores[i]; end
+	//3o---------------------------------------
+	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+		//Armazena sucessores do sucessor recebido
+	//sucessor3.id = recPos.source;
+	sendPos.sucessores[2] = recPos.source;
+	loop i,QTD_SUCESSORES do sucessor3.sucessores[i] = recPos.sucessores[i]; end
+	//4o---------------------------------------
+	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+		//Armazena sucessores do sucessor recebido
+	//sucessor4.id = recPos.source;
+	sendPos.sucessores[3] = recPos.source;
+	loop i,QTD_SUCESSORES do sucessor4.sucessores[i] = recPos.sucessores[i]; end
+	//5o---------------------------------------
+	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+		//Armazena sucessores do sucessor recebido
+	//sucessor5.id = recPos.source;
+	sendPos.sucessores[4] = recPos.source;
+	loop i,QTD_SUCESSORES do sucessor5.sucessores[i] = recPos.sucessores[i]; end
+	//6o---------------------------------------
+	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+		//Armazena sucessores do sucessor recebido
+	//sucessor6.id = recPos.source;
+	sendPos.sucessores[5] = recPos.source;
+	loop i,QTD_SUCESSORES do sucessor6.sucessores[i] = recPos.sucessores[i]; end
+	//7o---------------------------------------
+	recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+		//Armazena sucessores do sucessor recebido
+	//sucessor7.id = recPos.source;
+	sendPos.sucessores[6] = recPos.source;
+	loop i,QTD_SUCESSORES do sucessor7.sucessores[i] = recPos.sucessores[i]; end
+with
+	await ANSWER_TIMEOUT s;
+end
+//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

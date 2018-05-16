@@ -81,7 +81,6 @@ loop do
 				sendPath.versao_rota = sendPath.versao_rota + 1;
 				emit SEND(sendPath);
 				await SEND_DONE();
-//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 				loop i,QTD_SUCESSORES do sendPos.sucessores[i] = 0; end
 
 				//sucessor1.id = 0;
@@ -150,8 +149,8 @@ loop do
 
 				//dorme até o próximo envio
 				await ROOT_TIME s;
+				
 			end 
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 		with
 			//Raiz recebendo alertas
@@ -187,7 +186,6 @@ loop do
 						await SEND_DONE();
 						//ESCUTA-SUCESSORES-----------------------------
 
-//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 						loop i,QTD_SUCESSORES do sendPos.sucessores[i] = 0; end
 
 						//sucessor1.id = 0;
@@ -251,7 +249,7 @@ loop do
 						with
 							await ANSWER_TIMEOUT s;
 						end
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 						//FIM-ESCUTA-SUCESSORES-------------------------
 						//RESPONDE-AO-PROGENITOR-----------------------------
 						sendPos.target = progenitor;
