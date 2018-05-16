@@ -1,4 +1,4 @@
-207 608 3 7 0 0 56 3 56
+183 530 3 4 0 0 32 3 32
 00 | 00000 0 track 0
 00 | 00001 0
 00 | 00002 0
@@ -47,23 +47,23 @@
 00 | 00045 0029
 00 | 00046 0030
 00 | 00047 0031
-00 | 00048 0032 wClock 4
-00 | 00049 0033
+00 | 00048 0032 inEvt 005 : TEMP
+00 | 00049 0033           : 01 gates
 00 | 00050 0034
 00 | 00051 0035
-00 | 00052 0036
-00 | 00053 0037
+00 | 00052 0036 inEvt 041 : SEND_DONE
+00 | 00053 0037           : 04 gates
 00 | 00054 0038
 00 | 00055 0039
-00 | 00056 0040 wClock 5
+00 | 00056 0040
 00 | 00057 0041
 00 | 00058 0042
 00 | 00059 0043
 00 | 00060 0044
 00 | 00061 0045
-00 | 00062 0046
-00 | 00063 0047
-00 | 00064 0048 wClock 6
+00 | 00062 0046 inEvt 044 : RECEIVE()
+00 | 00063 0047           : 03 gates
+00 | 00064 0048
 00 | 00065 0049
 00 | 00066 0050
 00 | 00067 0051
@@ -71,37 +71,37 @@
 00 | 00069 0053
 00 | 00070 0054
 00 | 00071 0055
-00 | 00072 0056 inEvt 005 : TEMP
-00 | 00073 0057           : 01 gates
-00 | 00074 0058
-00 | 00075 0059
-00 | 00076 0060 inEvt 041 : SEND_DONE
-00 | 00077 0061           : 04 gates
-00 | 00078 0062
-00 | 00079 0063
-00 | 00080 0064
-00 | 00081 0065
-00 | 00082 0066
-00 | 00083 0067
-00 | 00084 0068
-00 | 00085 0069
-00 | 00086 0070 inEvt 044 : RECEIVE()
-00 | 00087 0071           : 03 gates
-00 | 00088 0072
-00 | 00089 0073
-00 | 00090 0074
-00 | 00091 0075
-00 | 00092 0076
-00 | 00093 0077
-00 | 00094 0078
-00 | 00095 0079
-00 | 00096 0080
-00 | 00097 0081 $ret:1, 
-00 | 00098 0082 fila:1, 
-00 | 00099 0083 nodeId:2, 
+00 | 00072 0056
+00 | 00073 0057 $ret:1, 
+00 | 00074 0058 fila:1, 
+00 | 00075 0059 nodeId:2, 
+00 | 00076 0060 
+00 | 00077 0061 sendPath:25, 
+00 | 00078 0062 
+00 | 00079 0063 
+00 | 00080 0064 
+00 | 00081 0065 
+00 | 00082 0066 
+00 | 00083 0067 
+00 | 00084 0068 
+00 | 00085 0069 
+00 | 00086 0070 
+00 | 00087 0071 
+00 | 00088 0072 
+00 | 00089 0073 
+00 | 00090 0074 
+00 | 00091 0075 
+00 | 00092 0076 
+00 | 00093 0077 
+00 | 00094 0078 
+00 | 00095 0079 
+00 | 00096 0080 
+00 | 00097 0081 
+00 | 00098 0082 
+00 | 00099 0083 
 00 | 00100 0084 
-00 | 00101 0085 sendPath:25, 
-00 | 00102 0086 
+00 | 00101 0085 
+00 | 00102 0086 recPath:25, 
 00 | 00103 0087 
 00 | 00104 0088 
 00 | 00105 0089 
@@ -125,8 +125,8 @@
 00 | 00123 0107 
 00 | 00124 0108 
 00 | 00125 0109 
-00 | 00126 0110 recPath:25, 
-00 | 00127 0111 
+00 | 00126 0110 
+00 | 00127 0111 sendAlert:25, 
 00 | 00128 0112 
 00 | 00129 0113 
 00 | 00130 0114 
@@ -150,8 +150,8 @@
 00 | 00148 0132 
 00 | 00149 0133 
 00 | 00150 0134 
-00 | 00151 0135 sendAlert:25, 
-00 | 00152 0136 
+00 | 00151 0135 
+00 | 00152 0136 recAlert:25, 
 00 | 00153 0137 
 00 | 00154 0138 
 00 | 00155 0139 
@@ -175,435 +175,357 @@
 00 | 00173 0157 
 00 | 00174 0158 
 00 | 00175 0159 
-00 | 00176 0160 recAlert:25, 
-00 | 00177 0161 
+00 | 00176 0160 
+00 | 00177 0161 progenitor:2, 
 00 | 00178 0162 
-00 | 00179 0163 
+00 | 00179 0163 alta_temp:2, 
 00 | 00180 0164 
-00 | 00181 0165 
+00 | 00181 0165 temp:2, 
 00 | 00182 0166 
-00 | 00183 0167 
-00 | 00184 0168 
-00 | 00185 0169 
-00 | 00186 0170 
-00 | 00187 0171 
-00 | 00188 0172 
-00 | 00189 0173 
-00 | 00190 0174 
-00 | 00191 0175 
-00 | 00192 0176 
-00 | 00193 0177 
-00 | 00194 0178 
-00 | 00195 0179 
-00 | 00196 0180 
-00 | 00197 0181 
-00 | 00198 0182 
-00 | 00199 0183 
-00 | 00200 0184 
-00 | 00201 0185 progenitor:2, 
-00 | 00202 0186 
-00 | 00203 0187 alta_temp:2, 
-00 | 00204 0188 
-00 | 00205 0189 temp:2, 
-00 | 00206 0190 
-d1 | 00207 d1 set_c ushort 56 1281          | config gate TEMP with 1 await(s) - 0x0501 = 1281
-38 | 00208 38 
-05 | 00209 05 
-01 | 00210 01 
-d1 | 00211 d1 set_c ushort 60 10500         | config gate SEND_DONE with 4 await(s) - 0x2904 = 10500
-3c | 00212 3c 
-29 | 00213 29 
-04 | 00214 04 
-d1 | 00215 d1 set_c ushort 70 11395         | config gate RECEIVE() with 3 await(s) - 0x2c83 = 11395
-46 | 00216 46 
-2c | 00217 2c 
-83 | 00218 83 
-24 | 00219 24 func 0                        | func getNodeId
-00 | 00220 00 
-a1 | 00221 a1 pop ushort 83                 | pop nodeId
-53 | 00222 53 
-c0 | 00223 c0 set_c ubyte 85 1              | sendPath.type = 1
-55 | 00224 55 
-01 | 00225 01 
-d1 | 00226 d1 set_c ushort 88 0xffff        | sendPath.target = 0xffff
-58 | 00227 58 
-ff | 00228 ff 
-ff | 00229 ff 
-2a | 00230 2a set_v ushort 86 ushort 83     | sendPath.source = nodeId
-11 | 00231 11 
-56 | 00232 56 
-53 | 00233 53 
-c0 | 00234 c0 set_c ubyte 90 0              | sendPath.num_saltos = 0
-5a | 00235 5a 
-00 | 00236 00 
-c2 | 00237 c2 set_c ulong 91 0              | sendPath.versao_rota = 0
-5b | 00238 5b 
-00 | 00239 00 
-c0 | 00240 c0 set_c ubyte 135 2             | sendAlert.type = 2
-87 | 00241 87 
-02 | 00242 02 
-2a | 00243 2a set_v ushort 136 ushort 83    | sendAlert.source = nodeId
-11 | 00244 11 
-88 | 00245 88 
-53 | 00246 53 
-c0 | 00247 c0 set_c ubyte 160 2             | recAlert.type = 2
-a0 | 00248 a0 
-02 | 00249 02 
-40 | 00250 40 push_c 11                     | push 11
-0b | 00251 0b 
-91 | 00252 91 push_v ushort 83              | push nodeId:ushort
-53 | 00253 53 
-0f | 00254 0f eq                            | eq
-4f | 00255 4f ifelse 125 126                | ifelse True_125 False_126
-01 | 00256 .00 addr:260
-04 | 00257 .7d 
-01 | 00258 .00 addr:372
-74 | 00259 .7e 
-89 | 00260 89 tkins_max 0 9                 | insert track ParEver_sub_1_9
-01 | 00261 .00 addr:267
-0b | 00262 .09 
-89 | 00263 89 tkins_max 0 10                | insert track ParEver_sub_2_10
-01 | 00264 .00 addr:314
-3a | 00265 .0a 
-01 | 00266 01 end                           | end
-29 | 00267 29 clken_c 0 15000 17            | clock enable Awake_15000_17 15000msec
-03 | 00268 03 
-00 | 00269 00 
-3a | 00270 3a 
-98 | 00271 98 
-01 | 00272 .00 addr:275
-13 | 00273 .11 
-01 | 00274 01 end                           | end
-40 | 00275 40 push_c 1                      | push 1
-01 | 00276 01 
-92 | 00277 92 push_v ulong 91                     | push sendPath.versao_rota [Optm:: push_c addr + deref]
-5b | 00278 5b 
-06 | 00279 06 add                           | add
-a2 | 00280 a2 pop ulong 91                  | pop sendPath.versao_rota
-5b | 00281 5b 
-b1 | 00282 b1 outevt_v 40 85                | emit SEND len=25 var=sendPath
-28 | 00283 28 
-55 | 00284 55 
-58 | 00285 58 outevt_c 6 1                  | emit LED0 len=1 const=1
-06 | 00286 06 
-01 | 00287 01 
-d1 | 00288 d1 set_c ushort 62 24            | await SEND_DONE[0]
-3e | 00289 3e 
-01 | 00290 .00 addr:293
-25 | 00291 .18 
-01 | 00292 01 end                           | end
-29 | 00293 29 clken_c 1 2000 25             | clock enable Awake_2000_25 2000msec
-03 | 00294 03 
-01 | 00295 01 
-07 | 00296 07 
-d0 | 00297 d0 
-01 | 00298 .00 addr:301
-2d | 00299 .19 
-01 | 00300 01 end                           | end
-58 | 00301 58 outevt_c 6 0                  | emit LED0 len=1 const=0
-06 | 00302 06 
-00 | 00303 00 
-39 | 00304 39 exec 14                       | goto  14
-01 | 00305 .00 addr:267
-0b | 00306 .0e 
-48 | 00307 48 memclr 0 16                   | clear WClocks gates from 0 to 2
-00 | 00308 00 
-10 | 00309 10 
-48 | 00310 48 memclr 62 2                   | clear EXT gates for SEND_DONE
-3e | 00311 3e 
-02 | 00312 02 
-01 | 00313 01 end                           | end
-40 | 00314 40 push_c 2                      | push 2
-02 | 00315 02 
-a0 | 00316 a0 pop ubyte 72                  | evt RECEIVE() auxId = pop
-48 | 00317 48 
-d1 | 00318 d1 set_c ushort 73 31            | await RECEIVE()[0]
-49 | 00319 49 
-01 | 00320 .00 addr:323
-43 | 00321 .1f 
-01 | 00322 01 end                           | end
-5c | 00323 5c getextdt_v 160 25             | getExtData recAlert 25
-a0 | 00324 a0 
-19 | 00325 19 
-40 | 00326 40 push_c 2                      | push 2
-02 | 00327 02 
-90 | 00328 90 push_v ubyte 160                    | push recAlert.type [Optm:: push_c addr + deref]
-a0 | 00329 a0 
-0f | 00330 0f eq                            | eq
-4f | 00331 4f ifelse 46 47                  | ifelse True_46 EndIf_47
-01 | 00332 .00 addr:336
-50 | 00333 .2e 
-01 | 00334 .00 addr:314
-3a | 00335 .1c 
-58 | 00336 58 outevt_c 6 1                  | emit LED0 len=1 const=1
-06 | 00337 06 
-01 | 00338 01 
-58 | 00339 58 outevt_c 7 1                  | emit LED1 len=1 const=1
-07 | 00340 07 
-01 | 00341 01 
-58 | 00342 58 outevt_c 8 1                  | emit LED2 len=1 const=1
-08 | 00343 08 
-01 | 00344 01 
-29 | 00345 29 clken_c 2 3000 39             | clock enable Awake_3000_39 3000msec
-03 | 00346 03 
-02 | 00347 02 
-0b | 00348 0b 
-b8 | 00349 b8 
-01 | 00350 .00 addr:353
-61 | 00351 .27 
-01 | 00352 01 end                           | end
-58 | 00353 58 outevt_c 6 0                  | emit LED0 len=1 const=0
-06 | 00354 06 
-00 | 00355 00 
-58 | 00356 58 outevt_c 7 0                  | emit LED1 len=1 const=0
-07 | 00357 07 
-00 | 00358 00 
-58 | 00359 58 outevt_c 8 0                  | emit LED2 len=1 const=0
-08 | 00360 08 
-00 | 00361 00 
-39 | 00362 39 exec 47                       | goto  47
-01 | 00363 .00 addr:314
-3a | 00364 .1c 
-48 | 00365 48 memclr 16 8                   | clear WClocks gates from 2 to 3
-10 | 00366 10 
-08 | 00367 08 
-48 | 00368 48 memclr 72 2                   | clear EXT gates for RECEIVE()
-48 | 00369 48 
-02 | 00370 02 
-01 | 00371 01 end                           | end
-89 | 00372 89 tkins_max 0 48                | insert track ParEver_sub_1_48
-01 | 00373 .00 addr:379
-7b | 00374 .30 
-89 | 00375 89 tkins_max 0 49                | insert track ParEver_sub_2_49
-02 | 00376 .00 addr:531
-13 | 00377 .31 
-01 | 00378 01 end                           | end
-89 | 00379 89 tkins_max 0 53                | insert track ParEver_sub_1_53
-01 | 00380 .00 addr:386
-82 | 00381 .35 
-89 | 00382 89 tkins_max 0 54                | insert track ParEver_sub_2_54
-01 | 00383 .00 addr:484
-e4 | 00384 .36 
-01 | 00385 01 end                           | end
-40 | 00386 40 push_c 1                      | push 1
-01 | 00387 01 
-a0 | 00388 a0 pop ubyte 75                  | evt RECEIVE() auxId = pop
-4b | 00389 4b 
-d1 | 00390 d1 set_c ushort 76 61            | await RECEIVE()[1]
-4c | 00391 4c 
-01 | 00392 .00 addr:395
-8b | 00393 .3d 
-01 | 00394 01 end                           | end
-5c | 00395 5c getextdt_v 110 25             | getExtData recPath 25
-6e | 00396 6e 
-19 | 00397 19 
-58 | 00398 58 outevt_c 6 1                  | emit LED0 len=1 const=1
-06 | 00399 06 
-01 | 00400 01 
-92 | 00401 92 push_v ulong 91                     | push sendPath.versao_rota [Optm:: push_c addr + deref]
-5b | 00402 5b 
-92 | 00403 92 push_v ulong 116                    | push recPath.versao_rota [Optm:: push_c addr + deref]
-74 | 00404 74 
-13 | 00405 13 gt                            | gt
-4f | 00406 4f ifelse 83 84                  | ifelse True_83 False_84
-01 | 00407 .00 addr:411
-9b | 00408 .53 
-01 | 00409 .00 addr:451
-c3 | 00410 .54 
-58 | 00411 58 outevt_c 7 1                  | emit LED1 len=1 const=1
-07 | 00412 07 
-01 | 00413 01 
-2a | 00414 2a set_v ushort 185 ushort 111   | progenitor = recPath.source
-11 | 00415 11 
-b9 | 00416 b9 
-6f | 00417 6f 
-2a | 00418 2a set_v ulong 91 ulong 116      | sendPath.versao_rota = recPath.versao_rota
-22 | 00419 22 
-5b | 00420 5b 
-74 | 00421 74 
-40 | 00422 40 push_c 1                      | push 1
-01 | 00423 01 
-90 | 00424 90 push_v ubyte 115                    | push recPath.num_saltos [Optm:: push_c addr + deref]
-73 | 00425 73 
-06 | 00426 06 add                           | add
-a0 | 00427 a0 pop ubyte 90                  | pop sendPath.num_saltos
-5a | 00428 5a 
-b1 | 00429 b1 outevt_v 40 85                | emit SEND len=25 var=sendPath
-28 | 00430 28 
-55 | 00431 55 
-d1 | 00432 d1 set_c ushort 64 74            | await SEND_DONE[1]
-40 | 00433 40 
-01 | 00434 .00 addr:437
-b5 | 00435 .4a 
-01 | 00436 01 end                           | end
-29 | 00437 29 clken_c 3 2000 75             | clock enable Awake_2000_75 2000msec
-03 | 00438 03 
-03 | 00439 03 
-07 | 00440 07 
-d0 | 00441 d0 
-01 | 00442 .00 addr:445
-bd | 00443 .4b 
-01 | 00444 01 end                           | end
-58 | 00445 58 outevt_c 7 0                  | emit LED1 len=1 const=0
-07 | 00446 07 
-00 | 00447 00 
-39 | 00448 39 exec 85                       | goto  85
-01 | 00449 .00 addr:468
-d4 | 00450 .55 
-58 | 00451 58 outevt_c 8 1                  | emit LED2 len=1 const=1
-08 | 00452 08 
-01 | 00453 01 
-29 | 00454 29 clken_c 4 2000 80             | clock enable Awake_2000_80 2000msec
-03 | 00455 03 
-04 | 00456 04 
-07 | 00457 07 
-d0 | 00458 d0 
-01 | 00459 .00 addr:462
-ce | 00460 .50 
-01 | 00461 01 end                           | end
-58 | 00462 58 outevt_c 8 0                  | emit LED2 len=1 const=0
-08 | 00463 08 
-00 | 00464 00 
-39 | 00465 39 exec 85                       | goto  85
-01 | 00466 .00 addr:468
-d4 | 00467 .55 
-58 | 00468 58 outevt_c 6 0                  | emit LED0 len=1 const=0
-06 | 00469 06 
-00 | 00470 00 
-39 | 00471 39 exec 58                       | goto  58
-01 | 00472 .00 addr:386
-82 | 00473 .3a 
-48 | 00474 48 memclr 24 16                  | clear WClocks gates from 3 to 5
-18 | 00475 18 
-10 | 00476 10 
-48 | 00477 48 memclr 62 2                   | clear EXT gates for SEND_DONE
-3e | 00478 3e 
-02 | 00479 02 
-48 | 00480 48 memclr 72 2                   | clear EXT gates for RECEIVE()
-48 | 00481 48 
-02 | 00482 02 
-01 | 00483 01 end                           | end
-40 | 00484 40 push_c 2                      | push 2
-02 | 00485 02 
-a0 | 00486 a0 pop ubyte 78                  | evt RECEIVE() auxId = pop
-4e | 00487 4e 
-d1 | 00488 d1 set_c ushort 79 91            | await RECEIVE()[2]
-4f | 00489 4f 
-01 | 00490 .00 addr:493
-ed | 00491 .5b 
-01 | 00492 01 end                           | end
-5c | 00493 5c getextdt_v 160 25             | getExtData recAlert 25
-a0 | 00494 a0 
-19 | 00495 19 
-40 | 00496 40 push_c 2                      | push 2
-02 | 00497 02 
-90 | 00498 90 push_v ubyte 160                    | push recAlert.type [Optm:: push_c addr + deref]
-a0 | 00499 a0 
-0f | 00500 0f eq                            | eq
-4f | 00501 4f ifelse 98 99                  | ifelse True_98 EndIf_99
-01 | 00502 .00 addr:506
-fa | 00503 .62 
-02 | 00504 .00 addr:518
-06 | 00505 .63 
-2a | 00506 2a set_v ushort 138 ushort 185   | sendAlert.target = progenitor
-11 | 00507 11 
-8a | 00508 8a 
-b9 | 00509 b9 
-b1 | 00510 b1 outevt_v 40 135               | emit SEND len=25 var=sendAlert
-28 | 00511 28 
-87 | 00512 87 
-d1 | 00513 d1 set_c ushort 66 97            | await SEND_DONE[2]
-42 | 00514 42 
-02 | 00515 .00 addr:518
-06 | 00516 .63 
-01 | 00517 01 end                           | end
-58 | 00518 58 outevt_c 6 0                  | emit LED0 len=1 const=0
-06 | 00519 06 
-00 | 00520 00 
-39 | 00521 39 exec 88                       | goto  88
-01 | 00522 .00 addr:484
-e4 | 00523 .58 
-48 | 00524 48 memclr 62 2                   | clear EXT gates for SEND_DONE
-3e | 00525 3e 
-02 | 00526 02 
-48 | 00527 48 memclr 72 2                   | clear EXT gates for RECEIVE()
-48 | 00528 48 
-02 | 00529 02 
-01 | 00530 01 end                           | end
-29 | 00531 29 clken_c 5 1000 105            | clock enable Awake_1000_105 1000msec
-03 | 00532 03 
-05 | 00533 05 
-03 | 00534 03 
-e8 | 00535 e8 
-02 | 00536 .00 addr:539
-1b | 00537 .69 
-01 | 00538 01 end                           | end
-26 | 00539 26 outevt_z 9                    | emit REQ_TEMP
-09 | 00540 09 
-d1 | 00541 d1 set_c ushort 58 109           | await TEMP[0]
-3a | 00542 3a 
-02 | 00543 .00 addr:546
-22 | 00544 .6d 
-01 | 00545 01 end                           | end
-5c | 00546 5c getextdt_v 189 2              | getExtData temp 2
-bd | 00547 bd 
-02 | 00548 02 
-41 | 00549 41 push_c 500                    | push 500
-01 | 00550 01 
-f4 | 00551 f4 
-91 | 00552 91 push_v ushort 189             | push temp:ushort
-bd | 00553 bd 
-13 | 00554 13 gt                            | gt
-4f | 00555 4f ifelse 122 123                | ifelse True_122 False_123
-02 | 00556 .00 addr:560
-30 | 00557 .7a 
-02 | 00558 .00 addr:587
-4b | 00559 .7b 
-2a | 00560 2a set_v ushort 187 ushort 189   | alta_temp = temp
-11 | 00561 11 
-bb | 00562 bb 
-bd | 00563 bd 
-58 | 00564 58 outevt_c 8 1                  | emit LED2 len=1 const=1
-08 | 00565 08 
-01 | 00566 01 
-2a | 00567 2a set_v ushort 138 ushort 185   | sendAlert.target = progenitor
-11 | 00568 11 
-8a | 00569 8a 
-b9 | 00570 b9 
-b1 | 00571 b1 outevt_v 40 135               | emit SEND len=25 var=sendAlert
-28 | 00572 28 
-87 | 00573 87 
-d1 | 00574 d1 set_c ushort 68 118           | await SEND_DONE[3]
-44 | 00575 44 
-02 | 00576 .00 addr:579
-43 | 00577 .76 
-01 | 00578 01 end                           | end
-29 | 00579 29 clken_c 6 4000 119            | clock enable Awake_4000_119 4000msec
-03 | 00580 03 
-06 | 00581 06 
-0f | 00582 0f 
-a0 | 00583 a0 
-02 | 00584 .00 addr:531
-13 | 00585 .66 
-01 | 00586 01 end                           | end
-58 | 00587 58 outevt_c 8 0                  | emit LED2 len=1 const=0
-08 | 00588 08 
-00 | 00589 00 
-39 | 00590 39 exec 124                      | goto  124
-02 | 00591 .00 addr:531
-13 | 00592 .66 
-48 | 00593 48 memclr 40 16                  | clear WClocks gates from 5 to 7
-28 | 00594 28 
-10 | 00595 10 
-48 | 00596 48 memclr 58 2                   | clear EXT gates for TEMP
-3a | 00597 3a 
-02 | 00598 02 
-48 | 00599 48 memclr 62 2                   | clear EXT gates for SEND_DONE
-3e | 00600 3e 
-02 | 00601 02 
-01 | 00602 01 end                           | end
-01 | 00603 01 end                           | end
-48 | 00604 48 memclr 0 56                   | clear WClocks gates from 0 to 7
-00 | 00605 00 
-38 | 00606 38 
-01 | 00607 01 end                           | end
+d1 | 00183 d1 set_c ushort 32 1281          | config gate TEMP with 1 await(s) - 0x0501 = 1281
+20 | 00184 20 
+05 | 00185 05 
+01 | 00186 01 
+d1 | 00187 d1 set_c ushort 36 10500         | config gate SEND_DONE with 4 await(s) - 0x2904 = 10500
+24 | 00188 24 
+29 | 00189 29 
+04 | 00190 04 
+d1 | 00191 d1 set_c ushort 46 11395         | config gate RECEIVE() with 3 await(s) - 0x2c83 = 11395
+2e | 00192 2e 
+2c | 00193 2c 
+83 | 00194 83 
+24 | 00195 24 func 0                        | func getNodeId
+00 | 00196 00 
+a1 | 00197 a1 pop ushort 59                 | pop nodeId
+3b | 00198 3b 
+c0 | 00199 c0 set_c ubyte 61 1              | sendPath.type = 1
+3d | 00200 3d 
+01 | 00201 01 
+d1 | 00202 d1 set_c ushort 64 0xffff        | sendPath.target = 0xffff
+40 | 00203 40 
+ff | 00204 ff 
+ff | 00205 ff 
+2a | 00206 2a set_v ushort 62 ushort 59     | sendPath.source = nodeId
+11 | 00207 11 
+3e | 00208 3e 
+3b | 00209 3b 
+c0 | 00210 c0 set_c ubyte 66 0              | sendPath.num_saltos = 0
+42 | 00211 42 
+00 | 00212 00 
+c2 | 00213 c2 set_c ulong 67 0              | sendPath.versao_rota = 0
+43 | 00214 43 
+00 | 00215 00 
+c0 | 00216 c0 set_c ubyte 111 2             | sendAlert.type = 2
+6f | 00217 6f 
+02 | 00218 02 
+2a | 00219 2a set_v ushort 112 ushort 59    | sendAlert.source = nodeId
+11 | 00220 11 
+70 | 00221 70 
+3b | 00222 3b 
+c0 | 00223 c0 set_c ubyte 136 2             | recAlert.type = 2
+88 | 00224 88 
+02 | 00225 02 
+40 | 00226 40 push_c 11                     | push 11
+0b | 00227 0b 
+91 | 00228 91 push_v ushort 59              | push nodeId:ushort
+3b | 00229 3b 
+0f | 00230 0f eq                            | eq
+4f | 00231 4f ifelse 107 108                | ifelse True_107 False_108
+00 | 00232 .00 addr:236
+ec | 00233 .6b 
+01 | 00234 .00 addr:331
+4b | 00235 .6c 
+89 | 00236 89 tkins_max 0 9                 | insert track ParEver_sub_1_9
+00 | 00237 .00 addr:243
+f3 | 00238 .09 
+89 | 00239 89 tkins_max 0 10                | insert track ParEver_sub_2_10
+01 | 00240 .00 addr:273
+11 | 00241 .0a 
+01 | 00242 01 end                           | end
+40 | 00243 40 push_c 1                      | push 1
+01 | 00244 01 
+92 | 00245 92 push_v ulong 67                     | push sendPath.versao_rota [Optm:: push_c addr + deref]
+43 | 00246 43 
+06 | 00247 06 add                           | add
+a2 | 00248 a2 pop ulong 67                  | pop sendPath.versao_rota
+43 | 00249 43 
+b1 | 00250 b1 outevt_v 40 61                | emit SEND len=25 var=sendPath
+28 | 00251 28 
+3d | 00252 3d 
+d1 | 00253 d1 set_c ushort 38 21            | await SEND_DONE[0]
+26 | 00254 26 
+01 | 00255 .00 addr:258
+02 | 00256 .15 
+01 | 00257 01 end                           | end
+29 | 00258 29 clken_c 0 15000 22            | clock enable Awake_15000_22 15000msec
+03 | 00259 03 
+00 | 00260 00 
+3a | 00261 3a 
+98 | 00262 98 
+00 | 00263 .00 addr:243
+f3 | 00264 .0e 
+01 | 00265 01 end                           | end
+48 | 00266 48 memclr 0 8                    | clear WClocks gates from 0 to 1
+00 | 00267 00 
+08 | 00268 08 
+48 | 00269 48 memclr 38 2                   | clear EXT gates for SEND_DONE
+26 | 00270 26 
+02 | 00271 02 
+01 | 00272 01 end                           | end
+40 | 00273 40 push_c 2                      | push 2
+02 | 00274 02 
+a0 | 00275 a0 pop ubyte 48                  | evt RECEIVE() auxId = pop
+30 | 00276 30 
+d1 | 00277 d1 set_c ushort 49 26            | await RECEIVE()[0]
+31 | 00278 31 
+01 | 00279 .00 addr:282
+1a | 00280 .1a 
+01 | 00281 01 end                           | end
+5c | 00282 5c getextdt_v 136 25             | getExtData recAlert 25
+88 | 00283 88 
+19 | 00284 19 
+40 | 00285 40 push_c 2                      | push 2
+02 | 00286 02 
+90 | 00287 90 push_v ubyte 136                    | push recAlert.type [Optm:: push_c addr + deref]
+88 | 00288 88 
+0f | 00289 0f eq                            | eq
+4f | 00290 4f ifelse 41 42                  | ifelse True_41 EndIf_42
+01 | 00291 .00 addr:295
+27 | 00292 .29 
+01 | 00293 .00 addr:273
+11 | 00294 .17 
+58 | 00295 58 outevt_c 6 1                  | emit LED0 len=1 const=1
+06 | 00296 06 
+01 | 00297 01 
+58 | 00298 58 outevt_c 7 1                  | emit LED1 len=1 const=1
+07 | 00299 07 
+01 | 00300 01 
+58 | 00301 58 outevt_c 8 1                  | emit LED2 len=1 const=1
+08 | 00302 08 
+01 | 00303 01 
+29 | 00304 29 clken_c 1 3000 34             | clock enable Awake_3000_34 3000msec
+03 | 00305 03 
+01 | 00306 01 
+0b | 00307 0b 
+b8 | 00308 b8 
+01 | 00309 .00 addr:312
+38 | 00310 .22 
+01 | 00311 01 end                           | end
+58 | 00312 58 outevt_c 6 0                  | emit LED0 len=1 const=0
+06 | 00313 06 
+00 | 00314 00 
+58 | 00315 58 outevt_c 7 0                  | emit LED1 len=1 const=0
+07 | 00316 07 
+00 | 00317 00 
+58 | 00318 58 outevt_c 8 0                  | emit LED2 len=1 const=0
+08 | 00319 08 
+00 | 00320 00 
+39 | 00321 39 exec 42                       | goto  42
+01 | 00322 .00 addr:273
+11 | 00323 .17 
+48 | 00324 48 memclr 8 8                    | clear WClocks gates from 1 to 2
+08 | 00325 08 
+08 | 00326 08 
+48 | 00327 48 memclr 48 2                   | clear EXT gates for RECEIVE()
+30 | 00328 30 
+02 | 00329 02 
+01 | 00330 01 end                           | end
+89 | 00331 89 tkins_max 0 43                | insert track ParEver_sub_1_43
+01 | 00332 .00 addr:338
+52 | 00333 .2b 
+89 | 00334 89 tkins_max 0 44                | insert track ParEver_sub_2_44
+01 | 00335 .00 addr:453
+c5 | 00336 .2c 
+01 | 00337 01 end                           | end
+89 | 00338 89 tkins_max 0 48                | insert track ParEver_sub_1_48
+01 | 00339 .00 addr:345
+59 | 00340 .30 
+89 | 00341 89 tkins_max 0 49                | insert track ParEver_sub_2_49
+01 | 00342 .00 addr:412
+9c | 00343 .31 
+01 | 00344 01 end                           | end
+40 | 00345 40 push_c 1                      | push 1
+01 | 00346 01 
+a0 | 00347 a0 pop ubyte 51                  | evt RECEIVE() auxId = pop
+33 | 00348 33 
+d1 | 00349 d1 set_c ushort 52 56            | await RECEIVE()[1]
+34 | 00350 34 
+01 | 00351 .00 addr:354
+62 | 00352 .38 
+01 | 00353 01 end                           | end
+5c | 00354 5c getextdt_v 86 25              | getExtData recPath 25
+56 | 00355 56 
+19 | 00356 19 
+40 | 00357 40 push_c 1                      | push 1
+01 | 00358 01 
+90 | 00359 90 push_v ubyte 91                     | push recPath.num_saltos [Optm:: push_c addr + deref]
+5b | 00360 5b 
+06 | 00361 06 add                           | add
+90 | 00362 90 push_v ubyte 66                     | push sendPath.num_saltos [Optm:: push_c addr + deref]
+42 | 00363 42 
+13 | 00364 13 gt                            | gt
+92 | 00365 92 push_v ulong 67                     | push sendPath.versao_rota [Optm:: push_c addr + deref]
+43 | 00366 43 
+92 | 00367 92 push_v ulong 92                     | push recPath.versao_rota [Optm:: push_c addr + deref]
+5c | 00368 5c 
+0f | 00369 0f eq                            | eq
+16 | 00370 16 land                          | land
+92 | 00371 92 push_v ulong 67                     | push sendPath.versao_rota [Optm:: push_c addr + deref]
+43 | 00372 43 
+92 | 00373 92 push_v ulong 92                     | push recPath.versao_rota [Optm:: push_c addr + deref]
+5c | 00374 5c 
+13 | 00375 13 gt                            | gt
+15 | 00376 15 lor                           | lor
+4f | 00377 4f ifelse 70 71                  | ifelse True_70 EndIf_71
+01 | 00378 .00 addr:382
+7e | 00379 .46 
+01 | 00380 .00 addr:345
+59 | 00381 .35 
+2a | 00382 2a set_v ushort 161 ushort 87    | progenitor = recPath.source
+11 | 00383 11 
+a1 | 00384 a1 
+57 | 00385 57 
+2a | 00386 2a set_v ulong 67 ulong 92       | sendPath.versao_rota = recPath.versao_rota
+22 | 00387 22 
+43 | 00388 43 
+5c | 00389 5c 
+40 | 00390 40 push_c 1                      | push 1
+01 | 00391 01 
+90 | 00392 90 push_v ubyte 91                     | push recPath.num_saltos [Optm:: push_c addr + deref]
+5b | 00393 5b 
+06 | 00394 06 add                           | add
+a0 | 00395 a0 pop ubyte 66                  | pop sendPath.num_saltos
+42 | 00396 42 
+b1 | 00397 b1 outevt_v 40 61                | emit SEND len=25 var=sendPath
+28 | 00398 28 
+3d | 00399 3d 
+d1 | 00400 d1 set_c ushort 40 69            | await SEND_DONE[1]
+28 | 00401 28 
+01 | 00402 .00 addr:345
+59 | 00403 .35 
+01 | 00404 01 end                           | end
+48 | 00405 48 memclr 38 2                   | clear EXT gates for SEND_DONE
+26 | 00406 26 
+02 | 00407 02 
+48 | 00408 48 memclr 48 2                   | clear EXT gates for RECEIVE()
+30 | 00409 30 
+02 | 00410 02 
+01 | 00411 01 end                           | end
+40 | 00412 40 push_c 2                      | push 2
+02 | 00413 02 
+a0 | 00414 a0 pop ubyte 54                  | evt RECEIVE() auxId = pop
+36 | 00415 36 
+d1 | 00416 d1 set_c ushort 55 75            | await RECEIVE()[2]
+37 | 00417 37 
+01 | 00418 .00 addr:421
+a5 | 00419 .4b 
+01 | 00420 01 end                           | end
+5c | 00421 5c getextdt_v 136 25             | getExtData recAlert 25
+88 | 00422 88 
+19 | 00423 19 
+40 | 00424 40 push_c 2                      | push 2
+02 | 00425 02 
+90 | 00426 90 push_v ubyte 136                    | push recAlert.type [Optm:: push_c addr + deref]
+88 | 00427 88 
+0f | 00428 0f eq                            | eq
+4f | 00429 4f ifelse 82 83                  | ifelse True_82 EndIf_83
+01 | 00430 .00 addr:434
+b2 | 00431 .52 
+01 | 00432 .00 addr:412
+9c | 00433 .48 
+2a | 00434 2a set_v ushort 114 ushort 161   | sendAlert.target = progenitor
+11 | 00435 11 
+72 | 00436 72 
+a1 | 00437 a1 
+b1 | 00438 b1 outevt_v 40 111               | emit SEND len=25 var=sendAlert
+28 | 00439 28 
+6f | 00440 6f 
+d1 | 00441 d1 set_c ushort 42 81            | await SEND_DONE[2]
+2a | 00442 2a 
+01 | 00443 .00 addr:412
+9c | 00444 .48 
+01 | 00445 01 end                           | end
+48 | 00446 48 memclr 38 2                   | clear EXT gates for SEND_DONE
+26 | 00447 26 
+02 | 00448 02 
+48 | 00449 48 memclr 48 2                   | clear EXT gates for RECEIVE()
+30 | 00450 30 
+02 | 00451 02 
+01 | 00452 01 end                           | end
+29 | 00453 29 clken_c 2 1000 87             | clock enable Awake_1000_87 1000msec
+03 | 00454 03 
+02 | 00455 02 
+03 | 00456 03 
+e8 | 00457 e8 
+01 | 00458 .00 addr:461
+cd | 00459 .57 
+01 | 00460 01 end                           | end
+26 | 00461 26 outevt_z 9                    | emit REQ_TEMP
+09 | 00462 09 
+d1 | 00463 d1 set_c ushort 34 91            | await TEMP[0]
+22 | 00464 22 
+01 | 00465 .00 addr:468
+d4 | 00466 .5b 
+01 | 00467 01 end                           | end
+5c | 00468 5c getextdt_v 165 2              | getExtData temp 2
+a5 | 00469 a5 
+02 | 00470 02 
+41 | 00471 41 push_c 500                    | push 500
+01 | 00472 01 
+f4 | 00473 f4 
+91 | 00474 91 push_v ushort 165             | push temp:ushort
+a5 | 00475 a5 
+13 | 00476 13 gt                            | gt
+4f | 00477 4f ifelse 104 105                | ifelse True_104 False_105
+01 | 00478 .00 addr:482
+e2 | 00479 .68 
+01 | 00480 .00 addr:509
+fd | 00481 .69 
+2a | 00482 2a set_v ushort 163 ushort 165   | alta_temp = temp
+11 | 00483 11 
+a3 | 00484 a3 
+a5 | 00485 a5 
+58 | 00486 58 outevt_c 8 1                  | emit LED2 len=1 const=1
+08 | 00487 08 
+01 | 00488 01 
+2a | 00489 2a set_v ushort 114 ushort 161   | sendAlert.target = progenitor
+11 | 00490 11 
+72 | 00491 72 
+a1 | 00492 a1 
+b1 | 00493 b1 outevt_v 40 111               | emit SEND len=25 var=sendAlert
+28 | 00494 28 
+6f | 00495 6f 
+d1 | 00496 d1 set_c ushort 44 100           | await SEND_DONE[3]
+2c | 00497 2c 
+01 | 00498 .00 addr:501
+f5 | 00499 .64 
+01 | 00500 01 end                           | end
+29 | 00501 29 clken_c 3 4000 101            | clock enable Awake_4000_101 4000msec
+03 | 00502 03 
+03 | 00503 03 
+0f | 00504 0f 
+a0 | 00505 a0 
+01 | 00506 .00 addr:453
+c5 | 00507 .54 
+01 | 00508 01 end                           | end
+58 | 00509 58 outevt_c 8 0                  | emit LED2 len=1 const=0
+08 | 00510 08 
+00 | 00511 00 
+39 | 00512 39 exec 106                      | goto  106
+01 | 00513 .00 addr:453
+c5 | 00514 .54 
+48 | 00515 48 memclr 16 16                  | clear WClocks gates from 2 to 4
+10 | 00516 10 
+10 | 00517 10 
+48 | 00518 48 memclr 34 2                   | clear EXT gates for TEMP
+22 | 00519 22 
+02 | 00520 02 
+48 | 00521 48 memclr 38 2                   | clear EXT gates for SEND_DONE
+26 | 00522 26 
+02 | 00523 02 
+01 | 00524 01 end                           | end
+01 | 00525 01 end                           | end
+48 | 00526 48 memclr 0 32                   | clear WClocks gates from 0 to 4
+00 | 00527 00 
+20 | 00528 20 
+01 | 00529 01 end                           | end

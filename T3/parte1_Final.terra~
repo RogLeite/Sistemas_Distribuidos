@@ -43,20 +43,14 @@ if nodeId == 11 then  //se é a raiz:
 		par do		
 			loop do
 	
-				//dorme até o próximo envio
-				await ROOT_TIME s;
 
 				//incrementa a versao da rota
 				sendPath.versao_rota = sendPath.versao_rota + 1;
 
-				//envia sendPath e acende LED0 para vermos isso
 				emit SEND(sendPath);
-				emit LED0(ON);
-
-				//confirma que foi enviado e apaga o LED0 depois de dormir 1 segg para vermos o led aceso
 				await SEND_DONE();
-				await LED_VIEW s;
-				emit LED0(OFF);
+				//dorme até o próximo envio
+				await ROOT_TIME s;
 			end
 		with
 			//Raiz recebendo alertas
@@ -82,23 +76,13 @@ else //se não é a raiz
 			//fica escutando recPath
 			loop do
 				recPath = await RECEIVE(1);
-				emit LED0(ON);
-				if recPath.versao_rota > sendPath.versao_rota then
-					emit LED1(ON);
+				if recPath.versao_rota > sendPath.versao_rota or (recPath.versao_rota == sendPath.versao_rota and sendPath.num_saltos > recPath.num_saltos+1) then
 					progenitor = recPath.source;
 					sendPath.versao_rota = recPath.versao_rota;
 					sendPath.num_saltos = recPath.num_saltos + 1;
 					emit SEND(sendPath);
 					await SEND_DONE();
-					await LED_VIEW s;
-					emit LED1(OFF);
-				else
-					//se recebeu uma rota obsoleta, pisca led amarelo
-					emit LED2(ON);
-					await LED_VIEW s;
-					emit LED2(OFF);
 				end
-				emit LED0(OFF);
 			end
 		with 
 			//Recebendo alertas e enviando para o progenitor
@@ -109,7 +93,6 @@ else //se não é a raiz
 					emit SEND(sendAlert);
 					await SEND_DONE();
 				end
-				emit LED0(OFF);
 			end
 		end
 	with
