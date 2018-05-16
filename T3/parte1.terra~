@@ -7,6 +7,8 @@
 #define MSG_TYPE_ALERT 2
 #define ALERT_REPEAT 4
 //#define TESTE 1
+var ubyte fila;
+
 var ushort nodeId = getNodeId();
 pktype pathMsg from radioMsg with
 	var ubyte num_saltos;
@@ -33,46 +35,86 @@ sendAlert.type = MSG_TYPE_ALERT;
 sendAlert.source = nodeId;
 
 
-
+//ESCUTA------------------------------------------------
 par do
+	//USA A FILA
+	par do
+	//Aguarda tipo MSG_TYPE_PATHING
+		loop do
+			recAlert = await RECEIVE(MSG_TYPE_PATHING);
+			fila = qPut(recAlert);
+		end
+	with
+	//Aguarda tipo MSG_TYPE_ALERT
+		loop do
+			recPath = await RECEIVE(MSG_TYPE_ALERT);
+			fila = qPut(recAlert);
+		end
+	end
 
-
+//FIM-ESCUTA--------------------------------------------
 
 with
+
+	//RAIZ-------------------------------------------------
 	if nodeId == 11 then  //se é a raiz:
-	//espera e manda o criar path
-		loop do
-			//dorme até o próximo envio
-			await ROOT_TIME s;
+		par do
+			//LISTENING----------------------------------------
+			loop do
+				await 100ms;
+				fila = qGet(recPath);	//[[EDIT]] Aqui está muito estranho, não sei que estrutura usar pra ler da fila, usei a menos genérica por via das dúvidas
+				//TRATA-MSG-----------------------------------
+				if recPath.type == MSG_TYPE_ALERT then
+					emit LED0(ON);
+				else/if recPath.type == MSG_TYPE_PATHING then
+					//[EDIT] nada
+				end
+				//END-TRATA-MSG-------------------------------
+			end
+			//END-LISTENING------------------------------------
+		with
+			//REPATHING----------------------------------------
+			loop do
+				//dorme até o próximo envio
+				await ROOT_TIME s;
 
-			//incrementa a versao da rota
-			sendPath.versao_rota = sendPath.versao_rota + 1;
+				//incrementa a versao da rota
+				sendPath.versao_rota = sendPath.versao_rota + 1;
 
-			//envia sendPath e acende LED Verde para vermos isso
-			emit SEND(sendPath);
+				//envia sendPath e acende LED Verde para vermos isso
+				emit SEND(sendPath);
 
-	#ifdef TESTE
-			emit LED1(ON);
-	#endif
+		#ifdef TESTE
+				emit LED1(ON);
+		#endif
 
-			await SEND_DONE();
+				await SEND_DONE();
 
-	#ifdef TESTE
-			//confirma que foi enviado e apaga o LED verde depois de dormir 1 seg para vermos o led aceso
-			await LED_VIEW s;
-			emit LED1(OFF);
-	#endif
+		#ifdef TESTE
+				//confirma que foi enviado e apaga o LED verde depois de dormir 1 seg para vermos o led aceso
+				await LED_VIEW s;
+				emit LED1(OFF);
+		#endif
+			end
+			//END-REPATHING------------------------------------
 		end
 
-
-	else //se não é a raiz
+	//FIM-RAIZ---------------------------------------------
+	//NODE-------------------------------------------------
+	else
 		var ushort progenitor;
-		par do 
-			//Trilha de Escuta
-			par do
-				//fica escutando recPath
-				loop do
-					recPath = await RECEIVE(MSG_TYPE_PATHING);
+		par do
+			//LISTENING----------------------------------------
+			loop do
+				await 100ms;
+				fila = qGet(recPath);	//[[EDIT]] Aqui está muito estranho, não sei que estrutura usar pra ler da fila, usei a menos genérica por via das dúvidas
+				//TRATA-MSG-----------------------------------
+				if recPath.type == MSG_TYPE_ALERT then
+					sendAlert.target = progenitor;
+					emit SEND(sendAlert);
+					await SEND_DONE();
+				else/if recPath.type == MSG_TYPE_PATHING then
+
 					if recPath.versao_rota > sendPath.versao_rota then
 		#ifdef TESTE
 						emit LED1(ON);
@@ -94,15 +136,14 @@ with
 						emit LED0(OFF);
 		#endif
 					end
+
 				end
-		
-			with
-				//fica escutando recAlert
-				loop do
-					recAlert = await RECEIVE(MSG_TYPE_ALERT);
-				end		
+				//END-TRATA-MSG-------------------------------
 			end
+			//END-LISTENING------------------------------------
 		with
+			
+			//READING-TEMP-------------------------------------
 			var ushort alta_temp;
 			loop do
 				await SOMETHING s;
@@ -113,7 +154,7 @@ with
 					//temperatura excedeu limite
 					alta_temp = temp;
 					emit LED2(ON);
-					//emitir mensagem tipo 2 (alerta)
+					//emitir mensagem tipo MSG_TYPE_ALERT
 					sendAlert.target = progenitor;
 					emit SEND(sendAlert);
 					await SEND_DONE();
@@ -124,7 +165,9 @@ with
 				end
 			
 			end
+			//END-READING-TEMP---------------------------------
 		end
 	end
+	//FIM-NODE---------------------------------------------
 end
 
