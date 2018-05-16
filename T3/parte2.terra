@@ -1,0 +1,193 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+#define LED_VIEW 2 //Define o tempo em que os leds ficam acesos
+#define ROOT_TIME 15
+#define SOMETHING 1
+#define TEMP_LIM 500
+#define MSG_TYPE_PATHING 1
+#define MSG_TYPE_ALERT 2
+#define ALERT_REPEAT 4
+#define TEMP_MEM 4
+//#define TESTE 1
+var ubyte fila;
+
+var ushort nodeId = getNodeId();
+
+pktype progenitorMsg from radioMsg with
+	var ubyte num_saltos;
+	var ulong versao_rota;
+end
+
+var progenitorMsg sendPath;
+var progenitorMsg recPath;
+
+sendPath.type = MSG_TYPE_PATHING;
+sendPath.target = BROADCAST;
+sendPath.source = nodeId;
+sendPath.num_saltos = 0;
+sendPath.versao_rota = 0;
+
+pktype posgenitorMsg from radioMsg with
+	var ubyte num_saltos;
+	var ulong versao_rota;
+end
+
+var posgenitorMsg sendPos;
+var posgenitorMsg recPos;
+
+sendPos.type = MSG_TYPE_PATHING;
+sendPos.target = BROADCAST;
+sendPos.source = nodeId;
+sendPos.num_saltos = 0;
+sendPos.versao_rota = 0;
+
+
+//define mensagem tipo 2, alerta
+pktype alertMsg from radioMsg with end
+
+var alertMsg sendAlert;
+var alertMsg recAlert;
+//sendAlert.target deve ser devinido durante execução
+sendAlert.type = MSG_TYPE_ALERT;
+sendAlert.source = nodeId;
+
+
+//ESCUTA------------------------------------------------
+par do
+	//USA A FILA
+	par do
+	//Aguarda tipo MSG_TYPE_PATHING
+		loop do
+			recAlert = await RECEIVE(MSG_TYPE_PATHING);
+			fila = qPut(recAlert);
+		end
+	with
+	//Aguarda tipo MSG_TYPE_ALERT
+		loop do
+			recPath = await RECEIVE(MSG_TYPE_ALERT);
+			fila = qPut(recAlert);
+		end
+	end
+
+//FIM-ESCUTA--------------------------------------------
+
+with
+
+	//RAIZ-------------------------------------------------
+	if nodeId == 11 then  //se é a raiz:
+		par do
+			//LISTENING----------------------------------------
+			loop do
+				await 100ms;
+				fila = qGet(recPath);	//[[EDIT]] Aqui está muito estranho, não sei que estrutura usar pra ler da fila, usei a menos genérica por via das dúvidas
+				//TRATA-MSG-----------------------------------
+				if recPath.type == MSG_TYPE_ALERT then
+					emit LED0(ON);
+				else/if recPath.type == MSG_TYPE_PATHING then
+					//[EDIT] nada
+				end
+				//END-TRATA-MSG-------------------------------
+			end
+			//END-LISTENING------------------------------------
+		with
+			//REPATHING----------------------------------------
+			loop do
+				//dorme até o próximo envio
+				await ROOT_TIME s;
+
+				//incrementa a versao da rota
+				sendPath.versao_rota = sendPath.versao_rota + 1;
+
+				//envia sendPath e acende LED Verde para vermos isso
+				emit SEND(sendPath);
+
+		#ifdef TESTE
+				emit LED1(ON);
+		#endif
+
+				await SEND_DONE();
+
+		#ifdef TESTE
+				//confirma que foi enviado e apaga o LED verde depois de dormir 1 seg para vermos o led aceso
+				await LED_VIEW s;
+				emit LED1(OFF);
+		#endif
+			end
+			//END-REPATHING------------------------------------
+		end
+
+	//FIM-RAIZ---------------------------------------------
+	//NODE-------------------------------------------------
+	else
+		var ushort progenitor;
+		par do
+			//LISTENING----------------------------------------
+			loop do
+				await 100ms;
+				fila = qGet(recPath);	//[[EDIT]] Aqui está muito estranho, não sei que estrutura usar pra ler da fila, usei a menos genérica por via das dúvidas
+				//TRATA-MSG-----------------------------------
+				if recPath.type == MSG_TYPE_ALERT then
+					sendAlert.target = progenitor;
+					emit SEND(sendAlert);
+					await SEND_DONE();
+				else/if recPath.type == MSG_TYPE_PATHING then
+
+					if recPath.versao_rota > sendPath.versao_rota then
+		#ifdef TESTE
+						emit LED1(ON);
+		#endif
+						progenitor = recPath.source;
+						sendPath.versao_rota = recPath.versao_rota;
+						sendPath.num_saltos = recPath.num_saltos + 1;
+						emit SEND(sendPath);
+						await SEND_DONE();
+		#ifdef TESTE
+						await LED_VIEW s;
+						emit LED1(OFF);
+		#endif
+					else
+		#ifdef TESTE
+						//se recebeu uma rota obsoleta, pisca led vermelho
+						emit LED0(ON);
+						await LED_VIEW s;
+						emit LED0(OFF);
+		#endif
+					end
+
+				end
+				//END-TRATA-MSG-------------------------------
+			end
+			//END-LISTENING------------------------------------
+		with
+			
+			//READING-TEMP-------------------------------------
+			var ushort alta_temp;
+			var ushort temps[TEMP_MEM];
+			loop do
+				loop i=0,TEMP_MEM-1 do
+					var ushort temp = 0;
+					await SOMETHING s;
+					//fica esperando tempo passar do limite
+					emit REQ_TEMP();
+					temps[i] = await TEMP();
+					loop j=0,TEMP_MEM-1 do temp = temp+temps[i]; end
+					temp = temp/TEMP_MEM;
+					if temp > TEMP_LIM then
+						//temperatura excedeu limite
+						alta_temp = temp;
+						emit LED2(ON);
+						//emitir mensagem tipo MSG_TYPE_ALERT
+						sendAlert.target = progenitor;
+						emit SEND(sendAlert);
+						await SEND_DONE();
+						await ALERT_REPEAT s;
+					else
+						emit LED2(OFF);			
+					end
+				end
+			end
+			//END-READING-TEMP---------------------------------
+		end
+	end
+	//FIM-NODE---------------------------------------------
+end
+
