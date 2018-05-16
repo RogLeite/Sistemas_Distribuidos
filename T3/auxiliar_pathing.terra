@@ -6,32 +6,78 @@
 
 //GENERIC-PATHING----------------------------------------------
 loop do
+	#ifdef TESTE		
+		await 1ms;
+	#endif
+	var ubyte updated = FALSE;
 	if nodeId == 11 then
 		sendPath.versao_rota = sendPath.versao_rota + 1;
-		//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-							//auxiliar_resumir.terra
-		//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	else
 		recPath = await RECEIVE(MSG_TYPE_PATHING);
 		if recPath.versao_rota > sendPath.versao_rota then
 			progenitor = recPath.source;
-
 			sendAlert.target = progenitor;
 			sendPos.target = progenitor;
-
 			sendPath.num_saltos = recPath.num_saltos + 1;
 			sendPath.versao_rota = recPath.versao_rota;
-
-			//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-								//auxiliar_resumir.terra
-			//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+			updated = TRUE;
 			//FIM-ESCUTA-SUCESSORES-------------------------
-			//RESPONDE-AO-PROGENITOR-----------------------------
-			sendPos.target = progenitor;
-			emit SEND(sendPos); 
-			await SEND_DONE();
-			//END-RESPONDE-AO-PROGENITOR-------------------------
 		end
 	end
+//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+	if nodeId==11 or updated==TRUE then
+		emit SEND(sendPath);
+		await SEND_DONE();
+		loop i,QTD_SUCESSORES_SQUARED do
+			sucessores[i] = 0;
+		end
+		par/or do
+			loop do //loop de aguardar o retorno dos sucessores
+				var ushort index = 0;
+				recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+				loop i,QTD_SUCESSORES do
+					if sucessores[i*QTD_SUCSUC]==recPos.source then
+						index = i*QTD_SUCSUC;
+						loop j,QTD_SUCSUC do
+							if sucessores[index]==0 then break; end
+							index = index+1;
+						end
+						break; //index está no primeiro espaço vazio para se adicionar id's 
+					else/if sucessores[i*QTD_SUCSUC]==0 then //não encontrou o source no vetor
+						sucessores[i*QTD_SUCSUC] = recPos.source;
+						index = i*QTD_SUCSUC+1;
+						break;
+					end
+				end
+				//se sai do loop, está "garantido" que index está num espaço para preencher
+				loop i,TAM_MSG do
+					sucessores[index] = recPos.sucessores[i];
+				end
+			end
+		with
+			await ANSWER_TIMEOUT s;
+		end
+		//agora enviar pro progenitor TEUS sucessores
+		if nodeId != 11 then
+			sendPos.target = progenitor;
+			var ushort index = 0;
+			loop do
+				var ushort i=0;
+				if index >= QTD_SUCESSORES_SQUARED then break; end
+				loop n, MUITO_GRANDE do
+					if index >= QTD_SUCESSORES_SQUARED or i>=10 then break;
+					else/if sucessores[index]!=0 then
+						sendPos.sucessores[i] = sucessores[index];
+						i = i+1;
+					end
+					index = index+1;
+				end
+				emit SEND(sendPos);
+				await SEND_DONE();
+			end
+		end
+	end
+	//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 end
 //GENERIC+PATHING++++++++++++++++++++++++++++++++++++++++++++++
+

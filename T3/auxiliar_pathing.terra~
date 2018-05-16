@@ -5,34 +5,35 @@
 
 
 //GENERIC-PATHING----------------------------------------------
-
 loop do
+	#ifdef TESTE		
+		await 1ms;
+	#endif
+	var ubyte updated = FALSE;
 	if nodeId == 11 then
 		sendPath.versao_rota = sendPath.versao_rota + 1;
-		//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-							//auxiliar_resumir.terra
-		//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	else
 		recPath = await RECEIVE(MSG_TYPE_PATHING);
 		if recPath.versao_rota > sendPath.versao_rota then
 			progenitor = recPath.source;
-
 			sendAlert.target = progenitor;
 			sendPos.target = progenitor;
-
 			sendPath.num_saltos = recPath.num_saltos + 1;
 			sendPath.versao_rota = recPath.versao_rota;
-
-			//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-								//auxiliar_resumir.terra
-			//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+			updated = TRUE;
 			//FIM-ESCUTA-SUCESSORES-------------------------
-			//RESPONDE-AO-PROGENITOR-----------------------------
-			sendPos.target = progenitor;
-			emit SEND(sendPos); 
-			await SEND_DONE();
-			//END-RESPONDE-AO-PROGENITOR-------------------------
 		end
+	end
+	//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+						//auxiliar_resumir.terra
+	//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	if nodeId!=11 and updated==TRUE then
+		//RESPONDE-AO-PROGENITOR-----------------------------
+		sendPos.target = progenitor;
+		emit SEND(sendPos); 
+		await SEND_DONE();
+		//END-RESPONDE-AO-PROGENITOR-------------------------
 	end
 end
 //GENERIC+PATHING++++++++++++++++++++++++++++++++++++++++++++++
+
