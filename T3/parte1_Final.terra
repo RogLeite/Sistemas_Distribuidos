@@ -83,7 +83,7 @@ else //se não é a raiz
 			loop do
 				recPath = await RECEIVE(1);
 				emit LED0(ON);
-				if recPath.versao_rota > sendPath.versao_rota then
+				if recPath.versao_rota > sendPath.versao_rota or (recPath.versao_rota == sendPath.versao_rota and sendPath.num_saltos > recPath.num_saltos+1) then
 					emit LED1(ON);
 					progenitor = recPath.source;
 					sendPath.versao_rota = recPath.versao_rota;
