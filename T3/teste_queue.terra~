@@ -1,18 +1,67 @@
 #include "/home/terra/TerraNG/terra/TerraNet.defs"
-
-
+#define LED_VIEW 2 //Define o tempo em que os leds ficam acesos
+#define ROOT_TIME 20
+#define SOMETHING 1000
 var ushort nodeId = getNodeId();
-pktype myMsg from radioMsg with end
-var myMsg msg;
-if nodeId == 22 then
-	msg.type = 1;
-	msg.target = BROADCAST;
-	msg.source = nodeId;
-	await 5 s;
-	emit SEND(msg);
-	await SEND_DONE();
-else
-	msg = await RECEIVE();
-	qPut(myMsg msg);
-	msg = qGet(myMsg);
+pktype pathMsg from radioMsg with
+	var ubyte num_saltos;
+	var ulong versao_rota;
 end
+
+var pathMsg sendPath;
+var pathMsg recPath;
+
+sendPath.type = 1;
+sendPath.target = BROADCAST;
+sendPath.source = nodeId;
+sendPath.num_saltos = 0;
+sendPath.versao_rota = 0;
+
+var ubyte fila;
+
+
+
+if nodeId == 11 then  //se é a raiz:
+//espera e manda o criar path
+	loop do
+		//dorme até o próximo envio
+		await ROOT_TIME s;
+
+		//incrementa a versao da rota
+		sendPath.versao_rota = sendPath.versao_rota + 1;
+
+		//envia sendPath e acende LED0 para vermos isso
+		emit SEND(sendPath);
+		emit LED0(ON);
+
+		//confirma que foi enviado e apaga o LED0 depois de dormir 1 segg para vermos o led aceso
+		await SEND_DONE();
+		await LED_VIEW s;
+		emit LED0(OFF);
+	end
+
+
+else //se não é a raiz
+	par do 
+		loop do
+			recPath = await RECEIVE(1);
+			fila = qPut(recPath); //adicionando na fila
+			emit LED0(ON);
+			await 2s;
+			emit LED0(OFF);
+			emit SEND(sendPath);
+			await SEND_DONE(); 
+		end
+	with
+		loop do
+			await Q_READY;
+			fila = qGet(recPath);//retirando da fila
+       	   	        emit SEND(recPath); //enviando a msg retirada da fila
+                        await SEND_DONE;
+			emit LED1(ON);
+
+		end
+	end
+end
+
+

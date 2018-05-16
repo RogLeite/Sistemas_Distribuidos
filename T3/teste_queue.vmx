@@ -1,0 +1,292 @@
+107 291 2 3 0 0 24 3 24
+00 | 00000 0 track 0
+00 | 00001 0
+00 | 00002 0
+00 | 00003 0
+00 | 00004 0 track 1
+00 | 00005 0
+00 | 00006 0
+00 | 00007 0
+00 | 00008 0 track 2
+00 | 00009 0
+00 | 00010 0
+00 | 00011 0
+00 | 00012 0000 wClock 0
+00 | 00013 0001
+00 | 00014 0002
+00 | 00015 0003
+00 | 00016 0004
+00 | 00017 0005
+00 | 00018 0006
+00 | 00019 0007
+00 | 00020 0008 wClock 1
+00 | 00021 0009
+00 | 00022 0010
+00 | 00023 0011
+00 | 00024 0012
+00 | 00025 0013
+00 | 00026 0014
+00 | 00027 0015
+00 | 00028 0016 wClock 2
+00 | 00029 0017
+00 | 00030 0018
+00 | 00031 0019
+00 | 00032 0020
+00 | 00033 0021
+00 | 00034 0022
+00 | 00035 0023
+00 | 00036 0024 inEvt 041 : SEND_DONE
+00 | 00037 0025           : 03 gates
+00 | 00038 0026
+00 | 00039 0027
+00 | 00040 0028
+00 | 00041 0029
+00 | 00042 0030
+00 | 00043 0031
+00 | 00044 0032 inEvt 044 : RECEIVE()
+00 | 00045 0033           : 01 gates
+00 | 00046 0034
+00 | 00047 0035
+00 | 00048 0036
+00 | 00049 0037 inEvt 046 : Q_READY
+00 | 00050 0038           : 01 gates
+00 | 00051 0039
+00 | 00052 0040
+00 | 00053 0041 $ret:1, 
+00 | 00054 0042 nodeId:2, 
+00 | 00055 0043 
+00 | 00056 0044 sendPath:25, 
+00 | 00057 0045 
+00 | 00058 0046 
+00 | 00059 0047 
+00 | 00060 0048 
+00 | 00061 0049 
+00 | 00062 0050 
+00 | 00063 0051 
+00 | 00064 0052 
+00 | 00065 0053 
+00 | 00066 0054 
+00 | 00067 0055 
+00 | 00068 0056 
+00 | 00069 0057 
+00 | 00070 0058 
+00 | 00071 0059 
+00 | 00072 0060 
+00 | 00073 0061 
+00 | 00074 0062 
+00 | 00075 0063 
+00 | 00076 0064 
+00 | 00077 0065 
+00 | 00078 0066 
+00 | 00079 0067 
+00 | 00080 0068 
+00 | 00081 0069 recPath:25, 
+00 | 00082 0070 
+00 | 00083 0071 
+00 | 00084 0072 
+00 | 00085 0073 
+00 | 00086 0074 
+00 | 00087 0075 
+00 | 00088 0076 
+00 | 00089 0077 
+00 | 00090 0078 
+00 | 00091 0079 
+00 | 00092 0080 
+00 | 00093 0081 
+00 | 00094 0082 
+00 | 00095 0083 
+00 | 00096 0084 
+00 | 00097 0085 
+00 | 00098 0086 
+00 | 00099 0087 
+00 | 00100 0088 
+00 | 00101 0089 
+00 | 00102 0090 
+00 | 00103 0091 
+00 | 00104 0092 
+00 | 00105 0093 
+00 | 00106 0094 fila:1, 
+d1 | 00107 d1 set_c ushort 24 10499         | config gate SEND_DONE with 3 await(s) - 0x2903 = 10499
+18 | 00108 18 
+29 | 00109 29 
+03 | 00110 03 
+d1 | 00111 d1 set_c ushort 32 11393         | config gate RECEIVE() with 1 await(s) - 0x2c81 = 11393
+20 | 00112 20 
+2c | 00113 2c 
+81 | 00114 81 
+d1 | 00115 d1 set_c ushort 37 11777         | config gate Q_READY with 1 await(s) - 0x2e01 = 11777
+25 | 00116 25 
+2e | 00117 2e 
+01 | 00118 01 
+24 | 00119 24 func 0                        | func getNodeId
+00 | 00120 00 
+a1 | 00121 a1 pop ushort 42                 | pop nodeId
+2a | 00122 2a 
+c0 | 00123 c0 set_c ubyte 44 1              | sendPath.type = 1
+2c | 00124 2c 
+01 | 00125 01 
+d1 | 00126 d1 set_c ushort 47 0xffff        | sendPath.target = 0xffff
+2f | 00127 2f 
+ff | 00128 ff 
+ff | 00129 ff 
+2a | 00130 2a set_v ushort 45 ushort 42     | sendPath.source = nodeId
+11 | 00131 11 
+2d | 00132 2d 
+2a | 00133 2a 
+c0 | 00134 c0 set_c ubyte 49 0              | sendPath.num_saltos = 0
+31 | 00135 31 
+00 | 00136 00 
+c2 | 00137 c2 set_c ulong 50 0              | sendPath.versao_rota = 0
+32 | 00138 32 
+00 | 00139 00 
+40 | 00140 40 push_c 11                     | push 11
+0b | 00141 0b 
+91 | 00142 91 push_v ushort 42              | push nodeId:ushort
+2a | 00143 2a 
+0f | 00144 0f eq                            | eq
+4f | 00145 4f ifelse 50 51                  | ifelse True_50 False_51
+00 | 00146 .00 addr:150
+96 | 00147 .32 
+00 | 00148 .00 addr:197
+c5 | 00149 .33 
+29 | 00150 29 clken_c 0 20000 11            | clock enable Awake_20000_11 20000msec
+03 | 00151 03 
+00 | 00152 00 
+4e | 00153 4e 
+20 | 00154 20 
+00 | 00155 .00 addr:158
+9e | 00156 .0b 
+01 | 00157 01 end                           | end
+40 | 00158 40 push_c 1                      | push 1
+01 | 00159 01 
+92 | 00160 92 push_v ulong 50                     | push sendPath.versao_rota [Optm:: push_c addr + deref]
+32 | 00161 32 
+06 | 00162 06 add                           | add
+a2 | 00163 a2 pop ulong 50                  | pop sendPath.versao_rota
+32 | 00164 32 
+b1 | 00165 b1 outevt_v 40 44                | emit SEND len=25 var=sendPath
+28 | 00166 28 
+2c | 00167 2c 
+58 | 00168 58 outevt_c 6 1                  | emit LED0 len=1 const=1
+06 | 00169 06 
+01 | 00170 01 
+d1 | 00171 d1 set_c ushort 26 18            | await SEND_DONE[0]
+1a | 00172 1a 
+00 | 00173 .00 addr:176
+b0 | 00174 .12 
+01 | 00175 01 end                           | end
+29 | 00176 29 clken_c 1 2000 19             | clock enable Awake_2000_19 2000msec
+03 | 00177 03 
+01 | 00178 01 
+07 | 00179 07 
+d0 | 00180 d0 
+00 | 00181 .00 addr:184
+b8 | 00182 .13 
+01 | 00183 01 end                           | end
+58 | 00184 58 outevt_c 6 0                  | emit LED0 len=1 const=0
+06 | 00185 06 
+00 | 00186 00 
+39 | 00187 39 exec 8                        | goto  8
+00 | 00188 .00 addr:150
+96 | 00189 .08 
+48 | 00190 48 memclr 0 16                   | clear WClocks gates from 0 to 2
+00 | 00191 00 
+10 | 00192 10 
+48 | 00193 48 memclr 26 2                   | clear EXT gates for SEND_DONE
+1a | 00194 1a 
+02 | 00195 02 
+01 | 00196 01 end                           | end
+89 | 00197 89 tkins_max 0 22                | insert track ParEver_sub_1_22
+00 | 00198 .00 addr:204
+cc | 00199 .16 
+89 | 00200 89 tkins_max 0 23                | insert track ParEver_sub_2_23
+00 | 00201 .00 addr:254
+fe | 00202 .17 
+01 | 00203 01 end                           | end
+40 | 00204 40 push_c 1                      | push 1
+01 | 00205 01 
+a0 | 00206 a0 pop ubyte 34                  | evt RECEIVE() auxId = pop
+22 | 00207 22 
+d1 | 00208 d1 set_c ushort 35 30            | await RECEIVE()[0]
+23 | 00209 23 
+00 | 00210 .00 addr:213
+d5 | 00211 .1e 
+01 | 00212 01 end                           | end
+5c | 00213 5c getextdt_v 69 25              | getExtData recPath 25
+45 | 00214 45 
+19 | 00215 19 
+40 | 00216 40 push_c 69                     | push_c &recPath:pathMsg
+45 | 00217 45 
+24 | 00218 24 func 10                       | func qPut
+0a | 00219 0a 
+a0 | 00220 a0 pop ubyte 94                  | pop fila
+5e | 00221 5e 
+58 | 00222 58 outevt_c 6 1                  | emit LED0 len=1 const=1
+06 | 00223 06 
+01 | 00224 01 
+29 | 00225 29 clken_c 2 2000 33             | clock enable Awake_2000_33 2000msec
+03 | 00226 03 
+02 | 00227 02 
+07 | 00228 07 
+d0 | 00229 d0 
+00 | 00230 .00 addr:233
+e9 | 00231 .21 
+01 | 00232 01 end                           | end
+58 | 00233 58 outevt_c 6 0                  | emit LED0 len=1 const=0
+06 | 00234 06 
+00 | 00235 00 
+b1 | 00236 b1 outevt_v 40 44                | emit SEND len=25 var=sendPath
+28 | 00237 28 
+2c | 00238 2c 
+d1 | 00239 d1 set_c ushort 28 39            | await SEND_DONE[1]
+1c | 00240 1c 
+00 | 00241 .00 addr:204
+cc | 00242 .1b 
+01 | 00243 01 end                           | end
+48 | 00244 48 memclr 16 8                   | clear WClocks gates from 2 to 3
+10 | 00245 10 
+08 | 00246 08 
+48 | 00247 48 memclr 26 2                   | clear EXT gates for SEND_DONE
+1a | 00248 1a 
+02 | 00249 02 
+48 | 00250 48 memclr 34 2                   | clear EXT gates for RECEIVE()
+22 | 00251 22 
+02 | 00252 02 
+01 | 00253 01 end                           | end
+d1 | 00254 d1 set_c ushort 39 43            | await Q_READY[0]
+27 | 00255 27 
+01 | 00256 .00 addr:259
+03 | 00257 .2b 
+01 | 00258 01 end                           | end
+40 | 00259 40 push_c 69                     | push_c &recPath:pathMsg
+45 | 00260 45 
+24 | 00261 24 func 11                       | func qGet
+0b | 00262 0b 
+a0 | 00263 a0 pop ubyte 94                  | pop fila
+5e | 00264 5e 
+b1 | 00265 b1 outevt_v 40 69                | emit SEND len=25 var=recPath
+28 | 00266 28 
+45 | 00267 45 
+d1 | 00268 d1 set_c ushort 30 47            | await SEND_DONE[2]
+1e | 00269 1e 
+01 | 00270 .00 addr:273
+11 | 00271 .2f 
+01 | 00272 01 end                           | end
+58 | 00273 58 outevt_c 7 1                  | emit LED1 len=1 const=1
+07 | 00274 07 
+01 | 00275 01 
+39 | 00276 39 exec 40                       | goto  40
+00 | 00277 .00 addr:254
+fe | 00278 .28 
+48 | 00279 48 memclr 26 2                   | clear EXT gates for SEND_DONE
+1a | 00280 1a 
+02 | 00281 02 
+48 | 00282 48 memclr 39 2                   | clear EXT gates for Q_READY
+27 | 00283 27 
+02 | 00284 02 
+01 | 00285 01 end                           | end
+01 | 00286 01 end                           | end
+48 | 00287 48 memclr 0 24                   | clear WClocks gates from 0 to 3
+00 | 00288 00 
+18 | 00289 18 
+01 | 00290 01 end                           | end
