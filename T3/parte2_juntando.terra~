@@ -1,4 +1,5 @@
 #include "/home/terra/TerraNG/terra/TerraNet.defs"
+#define TESTE 1
 #define LED_VIEW 2 //Define o tempo em que os leds ficam acesos
 #define ROOT_TIME 15
 #define SOMETHING 3
@@ -8,7 +9,7 @@
 #define MSG_TYPE_SUCESSORES 3
 #define ALERT_REPEAT 4
 #define TEMP_MEM 4
-//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+//GENERIC-RESUMIR----------------------------------------------
 #define QTD_SUCESSORES 5 //20-2 = 18-> 18/2 = 9 é a quantidade máxima de sucessores adjacentes a um nó
 #define QTD_SUCSUC 21 //meio arbitrário, definido pra uma rede 5x5
 #define QTD_SUCESSORES_SQUARED 105//QTD_SUCESSORES*QTD_SUCSUC
@@ -16,8 +17,7 @@
 #define MUITO_GRANDE 1000
 var ushort[QTD_SUCESSORES_SQUARED] sucessores;
 var ushort progenitor;
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-//#define TESTE 1
+//GENERIC+RESUMIR++++++++++++++++++++++++++++++++++++++++++++++
 //GENERIC-REQUEST----------------------------------------------
 #define MSG_TYPE_REQUEST 4
 #define WAIT_REQUEST 15
@@ -112,70 +112,31 @@ var answerMsg recAns;
 sendAns.target = BROADCAST;
 sendAns.type = MSG_TYPE_ANSWER;
 sendAns.source = nodeId;
-//GENERIC+ANSWER++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
-if nodeId == 11 then  //se é a raiz:
-	par do		
-		//espera e manda o criar path
-		loop do
-			sendPath.versao_rota = sendPath.versao_rota + 1;
-//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-			
-			emit SEND(sendPath);
+//GENERIC-JUNTANDO----------------------------------------------
+par do
+	//GENERIC-ANSWER----------------------------------------------
+	loop do
+		if nodeId==11 then
+			recAns = await RECEIVE(MSG_TYPE_ANSWER);
+			emit LED0(TOGGLE);
+		else
+			recAns = await RECEIVE(MSG_TYPE_ANSWER);
+			sendAns.temp = recAns.temp;
+			emit SEND(sendAns);
 			await SEND_DONE();
-			loop i,QTD_SUCESSORES_SQUARED do
-				sucessores[i] = 0;
-			end
-
-
-			par/or do
-				loop do //loop de aguardar o retorno dos sucessores
-					var ushort index = 0;
-					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-					loop i,QTD_SUCESSORES do
-						if sucessores[i*QTD_SUCSUC]==recPos.source then
-							index = i*QTD_SUCSUC;
-							loop j,QTD_SUCSUC do
-								if sucessores[index]==0 then break; end
-								index = index+1;
-							end
-							break; //index está no primeiro espaço vazio para se adicionar id's 
-						else/if sucessores[i*QTD_SUCSUC]==0 then //não encontrou o source no vetor
-							sucessores[i*QTD_SUCSUC] = recPos.source;
-							index = i*QTD_SUCSUC+1;
-							break;
-						end
-					end
-					//se sai do loop, está "garantido" que index está num espaço para preencher
-					loop i,TAM_MSG do
-						sucessores[index] = recPos.sucessores[i];
-					end
-				end
-			with
-				await ANSWER_TIMEOUT s;
-			end
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 		end
-	with
-		//Raiz recebendo alertas
-		loop do
-			recAlert = await RECEIVE(MSG_TYPE_ALERT);	
-			if recAlert.type == MSG_TYPE_ALERT then
-				emit LED0(ON);
-				emit LED1(ON);
-				emit LED2(ON);
-				await 3s;
-				emit LED0(OFF);
-				emit LED1(OFF);
-				emit LED2(OFF);
-			end
-		end
-	with
-		//ROOT-REQUEST----------------------------------------------
+	end
+	//GENERIC+ANSWER++++++++++++++++++++++++++++++++++++++++++++++
+
+with
+
+	//GENERAL-REQUEST----------------------------------------------
+	loop do
 		var ushort reqId = 0;
-		loop do
+		if nodeId==11 then
 			await WAIT_REQUEST s;
 			var ushort photo;
 			emit REQ_PHOTO();
@@ -187,120 +148,78 @@ if nodeId == 11 then  //se é a raiz:
 			else/if photo == REQ_31 then reqId = 31;
 			else/if photo == REQ_33 then reqId = 33;
 			else reqId = 0;
-			end
-	
-			//envia REQUEST
-			if reqId != 0 and reqId!= 11 then
-				sendReq.requestedId = reqId;
-				emit SEND(sendReq);
-				await SEND_DONE();
-			end
+			end	
+		else	//se é node
+			recReq = await RECEIVE(MSG_TYPE_REQUEST);
 		end
-		//ROOT+REQUEST++++++++++++++++++++++++++++++++++++++++++++++
-
+		//envia REQUEST
+		if reqId == nodeId then
+			sendAns.temp = med_temp;
+			emit SEND(sendAns);
+			await SEND_DONE();
+		else/if reqId != 0 and reqId!= 11 then
+			sendReq.requestedId = reqId;
+			sendReq.target = 0;
+			loop i,QTD_SUCESSORES do
+				loop j,QTD_SUCSUC do
+					if sucessores[i*QTD_SUCSUC+j]==reqId then
+						sendReq.target = sucessores[i*QTD_SUCSUC];
+						break;
+					end
+				end
+				if sendReq.target != 0 then break; end
+			end
+			emit SEND(sendReq);
+			await SEND_DONE();
+		end
 	end
+	//GENERAL+REQUEST++++++++++++++++++++++++++++++++++++++++++++++
+with
 
+	//GENERIC-PATHING----------------------------------------------
+	loop do
+		#ifdef TESTE		
+			await 1ms;
+		#endif
+		
+		if nodeId == 11 then
+			sendPath.versao_rota = sendPath.versao_rota + 1;
+			//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+								//auxiliar_resumir.terra
+			//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+		else
+			recPath = await RECEIVE(MSG_TYPE_PATHING);
+			if recPath.versao_rota > sendPath.versao_rota then
+				progenitor = recPath.source;
 
-else //se não é a raiz
-	par do 
-		//LISTENING--------------------------------------------------
-		par do
-			//fica escutando recPath
-			loop do
-				recPath = await RECEIVE(MSG_TYPE_PATHING);
-				if recPath.versao_rota > sendPath.versao_rota then
-					progenitor = recPath.source;
+				sendAlert.target = progenitor;
+				sendPos.target = progenitor;
 
-					sendAlert.target = progenitor;
-					sendPos.target = progenitor;
+				sendPath.num_saltos = recPath.num_saltos + 1;
+				sendPath.versao_rota = recPath.versao_rota;
 
-					sendPath.num_saltos = recPath.num_saltos + 1;
-					sendPath.versao_rota = recPath.versao_rota;
-
-//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-					
-					emit SEND(sendPath);
-					await SEND_DONE();
-					loop i,QTD_SUCESSORES_SQUARED do
-						sucessores[i] = 0;
-					end
-
-
-					par/or do
-						loop do //loop de aguardar o retorno dos sucessores
-							var ushort index = 0;
-							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
-							loop i,QTD_SUCESSORES do
-								if sucessores[i*QTD_SUCSUC]==recPos.source then
-									index = i*QTD_SUCSUC;
-									loop j,QTD_SUCSUC do
-										if sucessores[index]==0 then break; end
-										index = index+1;
-									end
-									break; //index está no primeiro espaço vazio para se adicionar id's 
-								else/if sucessores[i*QTD_SUCSUC]==0 then //não encontrou o source no vetor
-									sucessores[i*QTD_SUCSUC] = recPos.source;
-									index = i*QTD_SUCSUC+1;
-									break;
-								end
-							end
-							//se sai do loop, está "garantido" que index está num espaço para preencher
-							loop i,TAM_MSG do
-								sucessores[index] = recPos.sucessores[i];
-							end
-						end
-					with
-						await ANSWER_TIMEOUT s;
-					end
-					//agora enviar pro progenitor TEUS sucessores
-
-					sendPos.target = progenitor;
-					var ushort index = 0;
-					loop do
-						var ushort i=0;
-						if index >= QTD_SUCESSORES_SQUARED then break; end
-						loop n, MUITO_GRANDE do
-							if index >= QTD_SUCESSORES_SQUARED or i>=10 then break;
-							else/if sucessores[index]!=0 then
-								sendPos.sucessores[i] = sucessores[index];
-								i = i+1;
-							end
-							index = index+1;
-						end
-						emit SEND(sendPos);
-						await SEND_DONE();
-					end
-
-//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-					//FIM-ESCUTA-SUCESSORES-------------------------
-					//RESPONDE-AO-PROGENITOR-----------------------------
-					sendPos.target = progenitor;
-					emit SEND(sendPos); 
-					await SEND_DONE();
-					//END-RESPONDE-AO-PROGENITOR-------------------------
-
-				else
-					//se recebeu uma rota obsoleta, pisca não faz nada
-
-				end
-			end
-
-		with 
-			//Recebendo alertas e enviando para o progenitor
-			loop do
-				recAlert = await RECEIVE(MSG_TYPE_ALERT);	
-				if recAlert.type == MSG_TYPE_ALERT then
-					emit SEND(sendAlert);
-					await SEND_DONE();
-				end
-				emit LED0(OFF);
+				//vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+									//auxiliar_resumir.terra
+				//^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+				//FIM-ESCUTA-SUCESSORES-------------------------
+				//RESPONDE-AO-PROGENITOR-----------------------------
+				sendPos.target = progenitor;
+				emit SEND(sendPos); 
+				await SEND_DONE();
+				//END-RESPONDE-AO-PROGENITOR-------------------------
 			end
 		end
-		//END-LISTENING----------------------------------------------
-	with
-		//READING-TEMP-------------------------------------
+	end
+	//GENERIC+PATHING++++++++++++++++++++++++++++++++++++++++++++++
+
+with
+	//GENERIC-TEMP----------------------------------------------
+	loop do
+		#ifdef TESTE		
+			await 1ms;
+		#endif
 		loop i, TEMP_MEM do temps[i] = 0; end
-		loop do
+		if nodeId != 11 then
 			loop i,TEMP_MEM do
 				await SOMETHING s;
 				//fica esperando tempo passar do limite
@@ -322,8 +241,31 @@ else //se não é a raiz
 				end
 			end
 		end
-		//END-READING-TEMP---------------------------------
 	end
-end
-//END-NORMAL-EXECUTION-----------------------------------------------
+	//GENERIC+TEMP++++++++++++++++++++++++++++++++++++++++++++++
 
+with
+
+	//GENERIC-ALERT----------------------------------------------
+	loop do
+		recAlert = await RECEIVE(MSG_TYPE_ALERT);	
+		if nodeId == 11 then
+			//Raiz recebendo alertas
+			emit LED0(ON);
+			emit LED1(ON);
+			emit LED2(ON);
+			await 3s;
+			emit LED0(OFF);
+			emit LED1(OFF);
+			emit LED2(OFF);
+		else
+			//Recebendo alertas e enviando para o progenitor
+			emit SEND(sendAlert);
+			await SEND_DONE();
+		end
+	end
+	//GENERIC+ALERT++++++++++++++++++++++++++++++++++++++++++++++
+
+end
+
+//GENERIC+JUNTANDO++++++++++++++++++++++++++++++++++++++++++++++
