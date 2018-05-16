@@ -153,8 +153,6 @@ loop do
 		emit SEND(sendPos);
 		await SEND_DONE();
 		//END-RESPONDE-AO-PROGENITOR-------------------------
-		
-
 
 	else
 		//se recebeu uma rota obsoleta, pisca não faz nada

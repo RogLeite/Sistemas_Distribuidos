@@ -85,16 +85,24 @@ else //se não é a raiz
 			//fica escutando recPath
 			loop do
 				recPath = await RECEIVE(MSG_TYPE_PATHING);
+				emit LED0(ON);
 				if recPath.versao_rota > sendPath.versao_rota then
+					emit LED1(ON);
 					progenitor = recPath.source;
 					sendAlert.target = progenitor;
 					sendPath.versao_rota = recPath.versao_rota;
 					sendPath.num_saltos = recPath.num_saltos + 1;
 					emit SEND(sendPath);
 					await SEND_DONE();
+					await LED_VIEW s;
+					emit LED1(OFF);
 				else
-					//se recebeu uma rota obsoleta, não faz nada
+					//se recebeu uma rota obsoleta, pisca led amarelo
+					emit LED2(ON);
+					await LED_VIEW s;
+					emit LED2(OFF);
 				end
+				emit LED0(OFF);
 			end
 		with 
 			//Recebendo alertas e enviando para o progenitor

@@ -37,7 +37,6 @@ var alertMsg recAlert;
 sendAlert.target = BROADCAST;
 sendAlert.type = MSG_TYPE_ALERT;
 sendAlert.source = nodeId;
-recAlert.type = MSG_TYPE_ALERT;
 
 
 
