@@ -97,6 +97,7 @@ sendAns.target = BROADCAST;
 sendAns.type = MSG_TYPE_REQUEST;
 sendAns.source = nodeId;
 /*
+//[[EDIT]] era isso que queria pôr numa função
 loop i, QTD_SUCESSORES do
 	if sucessorN.sucessores[i] == reqId then
 //		envia pra sucessorN;
