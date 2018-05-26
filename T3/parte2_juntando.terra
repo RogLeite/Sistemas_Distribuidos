@@ -1,0 +1,315 @@
+#include "/home/terra/TerraNG/terra/TerraNet.defs"
+#define LED_VIEW 2 //Define o tempo em que os leds ficam acesos
+#define ROOT_TIME 15
+#define SOMETHING 3
+#define TEMP_LIM 500
+#define MSG_TYPE_PATHING 1
+#define MSG_TYPE_ALERT 2
+#define ALERT_REPEAT 4
+#define TEMP_MEM 4
+//#define TESTE 1
+//-------------------------------------------
+#define MSG_TYPE_SUCESSORES 3
+#define QTD_SUCESSORES 7
+#define ANSWER_TIMEOUT 2
+
+
+var ubyte fila;
+
+var ushort nodeId = getNodeId();
+var ushort alta_temp = 0;
+var ushort[TEMP_MEM] temps;
+var ushort temp = 0;
+var ushort med_temp = 0;
+
+//define mensagem tipo MSG_TYPE_PATHING
+pktype pathMsg from radioMsg with
+	var ubyte num_saltos;
+	var ulong versao_rota;
+end
+
+var pathMsg sendPath;
+var pathMsg recPath;
+
+sendPath.type = MSG_TYPE_PATHING;
+sendPath.target = BROADCAST;
+sendPath.source = nodeId;
+sendPath.num_saltos = 0;
+sendPath.versao_rota = 0;
+
+
+//NOVIDADES--------------------------
+
+//define mensagem tipo MSG_TYPE_SUCESSORES
+
+regtype sucessor with
+	var ushort id;
+	var ushort[QTD_SUCESSORES] sucessores;
+end
+
+var sucessor sucessor1;
+var sucessor sucessor2;
+var sucessor sucessor3;
+var sucessor sucessor4;
+var sucessor sucessor5;
+var sucessor sucessor6;
+var sucessor sucessor7;
+
+pktype posMsg from radioMsg with
+	var ushort[QTD_SUCESSORES] sucessores;
+end
+
+var posMsg sendPos;
+var posMsg recPos;
+
+sendPos.type = MSG_TYPE_SUCESSORES;
+sendPos.target = BROADCAST;
+sendPos.source = nodeId;
+//NOVIDADES++++++++++++++++++++++++++
+
+
+//define mensagem tipo MSG_TYPE_ALERT
+pktype alertMsg from radioMsg with end
+
+var alertMsg sendAlert;
+var alertMsg recAlert;
+sendAlert.target = BROADCAST;
+sendAlert.type = MSG_TYPE_ALERT;
+sendAlert.source = nodeId;
+
+loop do
+	if nodeId == 11 then  //se é a raiz:
+	//espera e manda o criar path
+		par do		
+			loop do
+				//incrementa a versao da rota
+				sendPath.versao_rota = sendPath.versao_rota + 1;
+				emit SEND(sendPath);
+				await SEND_DONE();
+				loop i,QTD_SUCESSORES do sendPos.sucessores[i] = 0; end
+
+				//sucessor1.id = 0;
+				loop i,QTD_SUCESSORES do sucessor1.sucessores[i] = 0; end
+				//sucessor2.id = 0;
+				loop i,QTD_SUCESSORES do sucessor2.sucessores[i] = 0; end
+				//sucessor3.id = 0;
+				loop i,QTD_SUCESSORES do sucessor3.sucessores[i] = 0; end
+				//sucessor4.id = 0;
+				loop i,QTD_SUCESSORES do sucessor4.sucessores[i] = 0; end
+				//sucessor5.id = 0;
+				loop i,QTD_SUCESSORES do sucessor5.sucessores[i] = 0; end
+				//sucessor6.id = 0;
+				loop i,QTD_SUCESSORES do sucessor6.sucessores[i] = 0; end
+				//sucessor7.id = 0;
+				loop i,QTD_SUCESSORES do sucessor7.sucessores[i] = 0; end
+
+				par/or do
+					//1o---------------------------------------
+					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+					//Armazena sucessores do sucessor recebido
+					//sucessor1.id = recPos.source;
+					sendPos.sucessores[0] = recPos.source;
+					loop i,QTD_SUCESSORES do sucessor1.sucessores[i] = recPos.sucessores[i]; end
+					//2o---------------------------------------
+					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+						//Armazena sucessores do sucessor recebido
+					//sucessor2.id = recPos.source;
+					sendPos.sucessores[1] = recPos.source;
+					loop i,QTD_SUCESSORES do sucessor2.sucessores[i] = recPos.sucessores[i]; end
+					//3o---------------------------------------
+					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+						//Armazena sucessores do sucessor recebido
+					//sucessor3.id = recPos.source;
+					sendPos.sucessores[2] = recPos.source;
+					loop i,QTD_SUCESSORES do sucessor3.sucessores[i] = recPos.sucessores[i]; end
+					//4o---------------------------------------
+					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+						//Armazena sucessores do sucessor recebido
+					//sucessor4.id = recPos.source;
+					sendPos.sucessores[3] = recPos.source;
+					loop i,QTD_SUCESSORES do sucessor4.sucessores[i] = recPos.sucessores[i]; end
+					//5o---------------------------------------
+					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+						//Armazena sucessores do sucessor recebido
+					//sucessor5.id = recPos.source;
+					sendPos.sucessores[4] = recPos.source;
+					loop i,QTD_SUCESSORES do sucessor5.sucessores[i] = recPos.sucessores[i]; end
+					//6o---------------------------------------
+					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+						//Armazena sucessores do sucessor recebido
+					//sucessor6.id = recPos.source;
+					sendPos.sucessores[5] = recPos.source;
+					loop i,QTD_SUCESSORES do sucessor6.sucessores[i] = recPos.sucessores[i]; end
+					//7o---------------------------------------
+					recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+						//Armazena sucessores do sucessor recebido
+					//sucessor7.id = recPos.source;
+					sendPos.sucessores[6] = recPos.source;
+					loop i,QTD_SUCESSORES do sucessor7.sucessores[i] = recPos.sucessores[i]; end
+				with
+					await ANSWER_TIMEOUT s;
+				end
+
+				//FIM-ESCUTA-SUCESSORES-------------------------
+
+				//dorme até o próximo envio
+				await ROOT_TIME s;
+				
+			end 
+
+		with
+			//Raiz recebendo alertas
+			loop do
+				recAlert = await RECEIVE(MSG_TYPE_ALERT);	
+				if recAlert.type == MSG_TYPE_ALERT then
+					emit LED0(ON);
+					emit LED1(ON);
+					emit LED2(ON);
+					await 3s;
+					emit LED0(OFF);
+					emit LED1(OFF);
+					emit LED2(OFF);
+				end
+			end
+		end
+
+
+	else //se não é a raiz
+		var ushort progenitor;
+		par do 
+			//LISTENING--------------------------------------------------
+			par do
+				//fica escutando recPath
+				loop do
+					recPath = await RECEIVE(MSG_TYPE_PATHING);
+					emit LED0(ON);
+					if recPath.versao_rota > sendPath.versao_rota then
+						progenitor = recPath.source;
+						sendAlert.target = progenitor;
+						sendPath.versao_rota = recPath.versao_rota;
+						sendPath.num_saltos = recPath.num_saltos + 1;
+						emit SEND(sendPath);
+						await SEND_DONE();
+						//ESCUTA-SUCESSORES-----------------------------
+
+						loop i,QTD_SUCESSORES do sendPos.sucessores[i] = 0; end
+
+						//sucessor1.id = 0;
+						loop i,QTD_SUCESSORES do sucessor1.sucessores[i] = 0; end
+						//sucessor2.id = 0;
+						loop i,QTD_SUCESSORES do sucessor2.sucessores[i] = 0; end
+						//sucessor3.id = 0;
+						loop i,QTD_SUCESSORES do sucessor3.sucessores[i] = 0; end
+						//sucessor4.id = 0;
+						loop i,QTD_SUCESSORES do sucessor4.sucessores[i] = 0; end
+						//sucessor5.id = 0;
+						loop i,QTD_SUCESSORES do sucessor5.sucessores[i] = 0; end
+						//sucessor6.id = 0;
+						loop i,QTD_SUCESSORES do sucessor6.sucessores[i] = 0; end
+						//sucessor7.id = 0;
+						loop i,QTD_SUCESSORES do sucessor7.sucessores[i] = 0; end
+						
+						par/or do
+							//1o---------------------------------------
+							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+							//Armazena sucessores do sucessor recebido
+							//sucessor1.id = recPos.source;
+							sendPos.sucessores[0] = recPos.source;
+							loop i,QTD_SUCESSORES do sucessor1.sucessores[i] = recPos.sucessores[i]; end
+							//2o---------------------------------------
+							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+								//Armazena sucessores do sucessor recebido
+							//sucessor2.id = recPos.source;
+							sendPos.sucessores[1] = recPos.source;
+							loop i,QTD_SUCESSORES do sucessor2.sucessores[i] = recPos.sucessores[i]; end
+							//3o---------------------------------------
+							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+								//Armazena sucessores do sucessor recebido
+							//sucessor3.id = recPos.source;
+							sendPos.sucessores[2] = recPos.source;
+							loop i,QTD_SUCESSORES do sucessor3.sucessores[i] = recPos.sucessores[i]; end
+							//4o---------------------------------------
+							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+								//Armazena sucessores do sucessor recebido
+							//sucessor4.id = recPos.source;
+							sendPos.sucessores[3] = recPos.source;
+							loop i,QTD_SUCESSORES do sucessor4.sucessores[i] = recPos.sucessores[i]; end
+							//5o---------------------------------------
+							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+								//Armazena sucessores do sucessor recebido
+							//sucessor5.id = recPos.source;
+							sendPos.sucessores[4] = recPos.source;
+							loop i,QTD_SUCESSORES do sucessor5.sucessores[i] = recPos.sucessores[i]; end
+							//6o---------------------------------------
+							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+								//Armazena sucessores do sucessor recebido
+							//sucessor6.id = recPos.source;
+							sendPos.sucessores[5] = recPos.source;
+							loop i,QTD_SUCESSORES do sucessor6.sucessores[i] = recPos.sucessores[i]; end
+							//7o---------------------------------------
+							recPos = await RECEIVE(MSG_TYPE_SUCESSORES);
+								//Armazena sucessores do sucessor recebido
+							//sucessor7.id = recPos.source;
+							sendPos.sucessores[6] = recPos.source;
+							loop i,QTD_SUCESSORES do sucessor7.sucessores[i] = recPos.sucessores[i]; end
+						with
+							await ANSWER_TIMEOUT s;
+						end
+
+						//FIM-ESCUTA-SUCESSORES-------------------------
+						//RESPONDE-AO-PROGENITOR-----------------------------
+						sendPos.target = progenitor;
+						emit SEND(sendPos); 
+						await SEND_DONE();
+						//END-RESPONDE-AO-PROGENITOR-------------------------
+
+					else
+						//se recebeu uma rota obsoleta, pisca não faz nada
+
+					end
+					emit LED0(OFF);
+				end
+
+			with 
+				//Recebendo alertas e enviando para o progenitor
+				loop do
+					recAlert = await RECEIVE(MSG_TYPE_ALERT);	
+					if recAlert.type == MSG_TYPE_ALERT then
+						emit SEND(sendAlert);
+						await SEND_DONE();
+					end
+					emit LED0(OFF);
+				end
+			end
+			//END-LISTENING----------------------------------------------
+		with
+			//READING-TEMP-------------------------------------
+			loop i, TEMP_MEM do temps[i] = 0; end
+			loop do
+				loop i,TEMP_MEM do
+					await SOMETHING s;
+					//fica esperando tempo passar do limite
+					emit REQ_TEMP();
+					temps[i] = await TEMP();
+					temp = 0;
+					loop j,TEMP_MEM do temp = temp+temps[i]; end
+					med_temp = temp/TEMP_MEM;
+					if med_temp > TEMP_LIM then
+						//temperatura excedeu limite
+						alta_temp = med_temp;
+						emit LED2(ON);
+						//emitir mensagem tipo MSG_TYPE_ALERT
+						emit SEND(sendAlert);
+						await SEND_DONE();
+						await ALERT_REPEAT s;
+					else
+						emit LED2(OFF);			
+					end
+				end
+			end
+			//END-READING-TEMP---------------------------------
+		end
+	end
+	//END-NORMAL-EXECUTION-----------------------------------------------
+end
+
