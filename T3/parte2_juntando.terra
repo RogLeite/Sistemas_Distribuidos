@@ -13,7 +13,7 @@
 #define QTD_SUCESSORES_SQUARED 20//QTD_SUCESSORES*QTD_SUCSUC
 #define TAM_MSG 10
 #define MUITO_GRANDE 1000
-var ushort[QTD_SUCESSORES_SQUARED] sucessores;
+var ubyte[QTD_SUCESSORES_SQUARED] sucessores;
 var ubyte progenitor;
 //GENERIC+RESUMIR++++++++++++++++++++++++++++++++++++++++++++++
 //GENERIC-REQUEST----------------------------------------------
