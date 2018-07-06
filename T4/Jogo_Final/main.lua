@@ -705,7 +705,7 @@ function love.update(dt)
   
 end
 function love.draw()
-  if Jogo ==1 or Jogo == "Salve" or Jogo == "Co-op" or Jogo == "Salve Co-op" then
+  if Jogo == "Jogo" or Jogo == "Salve" or Jogo == "Co-op" or Jogo == "Salve Co-op" then
     love.graphics.setBackgroundColor(160,194,250)
     if BackGrounds.Destaque == 0 then
       love.graphics.draw(Lava, 0, 0)
