@@ -643,7 +643,7 @@ function love.keypressed(key)
       end
     end
     if cutscenes.ativador then
-      if key == "kpenter" then
+      if key == "kpenter" or key == "p" then
         end_Cutscene()
       end
     end
