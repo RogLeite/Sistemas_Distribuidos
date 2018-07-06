@@ -1,5 +1,113 @@
 local macro_TESTING = true
 
+
+function first_Start()
+  just_started = false
+  cutscenes.ativador = true
+end
+
+
+function end_Cutscene()
+  cutscenes.ativador = false
+  BackGrounds.Ativada = true  
+end
+
+function select_Background(key)
+  if key == "up" then
+    if BackGrounds.Destaque <= 2 then
+      BackGrounds.Destaque = BackGrounds.Destaque + 3
+    else
+      BackGrounds.Destaque = BackGrounds.Destaque - 3
+    end
+  end
+  if key == "down" then
+    if BackGrounds.Destaque >= 3 then
+      BackGrounds.Destaque = BackGrounds.Destaque - 3
+    else
+      BackGrounds.Destaque = BackGrounds.Destaque + 3
+    end
+  end
+  if key == "left" then
+    if BackGrounds.Destaque == 0 or BackGrounds.Destaque == 3 then
+      BackGrounds.Destaque = BackGrounds.Destaque + 2
+    else
+      BackGrounds.Destaque = BackGrounds.Destaque - 1
+    end
+  end
+  if key == "right" then
+    if BackGrounds.Destaque == 2 or BackGrounds.Destaque == 5 then
+      BackGrounds.Destaque = BackGrounds.Destaque - 2
+    else
+      BackGrounds.Destaque = BackGrounds.Destaque + 1
+    end
+  end
+  if key == "return" then
+    BackGrounds.Ativada = false
+    Escolha.Ativada = true
+  end
+end
+
+function select_Modo(key)  
+  if key == "up" or key == "down" then
+    if Escolha.Destaque == "Cooperativo" then
+      Escolha.Destaque = "Solo"
+    elseif Escolha.Destaque == "Solo" then
+      Escolha.Destaque = "Cooperativo"
+    end
+  end
+  if key == "space" then
+    Escolha.Ativada = false
+    InstrucoesAtivada = true
+  end
+end
+
+
+function end_Instrucoes()  
+  InstrucoesAtivada = false
+  start_Jogo()
+end
+
+
+function start_Jogo()  
+  if Escolha.Destaque == "Solo" then
+    Jogo = "Jogo"
+  elseif Escolha.Destaque == "Cooperativo" then
+    Jogo = "Co-op"
+  end
+end
+
+
+
+function reset_Jogo()
+  for i = 0, 3, 1 do
+    for j = 0, 6, 1 do
+      Matriz_Cano[i][j] = 0
+    end
+  end
+  for i = 0, 10, 1 do
+    inimigos[i].cores = 0
+  end
+  Pontuacao = 0
+  Mario.Cano_Selecionado = 1
+  Luigi.Cano_Selecionado = 1
+  Mario.posy = window.h/4
+  Luigi.posy = window.h/4
+  Mario.Linha = 0
+  Luigi.Linha = 0
+  Princesa.Nivel = 1
+  Princesa.Contador = 0
+  Princesa.PosX = 3 * window.w/4
+  Princesa.Cor = 0
+  Moedas = 50
+  Jogo = "Menu"
+  BackGrounds.Destaque = 0
+  BackGrounds.Ativada = true
+end
+
+
+
+
+
 function cresce_Bola()
   if Jogo == "Salve" and Princesa.Contador < 10 * Princesa.Nivel then
     Princesa.Contador = Princesa.Contador + 1
@@ -9,22 +117,26 @@ function cresce_Bola()
     BolaFogo.Tamanho = (Princesa.Contador/(20*Princesa.Nivel))
   end
 end
+
 function save_Mario(key)
   if key == "left" then -- Cresce a Bola de Fogo
     cresce_Bola()
   end
 end
+
 function save_Luigi(key)
   if key == "a" then
     cresce_Bola()
   end
 end
+
 function Por_Cano_keypressed(Cano_Selecionado, Linhapers) -- Armazena Cano_Selecionado na Matriz Cano
   for Coluna = 6, 1, -1 do -- Percorre a Matriz_Cano ajustando a posição deles.
     Matriz_Cano[Linhapers][Coluna] = Matriz_Cano[Linhapers][Coluna - 1]
   end
   Matriz_Cano[Linhapers][0] = Cano_Selecionado -- Põe o Cano_Selecionado
 end
+
 
 function controle_Luigi(key)
   if key == "g" and Dificuldade.Nivel >= 1 then -- Seleção de Canos Luigi
@@ -50,6 +162,7 @@ function controle_Luigi(key)
     Luigi.tempo_saida = 0 --Inicializa o tempo de animação
   end
 end
+
 function controle_Mario(key)
   if key == "kp1" and Dificuldade.Nivel >= 1 then -- Seleção de Canos, com bloqueio das cores ainda não liberadas
     Mario.Cano_Selecionado = 1 -- Verde
@@ -76,10 +189,13 @@ function controle_Mario(key)
 end
 
 
+
 function ChecarColisaoPassaro(XP, WP, XC, X) --x do Passaro, Largura do Passaro, x do Cano, Extra
   return XC < XP + WP - X
   end
+
 function love.load()
+  just_started = true
   window = {}
   window.h = love.graphics.getHeight()
   window.w = love.graphics.getWidth()
@@ -250,7 +366,9 @@ function love.load()
     end
   end
 end
+
 function love.keypressed(key)
+  
   if Jogo == "Jogo" then -- Jogo
     controle_Mario(key)
   elseif Jogo == "Co-op" then -- Jogo Cooperativo
@@ -263,95 +381,28 @@ function love.keypressed(key)
     save_Luigi(key)
   elseif Jogo == "Game Over" then -- Game Over
     if key == "return" then -- Reinicia o Jogo
-      for i = 0, 3, 1 do
-        for j = 0, 6, 1 do
-          Matriz_Cano[i][j] = 0
-        end
-      end
-      for i = 0, 10, 1 do
-        inimigos[i].cores = 0
-      end
-      Pontuacao = 0
-      Mario.Cano_Selecionado = 1
-      Luigi.Cano_Selecionado = 1
-      Mario.posy = window.h/4
-      Luigi.posy = window.h/4
-      Mario.Linha = 0
-      Luigi.Linha = 0
-      Princesa.Nivel = 1
-      Princesa.Contador = 0
-      Princesa.PosX = 3 * window.w/4
-      Princesa.Cor = 0
-      Moedas = 50
-      Jogo = "Menu"
-      BackGrounds.Destaque = 0
-      BackGrounds.Ativada = true
+      reset_Jogo()
     end
   elseif Jogo == "Menu" then -- Menu
-    if key == "return" and cutscenes.ativador == false and Escolha.Ativada == false and BackGrounds.Ativada == false then
-      cutscenes.ativador = true
-    end
-    if BackGrounds.Ativada == true then
-      if key == "up" then
-        if BackGrounds.Destaque <= 2 then
-          BackGrounds.Destaque = BackGrounds.Destaque + 3
-        else
-          BackGrounds.Destaque = BackGrounds.Destaque - 3
-        end
-      end
-      if key == "down" then
-        if BackGrounds.Destaque >= 3 then
-          BackGrounds.Destaque = BackGrounds.Destaque - 3
-        else
-          BackGrounds.Destaque = BackGrounds.Destaque + 3
-        end
-      end
-      if key == "left" then
-        if BackGrounds.Destaque == 0 or BackGrounds.Destaque == 3 then
-          BackGrounds.Destaque = BackGrounds.Destaque + 2
-        else
-          BackGrounds.Destaque = BackGrounds.Destaque - 1
-        end
-      end
-      if key == "right" then
-        if BackGrounds.Destaque == 2 or BackGrounds.Destaque == 5 then
-          BackGrounds.Destaque = BackGrounds.Destaque - 2
-        else
-          BackGrounds.Destaque = BackGrounds.Destaque + 1
-        end
-      end
+    if just_started then
       if key == "return" then
-        BackGrounds.Ativada = false
-        Escolha.Ativada = true
+        first_Start()
       end
     end
-    if Escolha.Ativada == true then
-      if key == "up" or key == "down" then
-        if Escolha.Destaque == "Cooperativo" then
-          Escolha.Destaque = "Solo"
-        elseif Escolha.Destaque == "Solo" then
-          Escolha.Destaque = "Cooperativo"
-        end
-      end
-      if key == "space" then
-        Escolha.Ativada = false
-        InstrucoesAtivada = true
-      end
-    end
-    if cutscenes.ativador == true then
+    if cutscenes.ativador then
       if key == "kpenter" then
-        cutscenes.ativador = false
-        BackGrounds.Ativada = true
+        end_Cutscene()
       end
     end
-    if InstrucoesAtivada == true then
+    if BackGrounds.Ativada then
+      select_Background(key)
+    end
+    if Escolha.Ativada then
+      select_Modo(key)
+    end
+    if InstrucoesAtivada then
       if key == "return" then
-        if Escolha.Destaque == "Solo" then
-          Jogo = "Jogo"
-        elseif Escolha.Destaque == "Cooperativo" then
-          Jogo = "Co-op"
-        end
-        InstrucoesAtivada = false
+        end_Instrucoes()
       end
     end
   end
@@ -361,7 +412,7 @@ function love.keypressed(key)
 end
 function love.update(dt)
   if Jogo == "Jogo" or Jogo == "Co-op" then-- Jogo
-    if Mario.anim_saida_down == true then   -- Movimento do Mario para Baixo
+    if Mario.anim_saida_down then   -- Movimento do Mario para Baixo
       Mario.tempo_saida = Mario.tempo_saida + dt --Conta o tempo
       if Mario.tempo_saida > 0.07 then
         Mario.animacao = 1 --Desativa animação
