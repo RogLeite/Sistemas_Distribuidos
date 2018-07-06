@@ -8,6 +8,9 @@ function ChecarColisaoPassaro(XP, WP, XC, X) --x do Passaro, Largura do Passaro,
   return XC < XP + WP - X
   end
 function love.load()
+  window = {}
+  window.h = love.graphics.getHeight()
+  window.w = love.graphics.getWidth()
   love.window.setTitle("Canos vs. FlappyBird")
   myfont = love.graphics.newFont("GretoonHighlight.ttf", 20)
   love.graphics.setFont(myfont)
@@ -16,12 +19,12 @@ function love.load()
   inimigos = {} -- Vetor de tabelas dos inimigos
   Matriz_Cano = {} -- Armazena a Cor do cano em sua Posição
   Pontuacao = 0
-  tam_linha = 5*love.graphics.getHeight()/32 -- Altura da linha em função da tela
-  tam_coluna = 5*love.graphics.getWidth()/48 -- Largura da Coluna em função da tela
+  tam_linha = 5*window.h/32 -- Altura da linha em função da tela
+  tam_coluna = 5*window.w/48 -- Largura da Coluna em função da tela
   Mario = { -- Biblioteca do Jogador 1
     Cano_Selecionado = 1, -- 1-Verde 2-Amarelo 3-Azul 4-Vermelho 5-Preto
-    posx = 3*love.graphics.getWidth()/4,
-    posy = love.graphics.getHeight()/4,
+    posx = 3*window.w/4,
+    posy = window.h/4,
     Linha = 0, -- Armazena em que Linha o Jogador está
     animacao = 1, --Imagem que será apresentada
     anim_saida_down = false, --Controla o pressionameto do teclado(movimentação) 
@@ -31,8 +34,8 @@ function love.load()
   }
   Luigi = { -- Biblioteca do Jogador 2
     Cano_Selecionado = 1, -- 1-Verde 2-Amarelo 3-Azul 4-Vermelho 5-Preto
-    posx = 3*love.graphics.getWidth()/4 + tam_coluna,
-    posy = love.graphics.getHeight()/4,
+    posx = 3*window.w/4 + tam_coluna,
+    posy = window.h/4,
     Linha = 0, -- Armazena em que Linha o Jogador está
     animacao = 1, --Imagem que será apresentada
     anim_saida_down = false, --Controla o pressionameto do teclado(movimentação) 
@@ -42,8 +45,8 @@ function love.load()
   }
   Princesa = {
     Nivel = 1,--Armazena quantas vezes ela já foi resgatada
-    PosX = 3*love.graphics.getWidth()/4,
-    PosY = love.graphics.getHeight()/4,
+    PosX = 3*window.w/4,
+    PosY = window.h/4,
     Cor = 0,--Armazena a cor que o flappybird terá
     Contador = 0 -- Armazena o clique de teclas para derrotar o pássaro
   }
@@ -74,7 +77,7 @@ function love.load()
     ativador = false, --ativa cutscenes
     bowser = {
       anim = 2, --Guarda informação sobre a imagem a ser impresa do bowser
-      posicaox = love.graphics.getWidth(),
+      posicaox = window.w,
       posicaoy = 300
     },
     flappybird = {
@@ -192,10 +195,10 @@ function love.keypressed(key)
       Por_Cano_keypressed(Mario.Cano_Selecionado, Mario.Linha)
       Moedas = Moedas - Mario.Cano_Selecionado -- Gasta a Moeda
     end
-    if key == "down" and not(Mario.posy == (23*love.graphics.getHeight()/32)) then  --Movimento do Mario -- Limite Inferior
+    if key == "down" and not(Mario.posy == (23*window.h/32)) then  --Movimento do Mario -- Limite Inferior
         Mario.anim_saida_down = true --Caso o jogador tenha pressionado
         Mario.tempo_saida = 0 --Inicializa o tempo de aniamação
-    elseif key == "up" and not(Mario.posy == love.graphics.getHeight()/4) then -- Limite Superior
+    elseif key == "up" and not(Mario.posy == window.h/4) then -- Limite Superior
         Mario.anim_saida_up = true --Caso o jogador tenha pressionado
         Mario.tempo_saida = 0 --Inicializa o tempo de animação
     end
@@ -215,10 +218,10 @@ function love.keypressed(key)
         Por_Cano_keypressed(Luigi.Cano_Selecionado, Luigi.Linha)
         Moedas = Moedas - Luigi.Cano_Selecionado -- Gasta a Moeda
       end
-      if key == "s" and not(Luigi.posy == (23*love.graphics.getHeight()/32)) then  -- Movimento Luigi -- Limite Inferior
+      if key == "s" and not(Luigi.posy == (23*window.h/32)) then  -- Movimento Luigi -- Limite Inferior
         Luigi.anim_saida_down = true --Caso o jogador tenha pressionado
         Luigi.tempo_saida = 0 --Inicializa o tempo de aniamação
-      elseif key == "w" and not(Luigi.posy == love.graphics.getHeight()/4) then -- Limite Superior
+      elseif key == "w" and not(Luigi.posy == window.h/4) then -- Limite Superior
         Luigi.anim_saida_up = true --Caso o jogador tenha pressionado
         Luigi.tempo_saida = 0 --Inicializa o tempo de animação
       end
@@ -252,13 +255,13 @@ function love.keypressed(key)
       Pontuacao = 0
       Mario.Cano_Selecionado = 1
       Luigi.Cano_Selecionado = 1
-      Mario.posy = love.graphics.getHeight()/4
-      Luigi.posy = love.graphics.getHeight()/4
+      Mario.posy = window.h/4
+      Luigi.posy = window.h/4
       Mario.Linha = 0
       Luigi.Linha = 0
       Princesa.Nivel = 1
       Princesa.Contador = 0
-      Princesa.PosX = 3 * love.graphics.getWidth()/4
+      Princesa.PosX = 3 * window.w/4
       Princesa.Cor = 0
       Moedas = 50
       Jogo = 0
@@ -399,15 +402,15 @@ function love.update(dt)
     end
     for i = 0 , 10, 1 do   --Atualizar a posição do pássaro
       if inimigos[i].cores == 1 then
-        inimigos[i].posicaox = inimigos[i].posicaox + love.graphics.getWidth()/8 * dt * Controle_Inimigos.Velocidade -- 100
+        inimigos[i].posicaox = inimigos[i].posicaox + window.w/8 * dt * Controle_Inimigos.Velocidade -- 100
       elseif inimigos[i].cores == 2 then
-        inimigos[i].posicaox = inimigos[i].posicaox + 6 * love.graphics.getWidth()/40 * dt * Controle_Inimigos.Velocidade  -- 120
+        inimigos[i].posicaox = inimigos[i].posicaox + 6 * window.w/40 * dt * Controle_Inimigos.Velocidade  -- 120
       elseif inimigos[i].cores == 3 then
-        inimigos[i].posicaox = inimigos[i].posicaox + 7 * love.graphics.getWidth()/40 * dt * Controle_Inimigos.Velocidade  -- 140
+        inimigos[i].posicaox = inimigos[i].posicaox + 7 * window.w/40 * dt * Controle_Inimigos.Velocidade  -- 140
       elseif inimigos[i].cores == 4 then
-        inimigos[i].posicaox = inimigos[i].posicaox + love.graphics.getWidth()/5 * dt * Controle_Inimigos.Velocidade  -- 160
+        inimigos[i].posicaox = inimigos[i].posicaox + window.w/5 * dt * Controle_Inimigos.Velocidade  -- 160
       elseif inimigos[i].cores == 5 then
-        inimigos[i].posicaox = inimigos[i].posicaox + 9 * love.graphics.getWidth()/40 * dt * Controle_Inimigos.Velocidade  -- 180
+        inimigos[i].posicaox = inimigos[i].posicaox + 9 * window.w/40 * dt * Controle_Inimigos.Velocidade  -- 180
       end
     end
     --Controle de criação de inimigos
@@ -443,19 +446,19 @@ function love.update(dt)
     end
     for i = 0, 10, 1 do --Colisão dos Passaros
       for j = 6, 0, -1 do
-        if ChecarColisaoPassaro(inimigos[i].posicaox, tam_coluna, 3 * love.graphics.getWidth()/4 - (j+1) * tam_coluna, 2 * tam_coluna/5) and Matriz_Cano[inimigos[i].linha][j] == inimigos[i].cores and inimigos[i].cores ~= 0 then
+        if ChecarColisaoPassaro(inimigos[i].posicaox, tam_coluna, 3 * window.w/4 - (j+1) * tam_coluna, 2 * tam_coluna/5) and Matriz_Cano[inimigos[i].linha][j] == inimigos[i].cores and inimigos[i].cores ~= 0 then
           EfeitoColisao.Ativada = true
-          EfeitoColisao.PosX = 3 * love.graphics.getWidth()/4 - (j+1) * tam_coluna - tam_coluna/2
-          EfeitoColisao.PosY = inimigos[i].linha * tam_linha + love.graphics.getHeight()/4
+          EfeitoColisao.PosX = 3 * window.w/4 - (j+1) * tam_coluna - tam_coluna/2
+          EfeitoColisao.PosY = inimigos[i].linha * tam_linha + window.h/4
           EfeitoColisao.Contador = 0
           Pontuacao = Pontuacao + inimigos[i].cores
           inimigos[i].cores = 0
           Moedas = Moedas + Matriz_Cano[inimigos[i].linha][j]
           Matriz_Cano[inimigos[i].linha][j] = 0
-        elseif ChecarColisaoPassaro(inimigos[i].posicaox, tam_coluna, 3 * love.graphics.getWidth()/4 - (j+1) * tam_coluna, 2 * tam_coluna/5) and Matriz_Cano[inimigos[i].linha][j] ~= inimigos[i].cores and Matriz_Cano[inimigos[i].linha][j] ~= 0 then
+        elseif ChecarColisaoPassaro(inimigos[i].posicaox, tam_coluna, 3 * window.w/4 - (j+1) * tam_coluna, 2 * tam_coluna/5) and Matriz_Cano[inimigos[i].linha][j] ~= inimigos[i].cores and Matriz_Cano[inimigos[i].linha][j] ~= 0 then
           EfeitoColisao.Ativada = true
-          EfeitoColisao.PosX = 3 * love.graphics.getWidth()/4 - (j+1) * tam_coluna - tam_coluna/2
-          EfeitoColisao.PosY = inimigos[i].linha * tam_linha + love.graphics.getHeight()/4
+          EfeitoColisao.PosX = 3 * window.w/4 - (j+1) * tam_coluna - tam_coluna/2
+          EfeitoColisao.PosY = inimigos[i].linha * tam_linha + window.h/4
           EfeitoColisao.Contador = 0
           Moedas = Moedas + Matriz_Cano[inimigos[i].linha][j]
           Matriz_Cano[inimigos[i].linha][j] = 0
@@ -464,7 +467,7 @@ function love.update(dt)
       if inimigos[i].posicaox >= Mario.posx - 2 * tam_coluna/5 then -- Controle da mudança de jogo
         Princesa.Cor = inimigos[i].cores
         Princesa.Linha = inimigos[i].linha
-        Princesa.PosY = love.graphics.getHeight()/4 + tam_linha * Princesa.Linha
+        Princesa.PosY = window.h/4 + tam_linha * Princesa.Linha
         BolaFogo.PosY = Mario.posy
         BolaFogo.Diferenca = (Princesa.PosY + (Princesa.Linha * tam_linha)) - BolaFogo.PosY
         Controle_Inimigos.tempo_aparicao = 0
@@ -495,7 +498,7 @@ function love.update(dt)
     end
     if Jogo == 2 then
       if Princesa.Contador < (10 * Princesa.Nivel) then
-        Princesa.PosX = Princesa.PosX - love.graphics.getWidth()/8 * dt
+        Princesa.PosX = Princesa.PosX - window.w/8 * dt
       elseif Princesa.Contador >= (10 * Princesa.Nivel) then
         BolaFogo.PosX = BolaFogo.PosX - (1500 * dt)
         if BolaFogo.PosY < Princesa.PosY + 30 then
@@ -508,7 +511,7 @@ function love.update(dt)
           BolaFogo.PosX = Mario.posx
           Pontuacao = Pontuacao + Princesa.Cor
           Princesa.Cor = 0
-          Princesa.PosX = 3 * love.graphics.getWidth()/4
+          Princesa.PosX = 3 * window.w/4
           Princesa.Nivel = Princesa.Nivel + 1
           Princesa.Contador = 0
           Moedas = 50
@@ -517,7 +520,7 @@ function love.update(dt)
       end
     elseif Jogo == 5 then
       if Princesa.Contador < (20 * Princesa.Nivel) then
-        Princesa.PosX = Princesa.PosX - love.graphics.getWidth()/8 * dt
+        Princesa.PosX = Princesa.PosX - window.w/8 * dt
       elseif Princesa.Contador >= (20 * Princesa.Nivel) then
         BolaFogo.PosX = BolaFogo.PosX - (1500 * dt)
         if BolaFogo.PosY < Princesa.PosY + 30 then
@@ -530,7 +533,7 @@ function love.update(dt)
           BolaFogo.PosX = Mario.posx
           Pontuacao = Pontuacao + Princesa.Cor
           Princesa.Cor = 0
-          Princesa.PosX = 3 * love.graphics.getWidth()/4
+          Princesa.PosX = 3 * window.w/4
           Princesa.Nivel = Princesa.Nivel + 1
           Princesa.Contador = 0
           Moedas = 50
@@ -541,12 +544,12 @@ function love.update(dt)
   elseif Jogo == 0 then -- Menu
     --cutscenes
     if cutscenes.ativador == true then
-      if cutscenes.bandodeflappy.posicaox[1] > love.graphics.getWidth() then
+      if cutscenes.bandodeflappy.posicaox[1] > window.w then
         cutscenes.ativador = false
         BackGrounds.Ativada = true
       end
       cutscenes.contador = cutscenes.contador + dt
-      if cutscenes.bowser.posicaox >= love.graphics.getWidth()/2 then
+      if cutscenes.bowser.posicaox >= window.w/2 then
          cutscenes.bowser.posicaox = cutscenes.bowser.posicaox  - 75 * dt --15*dt
           if cutscenes.contador >= 0.3 then
             if cutscenes.bowser.anim == 2 then
@@ -612,81 +615,81 @@ function love.draw()
         Mario.posx,
         Mario.posy,
         0,
-        5*love.graphics.getWidth()/1536,
-        15*love.graphics.getHeight()/4096
+        5*window.w/1536,
+        15*window.h/4096
         )
     elseif Mario.animacao == 2 then -- Animação do Mario andando
       love.graphics.draw(mario_movimento,
         Mario.posx,
         Mario.posy,
         0,
-        5*love.graphics.getWidth()/1536,
-        15*love.graphics.getHeight()/4096
+        5*window.w/1536,
+        15*window.h/4096
         )
     end
     --Seleção de canos
     love.graphics.draw(Cano_Verde,
-      love.graphics.getWidth() - tam_coluna,
-      love.graphics.getHeight() *8 /9,
+      window.w - tam_coluna,
+      window.h *8 /9,
       0,
       tam_coluna/128,
       tam_linha/196)
     love.graphics.draw(Cano_Amarelo,
-      love.graphics.getWidth() - 2 * tam_coluna,
-      love.graphics.getHeight() *8/9,
+      window.w - 2 * tam_coluna,
+      window.h *8/9,
       0,
       tam_coluna/128,
       tam_linha/196)
     love.graphics.draw(Cano_Azul,
-      love.graphics.getWidth()  - 3 * tam_coluna,
-      love.graphics.getHeight() *8/9,
+      window.w  - 3 * tam_coluna,
+      window.h *8/9,
       0,
       tam_coluna/128,
       tam_linha/196)
     love.graphics.draw(Cano_Vermelho,
-      love.graphics.getWidth() - 4 * tam_coluna,
-      love.graphics.getHeight() *8/9,
+      window.w - 4 * tam_coluna,
+      window.h *8/9,
       0,
       tam_coluna/128,
       tam_linha/196)
     love.graphics.draw(Cano_Preto,
-      love.graphics.getWidth() - 5 * tam_coluna,
-      love.graphics.getHeight() *8/9,
+      window.w - 5 * tam_coluna,
+      window.h *8/9,
       0,
       tam_coluna/128,
       tam_linha/196)
     if Mario.Cano_Selecionado == 1 then
       love.graphics.draw(MarioCanoVerde,
-      love.graphics.getWidth() - tam_coluna,
-      love.graphics.getHeight() *8 /9,
+      window.w - tam_coluna,
+      window.h *8 /9,
       0,
       tam_coluna/128,
       tam_linha/196)
     elseif Mario.Cano_Selecionado == 2 then
       love.graphics.draw(MarioCanoAmarelo,
-      love.graphics.getWidth() - 2 * tam_coluna,
-      love.graphics.getHeight() *8/9,
+      window.w - 2 * tam_coluna,
+      window.h *8/9,
       0,
       tam_coluna/128,
       tam_linha/196)
     elseif Mario.Cano_Selecionado == 3 then
       love.graphics.draw(MarioCanoAzul,
-      love.graphics.getWidth()  - 3 * tam_coluna,
-      love.graphics.getHeight() *8/9,
+      window.w  - 3 * tam_coluna,
+      window.h *8/9,
       0,
       tam_coluna/128,
       tam_linha/196)
     elseif Mario.Cano_Selecionado == 4 then
       love.graphics.draw(MarioCanoVermelho,
-      love.graphics.getWidth() - 4 * tam_coluna,
-      love.graphics.getHeight() *8/9,
+      window.w - 4 * tam_coluna,
+      window.h *8/9,
       0,
       tam_coluna/128,
       tam_linha/196)
     elseif Mario.Cano_Selecionado == 5 then
       love.graphics.draw(MarioCanoPreto,
-      love.graphics.getWidth() - 5 * tam_coluna,
-      love.graphics.getHeight() *8/9,
+      window.w - 5 * tam_coluna,
+      window.h *8/9,
       0,
       tam_coluna/128,
       tam_linha/196)
@@ -697,80 +700,80 @@ function love.draw()
           Luigi.posx,
           Luigi.posy,
           0,
-          5*love.graphics.getWidth()/1536,
-          15*love.graphics.getHeight()/4096
+          5*window.w/1536,
+          15*window.h/4096
           )
       elseif Luigi.animacao == 2 then -- Animação do Luigi andando
         love.graphics.draw(luigi_movimento,
           Luigi.posx,
           Luigi.posy,
           0,
-          5*love.graphics.getWidth()/1536,
-          15*love.graphics.getHeight()/4096
+          5*window.w/1536,
+          15*window.h/4096
           )
       end
       love.graphics.draw(Cano_Verde,
-        love.graphics.getWidth()/2 - tam_coluna,
-        love.graphics.getHeight() *8 /9,
+        window.w/2 - tam_coluna,
+        window.h *8 /9,
         0,
         tam_coluna/128,
         tam_linha/196)
       love.graphics.draw(Cano_Amarelo,
-        love.graphics.getWidth()/2 - 2 * tam_coluna,
-        love.graphics.getHeight() *8/9,
+        window.w/2 - 2 * tam_coluna,
+        window.h *8/9,
         0,
         tam_coluna/128,
         tam_linha/196)
       love.graphics.draw(Cano_Azul,
-        love.graphics.getWidth()/2  - 3 * tam_coluna,
-        love.graphics.getHeight() *8/9,
+        window.w/2  - 3 * tam_coluna,
+        window.h *8/9,
         0,
         tam_coluna/128,
         tam_linha/196)
       love.graphics.draw(Cano_Vermelho,
-        love.graphics.getWidth()/2 - 4 * tam_coluna,
-        love.graphics.getHeight() *8/9,
+        window.w/2 - 4 * tam_coluna,
+        window.h *8/9,
         0,
         tam_coluna/128,
         tam_linha/196)
       love.graphics.draw(Cano_Preto,
-        love.graphics.getWidth()/2 - 5 * tam_coluna,
-        love.graphics.getHeight() *8/9,
+        window.w/2 - 5 * tam_coluna,
+        window.h *8/9,
         0,
         tam_coluna/128,
         tam_linha/196)
       if Luigi.Cano_Selecionado == 1 then
         love.graphics.draw(LuigiCanoVerde,
-        love.graphics.getWidth()/2 - tam_coluna,
-        love.graphics.getHeight() *8 /9,
+        window.w/2 - tam_coluna,
+        window.h *8 /9,
         0,
         tam_coluna/128,
         tam_linha/196)
       elseif Luigi.Cano_Selecionado == 2 then
         love.graphics.draw(LuigiCanoAmarelo,
-        love.graphics.getWidth()/2 - 2 * tam_coluna,
-        love.graphics.getHeight() *8/9,
+        window.w/2 - 2 * tam_coluna,
+        window.h *8/9,
         0,
         tam_coluna/128,
         tam_linha/196)
       elseif Luigi.Cano_Selecionado == 3 then
         love.graphics.draw(LuigiCanoAzul,
-        love.graphics.getWidth()/2  - 3 * tam_coluna,
-        love.graphics.getHeight() *8/9,
+        window.w/2  - 3 * tam_coluna,
+        window.h *8/9,
         0,
         tam_coluna/128,
         tam_linha/196)
       elseif Luigi.Cano_Selecionado == 4 then
         love.graphics.draw(LuigiCanoVermelho,
-        love.graphics.getWidth()/2 - 4 * tam_coluna,
-        love.graphics.getHeight() *8/9,
+        window.w/2 - 4 * tam_coluna,
+        window.h *8/9,
         0,
         tam_coluna/128,
         tam_linha/196)
       elseif Luigi.Cano_Selecionado == 5 then
         love.graphics.draw(LuigiCanoPreto,
-        love.graphics.getWidth()/2 - 5 * tam_coluna,
-        love.graphics.getHeight() *8/9,
+        window.w/2 - 5 * tam_coluna,
+        window.h *8/9,
         0,
         tam_coluna/128,
         tam_linha/196)
@@ -780,39 +783,39 @@ function love.draw()
       for j = 0, 6, 1 do
         if Matriz_Cano[i][j] == 1 then --Canos verdes
           love.graphics.draw(Cano_Verde,
-            3 * love.graphics.getWidth()/4 - (j+1) * tam_coluna,
-            love.graphics.getHeight()/4 + i * tam_linha,
+            3 * window.w/4 - (j+1) * tam_coluna,
+            window.h/4 + i * tam_linha,
             0,
             tam_coluna/128,
             tam_linha/128
             )
         elseif Matriz_Cano[i][j] == 2 then --Canos amarelos
           love.graphics.draw(Cano_Amarelo,
-            3 * love.graphics.getWidth()/4 - (j+1) * tam_coluna,
-            love.graphics.getHeight()/4 + i * tam_linha,
+            3 * window.w/4 - (j+1) * tam_coluna,
+            window.h/4 + i * tam_linha,
             0,
             tam_coluna/128,
             tam_linha/128)
         elseif Matriz_Cano[i][j] == 3 then --Canos azuis
           love.graphics.draw(Cano_Azul,
-            3 * love.graphics.getWidth()/4 - (j+1) * tam_coluna,
-            love.graphics.getHeight()/4 + i * tam_linha,
+            3 * window.w/4 - (j+1) * tam_coluna,
+            window.h/4 + i * tam_linha,
             0,
             tam_coluna/128,
             tam_linha/128
             )
         elseif Matriz_Cano[i][j] == 4 then --Canos vermelhos
           love.graphics.draw(Cano_Vermelho,
-            3 * love.graphics.getWidth()/4 - (j+1) * tam_coluna,
-            love.graphics.getHeight()/4 + i * tam_linha,
+            3 * window.w/4 - (j+1) * tam_coluna,
+            window.h/4 + i * tam_linha,
             0,
             tam_coluna/128,
             tam_linha/128
             )
         elseif Matriz_Cano[i][j] == 5 then --Canos pretos
           love.graphics.draw(Cano_Preto,
-            3 * love.graphics.getWidth()/4 - (j+1) * tam_coluna,
-            love.graphics.getHeight()/4 + i * tam_linha,
+            3 * window.w/4 - (j+1) * tam_coluna,
+            window.h/4 + i * tam_linha,
             0,
             tam_coluna/128,
             tam_linha/128
@@ -824,7 +827,7 @@ function love.draw()
       if inimigos[i].cores == 1 then 
         love.graphics.draw(flappyverde,
           inimigos[i].posicaox,
-          love.graphics.getHeight()/4 + inimigos[i].linha * tam_linha,
+          window.h/4 + inimigos[i].linha * tam_linha,
           0,
           tam_coluna/250,
           tam_linha/250
@@ -832,7 +835,7 @@ function love.draw()
       elseif inimigos[i].cores == 2 then 
         love.graphics.draw(flappyamarelo,
           inimigos[i].posicaox,
-          love.graphics.getHeight()/4 + inimigos[i].linha * tam_linha,
+          window.h/4 + inimigos[i].linha * tam_linha,
           0,
           tam_coluna/250,
           tam_linha/250
@@ -840,7 +843,7 @@ function love.draw()
       elseif inimigos[i].cores == 3 then 
         love.graphics.draw(flappyazul,
           inimigos[i].posicaox,
-          love.graphics.getHeight()/4 + inimigos[i].linha * tam_linha,
+          window.h/4 + inimigos[i].linha * tam_linha,
           0,
           tam_coluna/250,
           tam_linha/250
@@ -848,7 +851,7 @@ function love.draw()
       elseif inimigos[i].cores == 4 then 
         love.graphics.draw(flappyvermelho,
           inimigos[i].posicaox,
-          love.graphics.getHeight()/4 + inimigos[i].linha * tam_linha,
+          window.h/4 + inimigos[i].linha * tam_linha,
           0,
           tam_coluna/250,
           tam_linha/250
@@ -856,7 +859,7 @@ function love.draw()
       elseif inimigos[i].cores == 5 then 
         love.graphics.draw(flappypreto,
           inimigos[i].posicaox,
-          love.graphics.getHeight()/4 + inimigos[i].linha * tam_linha,
+          window.h/4 + inimigos[i].linha * tam_linha,
           0,
           tam_coluna/250,
           tam_linha/250
@@ -921,7 +924,7 @@ function love.draw()
       love.graphics.draw(Menu, 0, 0)
     elseif cutscenes.ativador == true then --Usuário pressionou enter
       love.graphics.draw(Cutscene, 0, 0)
-      if cutscenes.bowser.posicaox <= love.graphics.getWidth()/2 then
+      if cutscenes.bowser.posicaox <= window.w/2 then
         --Após o bowser parar de se mover
         if cutscenes.contador<=0.33 then
           love.graphics.draw(bowser01,cutscenes.bowser.posicaox,cutscenes.bowser.posicaoy)--Fixa a imagem do bowser 
@@ -944,7 +947,7 @@ function love.draw()
         end
       else
         --Controle da animação do bowser enquanto o bowser caminha na tela
-        if cutscenes.bowser.anim == 1 and not(cutscenes.bowser.posicaox >= love.graphics.getWidth()/2) then
+        if cutscenes.bowser.anim == 1 and not(cutscenes.bowser.posicaox >= window.w/2) then
           love.graphics.draw(bowser01, cutscenes.bowser.posicaox, cutscenes.bowser.posicaoy)
         elseif cutscenes.bowser.anim == 2 then
           love.graphics.draw(bowser02, cutscenes.bowser.posicaox, cutscenes.bowser.posicaoy)
