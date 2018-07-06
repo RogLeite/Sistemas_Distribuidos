@@ -78,6 +78,258 @@ end
 
 
 
+function update_Mario(dt)
+  if Mario.anim_saida_down then   -- Movimento do Mario para Baixo
+    Mario.tempo_saida = Mario.tempo_saida + dt --Conta o tempo
+    if Mario.tempo_saida > 0.07 then
+      Mario.animacao = 1 --Desativa animação
+      Mario.anim_saida_down = false --Desativa a sinalização tecla pressionada
+      Mario.anim_move = false --Controle do elseif
+    elseif Mario.tempo_saida > 0.05 and Mario.anim_move == false then
+      Mario.posy = Mario.posy + tam_linha --Movimentação
+      Mario.Linha = Mario.Linha + 1 --Controle da linha que o mário se encontra
+      Mario.anim_move = true --Controle do elseif
+    elseif Mario.tempo_saida > 0.025 then
+      Mario.animacao = 2 --Carrega a animação   
+    end
+  end
+  if Mario.anim_saida_up == true then  -- Movimento do Mario para Cima
+    Mario.tempo_saida = Mario.tempo_saida + dt --Conta o tempo
+    if Mario.tempo_saida > 0.07 then
+      Mario.animacao = 1 --Desativa animação
+      Mario.anim_saida_up = false --Desativa a sinalização de tecla pressionada
+      Mario.anim_move = false --Controle do elseif
+    elseif Mario.tempo_saida > 0.05 and Mario.anim_move == false then
+      Mario.posy = Mario.posy - tam_linha --Movimentação
+      Mario.Linha = Mario.Linha - 1 --Controle da linha que o mário se encontra
+      Mario.anim_move = true --Controle do elseif
+    elseif Mario.tempo_saida > 0.025 then
+      Mario.animacao = 2  --Carrega a animação       
+    end
+  end
+end
+
+
+function update_Luigi(dt)
+  if Luigi.anim_saida_down == true then   -- Movimento do Luigi para Baixo
+    Luigi.tempo_saida = Luigi.tempo_saida + dt --Conta o tempo
+    if Luigi.tempo_saida > 0.07 then
+      Luigi.animacao = 1 --Desativa animação
+      Luigi.anim_saida_down = false --Desativa a sinalização tecla pressionada
+      Luigi.anim_move = false --Controle do elseif
+    elseif Luigi.tempo_saida > 0.05 and Luigi.anim_move == false then
+      Luigi.posy = Luigi.posy + tam_linha --Movimentação
+      Luigi.Linha = Luigi.Linha + 1 --Controle da linha que o Luigi se encontra
+      Luigi.anim_move = true --Controle do elseif
+    elseif Luigi.tempo_saida > 0.025 then
+      Luigi.animacao = 2 --Carrega a animação   
+    end
+  end
+  if Luigi.anim_saida_up == true then  -- Movimento do Luigi para Cima
+    Luigi.tempo_saida = Luigi.tempo_saida + dt --Conta o tempo
+    if Luigi.tempo_saida > 0.07 then
+      Luigi.animacao = 1 --Desativa animação
+      Luigi.anim_saida_up = false --Desativa a sinalização de tecla pressionada
+      Luigi.anim_move = false --Controle do elseif
+    elseif Luigi.tempo_saida > 0.05 and Luigi.anim_move == false then
+      Luigi.posy = Luigi.posy - tam_linha --Movimentação
+      Luigi.Linha = Luigi.Linha - 1 --Controle da linha que o Luigi se encontra
+      Luigi.anim_move = true --Controle do elseif
+    elseif Luigi.tempo_saida > 0.025 then
+      Luigi.animacao = 2  --Carrega a animação       
+    end
+  end  
+end
+
+
+function move_Passaros(dt)
+  for i = 0 , 10, 1 do   --Atualizar a posição do pássaro
+    if inimigos[i].cores == 1 then
+      inimigos[i].posicaox = inimigos[i].posicaox + window.w/8 * dt * Controle_Inimigos.Velocidade -- 100
+    elseif inimigos[i].cores == 2 then
+      inimigos[i].posicaox = inimigos[i].posicaox + 6 * window.w/40 * dt * Controle_Inimigos.Velocidade  -- 120
+    elseif inimigos[i].cores == 3 then
+      inimigos[i].posicaox = inimigos[i].posicaox + 7 * window.w/40 * dt * Controle_Inimigos.Velocidade  -- 140
+    elseif inimigos[i].cores == 4 then
+      inimigos[i].posicaox = inimigos[i].posicaox + window.w/5 * dt * Controle_Inimigos.Velocidade  -- 160
+    elseif inimigos[i].cores == 5 then
+      inimigos[i].posicaox = inimigos[i].posicaox + 9 * window.w/40 * dt * Controle_Inimigos.Velocidade  -- 180
+    end
+  end
+  Controle_Inimigos.Velocidade = ((Pontuacao+1)^(1/4)) -- mudança da velocidade dos passaros
+end
+
+
+
+function spawn_Passaros(dt)
+  --Controle de criação de inimigos
+  Controle_Inimigos.tempo_aparicao = Controle_Inimigos.tempo_aparicao + dt
+  if (Controle_Inimigos.tempo_aparicao > 1.5 and Jogo == "Jogo") or ( Controle_Inimigos.tempo_aparicao > 1 and Jogo == "Co-op") then
+      local i = 0
+      while (i < 10) do
+        if inimigos[i].cores == 0 then
+          inimigos[i].cores = math.random(1,Dificuldade.Nivel)
+          inimigos[i].linha = math.random(0,3)
+          inimigos[i].posicaox = 0
+          i = 10
+        end  
+        i = i + 1 
+        end
+      Controle_Inimigos.tempo_aparicao = 0
+    end
+  end
+
+
+function collision_Passaros(dt) 
+  for i = 0, 10, 1 do --Colisão dos Passaros
+    for j = 6, 0, -1 do
+      if ChecarColisaoPassaro(inimigos[i].posicaox, tam_coluna, 3 * window.w/4 - (j+1) * tam_coluna, 2 * tam_coluna/5) and Matriz_Cano[inimigos[i].linha][j] == inimigos[i].cores and inimigos[i].cores ~= 0 then
+        EfeitoColisao.Ativada = true
+        EfeitoColisao.PosX = 3 * window.w/4 - (j+1) * tam_coluna - tam_coluna/2
+        EfeitoColisao.PosY = inimigos[i].linha * tam_linha + window.h/4
+        EfeitoColisao.Contador = 0
+        Pontuacao = Pontuacao + inimigos[i].cores
+        inimigos[i].cores = 0
+        Moedas = Moedas + Matriz_Cano[inimigos[i].linha][j]
+        Matriz_Cano[inimigos[i].linha][j] = 0
+      elseif ChecarColisaoPassaro(inimigos[i].posicaox, tam_coluna, 3 * window.w/4 - (j+1) * tam_coluna, 2 * tam_coluna/5) and Matriz_Cano[inimigos[i].linha][j] ~= inimigos[i].cores and Matriz_Cano[inimigos[i].linha][j] ~= 0 then
+        EfeitoColisao.Ativada = true
+        EfeitoColisao.PosX = 3 * window.w/4 - (j+1) * tam_coluna - tam_coluna/2
+        EfeitoColisao.PosY = inimigos[i].linha * tam_linha + window.h/4
+        EfeitoColisao.Contador = 0
+        Moedas = Moedas + Matriz_Cano[inimigos[i].linha][j]
+        Matriz_Cano[inimigos[i].linha][j] = 0
+      end
+    end
+    if inimigos[i].posicaox >= Mario.posx - 2 * tam_coluna/5 then -- Controle da mudança de jogo
+      Princesa.Cor = inimigos[i].cores
+      Princesa.Linha = inimigos[i].linha
+      Princesa.PosY = window.h/4 + tam_linha * Princesa.Linha
+      BolaFogo.PosY = Mario.posy
+      BolaFogo.Diferenca = (Princesa.PosY + (Princesa.Linha * tam_linha)) - BolaFogo.PosY
+      Controle_Inimigos.tempo_aparicao = 0
+      for t = 0, 10, 1 do
+        inimigos[t].cores = 0
+        inimigos[t].posicaox = -tam_coluna
+      end
+      for t = 0, 3, 1 do
+        for g = 0, 6, 1 do
+          Matriz_Cano[t][g] = 0
+        end
+      end
+      if Jogo == "Jogo" then
+        Jogo = "Salve"
+      elseif Jogo == "Co-op" then
+        Jogo = "Salve Co-op"
+      end
+    end
+    if inimigos[i].cores == 0 then -- Remove os pássaros inexistentes do caminho
+      inimigos[i].posicaox = - tam_coluna
+    end
+  end
+end
+
+
+
+function check_GameOver()
+  if Princesa.PosX <= 0 then
+    end_Game()
+  end  
+end
+
+
+function end_Game()
+  BolaFogo.Tamanho = 0
+  Jogo = "Game Over"
+end
+
+
+function move_Princesa(dt)
+  Princesa.PosX = Princesa.PosX - window.w/8 * dt  
+end
+
+
+function move_Bola(dt)
+  BolaFogo.PosX = BolaFogo.PosX - (1500 * dt)
+  if BolaFogo.PosX <= Princesa.PosX + 75 then
+    BolaFogo.Tamanho = 0
+    BolaFogo.PosX = Mario.posx
+    Pontuacao = Pontuacao + Princesa.Cor
+    Princesa.Cor = 0
+    Princesa.PosX = 3 * window.w/4
+    Princesa.Nivel = Princesa.Nivel + 1
+    Princesa.Contador = 0
+    Moedas = 50
+    if Jogo == "Salve" then Jogo = "Jogo"
+    elseif Jogo == "Salve Co-op" then Jogo = "Co-op" end
+  end
+end
+
+
+
+
+
+function update_Cutscene(dt)
+  if cutscenes.bandodeflappy.posicaox[1] > window.w then
+    cutscenes.ativador = false
+    BackGrounds.Ativada = true
+  end
+  cutscenes.contador = cutscenes.contador + dt
+  if cutscenes.bowser.posicaox >= window.w/2 then
+     cutscenes.bowser.posicaox = cutscenes.bowser.posicaox  - 75 * dt --15*dt
+      if cutscenes.contador >= 0.3 then
+        if cutscenes.bowser.anim == 2 then
+          cutscenes.bowser.anim = 3
+          cutscenes.contador  = 0
+        elseif cutscenes.bowser.anim == 3 then
+          cutscenes.bowser.anim = 2
+          cutscenes.contador  = 0
+        end
+      end
+  else --Nesse momento bowser já colocou cano 
+    if cutscenes.flappybird.posicaox < cutscenes.bowser.posicaox - 165 then --Flappybird se move
+      cutscenes.flappybird.posicaox = cutscenes.flappybird.posicaox + 90 * dt
+      cutscenes.contador  = 0
+    elseif cutscenes.flappybird.posicaox >= cutscenes.bowser.posicaox - 165  and cutscenes.flappybird.posicaoy <= 380 then
+      cutscenes.flappybird.posicaoy = cutscenes.flappybird.posicaoy  + 40 * dt
+    elseif cutscenes.flappybird.posicaoy >= 380  and cutscenes.contador >= 1.5 then
+      for i = 1 ,20 ,1 do 
+        cutscenes.bandodeflappy.posicaox[i] = cutscenes.bandodeflappy.posicaox[i] + (30+i) * (20 * dt)
+      end
+    end
+  end
+end
+
+
+function update_Nivel()
+  if Pontuacao < 15 then -- Controle da Dificuldade em função da Pontuação
+    Dificuldade.Nivel = 1
+  elseif Pontuacao >= 15 and Pontuacao < 40 then
+    Dificuldade.Nivel = 2
+  elseif Pontuacao >= 40 and Pontuacao < 80 then
+    Dificuldade.Nivel = 3
+  elseif Pontuacao >= 80 and Pontuacao < 140 then
+    Dificuldade.Nivel = 4
+  elseif Pontuacao >= 140 then
+    Dificuldade.Nivel = 5
+  end
+end
+
+
+function update_Efeito(dt)
+  if EfeitoColisao.Ativada == true then
+    EfeitoColisao.Contador = EfeitoColisao.Contador + dt
+    if EfeitoColisao.Contador >= 0.5 then
+      delete_Efeito()
+    end
+  end  
+end
+
+function delete_Efeito()
+  EfeitoColisao.Ativada = false
+  EfeitoColisao.Contador = 0
+end
+
 function reset_Jogo()
   for i = 0, 3, 1 do
     for j = 0, 6, 1 do
@@ -103,6 +355,7 @@ function reset_Jogo()
   BackGrounds.Destaque = 0
   BackGrounds.Ativada = true
 end
+
 
 
 
@@ -411,253 +664,45 @@ function love.keypressed(key)
   end
 end
 function love.update(dt)
-  if Jogo == "Jogo" or Jogo == "Co-op" then-- Jogo
-    if Mario.anim_saida_down then   -- Movimento do Mario para Baixo
-      Mario.tempo_saida = Mario.tempo_saida + dt --Conta o tempo
-      if Mario.tempo_saida > 0.07 then
-        Mario.animacao = 1 --Desativa animação
-        Mario.anim_saida_down = false --Desativa a sinalização tecla pressionada
-        Mario.anim_move = false --Controle do elseif
-      elseif Mario.tempo_saida > 0.05 and Mario.anim_move == false then
-        Mario.posy = Mario.posy + tam_linha --Movimentação
-        Mario.Linha = Mario.Linha + 1 --Controle da linha que o mário se encontra
-        Mario.anim_move = true --Controle do elseif
-      elseif Mario.tempo_saida > 0.025 then
-        Mario.animacao = 2 --Carrega a animação   
-      end
+  
+  if Jogo == "Jogo" then-- Jogo
+    update_Mario(dt)
+    move_Passaros(dt)
+    spawn_Passaros(dt)
+    collision_Passaros(dt) 
+    update_Nivel()
+    update_Efeito(dt)
+  elseif Jogo == "Co-op" then
+    update_Mario(dt)
+    update_Luigi(dt)
+    move_Passaros(dt)
+    spawn_Passaros(dt)
+    collision_Passaros(dt)  
+    update_Nivel()
+    update_Efeito(dt)
+  elseif Jogo == "Salve" then
+    delete_Efeito()
+    check_GameOver()
+    if Princesa.Contador < (10 * Princesa.Nivel) then --Princesa n foi resgatada
+      move_Princesa(dt)
+    elseif Princesa.Contador >= (10 * Princesa.Nivel) then --Princesa foi resgatada
+      move_Bola(dt)
     end
-    if Mario.anim_saida_up == true then  -- Movimento do Mario para Cima
-      Mario.tempo_saida = Mario.tempo_saida + dt --Conta o tempo
-      if Mario.tempo_saida > 0.07 then
-        Mario.animacao = 1 --Desativa animação
-        Mario.anim_saida_up = false --Desativa a sinalização de tecla pressionada
-        Mario.anim_move = false --Controle do elseif
-      elseif Mario.tempo_saida > 0.05 and Mario.anim_move == false then
-        Mario.posy = Mario.posy - tam_linha --Movimentação
-        Mario.Linha = Mario.Linha - 1 --Controle da linha que o mário se encontra
-        Mario.anim_move = true --Controle do elseif
-      elseif Mario.tempo_saida > 0.025 then
-        Mario.animacao = 2  --Carrega a animação       
-      end
-    end
-    if Jogo == "Co-op" then
-      if Luigi.anim_saida_down == true then   -- Movimento do Luigi para Baixo
-        Luigi.tempo_saida = Luigi.tempo_saida + dt --Conta o tempo
-        if Luigi.tempo_saida > 0.07 then
-          Luigi.animacao = 1 --Desativa animação
-          Luigi.anim_saida_down = false --Desativa a sinalização tecla pressionada
-          Luigi.anim_move = false --Controle do elseif
-        elseif Luigi.tempo_saida > 0.05 and Luigi.anim_move == false then
-          Luigi.posy = Luigi.posy + tam_linha --Movimentação
-          Luigi.Linha = Luigi.Linha + 1 --Controle da linha que o Luigi se encontra
-          Luigi.anim_move = true --Controle do elseif
-        elseif Luigi.tempo_saida > 0.025 then
-          Luigi.animacao = 2 --Carrega a animação   
-        end
-      end
-      if Luigi.anim_saida_up == true then  -- Movimento do Luigi para Cima
-        Luigi.tempo_saida = Luigi.tempo_saida + dt --Conta o tempo
-        if Luigi.tempo_saida > 0.07 then
-          Luigi.animacao = 1 --Desativa animação
-          Luigi.anim_saida_up = false --Desativa a sinalização de tecla pressionada
-          Luigi.anim_move = false --Controle do elseif
-        elseif Luigi.tempo_saida > 0.05 and Luigi.anim_move == false then
-          Luigi.posy = Luigi.posy - tam_linha --Movimentação
-          Luigi.Linha = Luigi.Linha - 1 --Controle da linha que o Luigi se encontra
-          Luigi.anim_move = true --Controle do elseif
-        elseif Luigi.tempo_saida > 0.025 then
-          Luigi.animacao = 2  --Carrega a animação       
-        end
-      end
-    end
-    for i = 0 , 10, 1 do   --Atualizar a posição do pássaro
-      if inimigos[i].cores == 1 then
-        inimigos[i].posicaox = inimigos[i].posicaox + window.w/8 * dt * Controle_Inimigos.Velocidade -- 100
-      elseif inimigos[i].cores == 2 then
-        inimigos[i].posicaox = inimigos[i].posicaox + 6 * window.w/40 * dt * Controle_Inimigos.Velocidade  -- 120
-      elseif inimigos[i].cores == 3 then
-        inimigos[i].posicaox = inimigos[i].posicaox + 7 * window.w/40 * dt * Controle_Inimigos.Velocidade  -- 140
-      elseif inimigos[i].cores == 4 then
-        inimigos[i].posicaox = inimigos[i].posicaox + window.w/5 * dt * Controle_Inimigos.Velocidade  -- 160
-      elseif inimigos[i].cores == 5 then
-        inimigos[i].posicaox = inimigos[i].posicaox + 9 * window.w/40 * dt * Controle_Inimigos.Velocidade  -- 180
-      end
-    end
-    --Controle de criação de inimigos
-    Controle_Inimigos.tempo_aparicao = Controle_Inimigos.tempo_aparicao + dt
-    if Jogo == "Jogo" then
-      if Controle_Inimigos.tempo_aparicao > 1.5 then
-        local i = 0
-        while (i < 10) do
-          if inimigos[i].cores == 0 then
-            inimigos[i].cores = math.random(1,Dificuldade.Nivel)
-            inimigos[i].linha = math.random(0,3)
-            inimigos[i].posicaox = 0
-            i = 10
-          end  
-          i = i + 1 
-          end
-        Controle_Inimigos.tempo_aparicao = 0
-      end
-    elseif Jogo == "Co-op" then
-      if Controle_Inimigos.tempo_aparicao > 1 then
-        local i = 0
-        while (i < 10) do
-          if inimigos[i].cores == 0 then
-            inimigos[i].cores = math.random(1,Dificuldade.Nivel)
-            inimigos[i].linha = math.random(0,3)
-            inimigos[i].posicaox = 0
-            i = 10
-          end  
-          i = i + 1 
-          end
-        Controle_Inimigos.tempo_aparicao = 0
-      end
-    end
-    for i = 0, 10, 1 do --Colisão dos Passaros
-      for j = 6, 0, -1 do
-        if ChecarColisaoPassaro(inimigos[i].posicaox, tam_coluna, 3 * window.w/4 - (j+1) * tam_coluna, 2 * tam_coluna/5) and Matriz_Cano[inimigos[i].linha][j] == inimigos[i].cores and inimigos[i].cores ~= 0 then
-          EfeitoColisao.Ativada = true
-          EfeitoColisao.PosX = 3 * window.w/4 - (j+1) * tam_coluna - tam_coluna/2
-          EfeitoColisao.PosY = inimigos[i].linha * tam_linha + window.h/4
-          EfeitoColisao.Contador = 0
-          Pontuacao = Pontuacao + inimigos[i].cores
-          inimigos[i].cores = 0
-          Moedas = Moedas + Matriz_Cano[inimigos[i].linha][j]
-          Matriz_Cano[inimigos[i].linha][j] = 0
-        elseif ChecarColisaoPassaro(inimigos[i].posicaox, tam_coluna, 3 * window.w/4 - (j+1) * tam_coluna, 2 * tam_coluna/5) and Matriz_Cano[inimigos[i].linha][j] ~= inimigos[i].cores and Matriz_Cano[inimigos[i].linha][j] ~= 0 then
-          EfeitoColisao.Ativada = true
-          EfeitoColisao.PosX = 3 * window.w/4 - (j+1) * tam_coluna - tam_coluna/2
-          EfeitoColisao.PosY = inimigos[i].linha * tam_linha + window.h/4
-          EfeitoColisao.Contador = 0
-          Moedas = Moedas + Matriz_Cano[inimigos[i].linha][j]
-          Matriz_Cano[inimigos[i].linha][j] = 0
-        end
-      end
-      if inimigos[i].posicaox >= Mario.posx - 2 * tam_coluna/5 then -- Controle da mudança de jogo
-        Princesa.Cor = inimigos[i].cores
-        Princesa.Linha = inimigos[i].linha
-        Princesa.PosY = window.h/4 + tam_linha * Princesa.Linha
-        BolaFogo.PosY = Mario.posy
-        BolaFogo.Diferenca = (Princesa.PosY + (Princesa.Linha * tam_linha)) - BolaFogo.PosY
-        Controle_Inimigos.tempo_aparicao = 0
-        for t = 0, 10, 1 do
-          inimigos[t].cores = 0
-          inimigos[t].posicaox = -tam_coluna
-        end
-        for t = 0, 3, 1 do
-          for g = 0, 6, 1 do
-            Matriz_Cano[t][g] = 0
-          end
-        end
-        if Jogo == "Jogo" then
-          Jogo = "Salve"
-        elseif Jogo == "Co-op" then
-          Jogo = "Salve Co-op"
-        end
-      end
-      if inimigos[i].cores == 0 then -- Remove os pássaros inexistentes do caminho
-        inimigos[i].posicaox = - tam_coluna
-      end
-    end
-  Controle_Inimigos.Velocidade = ((Pontuacao+1)^(1/4)) -- mudança da velocidade dos passaros
-  elseif Jogo == "Salve" or Jogo == "Salve Co-op" then -- Salve a princesa
-    if Princesa.PosX <= 0 then
-      BolaFogo.Tamanho = 0
-      Jogo = "Game Over"
-    end
-    if Jogo == "Salve" then
-      if Princesa.Contador < (10 * Princesa.Nivel) then
-        Princesa.PosX = Princesa.PosX - window.w/8 * dt
-      elseif Princesa.Contador >= (10 * Princesa.Nivel) then
-        BolaFogo.PosX = BolaFogo.PosX - (1500 * dt)
-       
-        if BolaFogo.PosX <= Princesa.PosX + 75 then
-          BolaFogo.Tamanho = 0
-          BolaFogo.PosX = Mario.posx
-          Pontuacao = Pontuacao + Princesa.Cor
-          Princesa.Cor = 0
-          Princesa.PosX = 3 * window.w/4
-          Princesa.Nivel = Princesa.Nivel + 1
-          Princesa.Contador = 0
-          Moedas = 50
-          Jogo = "Jogo"
-        end
-      end
-    elseif Jogo == "Salve Co-op" then
-      if Princesa.Contador < (20 * Princesa.Nivel) then
-        Princesa.PosX = Princesa.PosX - window.w/8 * dt
-      elseif Princesa.Contador >= (20 * Princesa.Nivel) then
-        BolaFogo.PosX = BolaFogo.PosX - (1500 * dt)
-        if BolaFogo.PosY < Princesa.PosY + 30 then
-          BolaFogo.PosY = BolaFogo.PosY + 3000 * dt
-        elseif BolaFogo.PosY > Princesa.PosY + 50 then
-          BolaFogo.PosY = BolaFogo.PosY - 3000 * dt
-        end
-        if BolaFogo.PosX <= Princesa.PosX + 75 then
-          BolaFogo.Tamanho = 0
-          BolaFogo.PosX = Mario.posx
-          Pontuacao = Pontuacao + Princesa.Cor
-          Princesa.Cor = 0
-          Princesa.PosX = 3 * window.w/4
-          Princesa.Nivel = Princesa.Nivel + 1
-          Princesa.Contador = 0
-          Moedas = 50
-          Jogo = "Co-op"
-        end
-      end
+  elseif Jogo == "Salve Co-op" then
+    check_GameOver()
+    delete_Efeito()
+    if Princesa.Contador < (20 * Princesa.Nivel) then
+      move_Princesa(dt)
+    elseif Princesa.Contador >= (20 * Princesa.Nivel) then
+      move_Bola(dt)
     end
   elseif Jogo == "Menu" then -- Menu
-    --cutscenes
-    if cutscenes.ativador == true then
-      if cutscenes.bandodeflappy.posicaox[1] > window.w then
-        cutscenes.ativador = false
-        BackGrounds.Ativada = true
-      end
-      cutscenes.contador = cutscenes.contador + dt
-      if cutscenes.bowser.posicaox >= window.w/2 then
-         cutscenes.bowser.posicaox = cutscenes.bowser.posicaox  - 75 * dt --15*dt
-          if cutscenes.contador >= 0.3 then
-            if cutscenes.bowser.anim == 2 then
-              cutscenes.bowser.anim = 3
-              cutscenes.contador  = 0
-            elseif cutscenes.bowser.anim == 3 then
-              cutscenes.bowser.anim = 2
-              cutscenes.contador  = 0
-            end
-          end
-      else --Nesse momento bowser já colocou cano 
-        if cutscenes.flappybird.posicaox < cutscenes.bowser.posicaox - 165 then --Flappybird se move
-          cutscenes.flappybird.posicaox = cutscenes.flappybird.posicaox + 90 * dt
-          cutscenes.contador  = 0
-        elseif cutscenes.flappybird.posicaox >= cutscenes.bowser.posicaox - 165  and cutscenes.flappybird.posicaoy <= 380 then
-          cutscenes.flappybird.posicaoy = cutscenes.flappybird.posicaoy  + 40 * dt
-        elseif cutscenes.flappybird.posicaoy >= 380  and cutscenes.contador >= 1.5 then
-          for i = 1 ,20 ,1 do 
-            cutscenes.bandodeflappy.posicaox[i] = cutscenes.bandodeflappy.posicaox[i] + (30+i) * (20 * dt)
-          end
-        end
-      end
+    delete_Efeito()
+    if cutscenes.ativador == true then --cutscenes
+      update_Cutscene(dt)
     end
   end
-  if Pontuacao < 15 then -- Controle da Dificuldade em função da Pontuação
-    Dificuldade.Nivel = 1
-  elseif Pontuacao >= 15 and Pontuacao < 40 then
-    Dificuldade.Nivel = 2
-  elseif Pontuacao >= 40 and Pontuacao < 80 then
-    Dificuldade.Nivel = 3
-  elseif Pontuacao >= 80 and Pontuacao < 140 then
-    Dificuldade.Nivel = 4
-  elseif Pontuacao >= 140 then
-    Dificuldade.Nivel = 5
-  end
-  if EfeitoColisao.Ativada == true then
-    EfeitoColisao.Contador = EfeitoColisao.Contador + dt
-    if EfeitoColisao.Contador >= 0.5 then
-      EfeitoColisao.Ativada = false
-      EfeitoColisao.Contador = 0
-    end
-  end
+  
 end
 function love.draw()
   if Jogo ==1 or Jogo == "Salve" or Jogo == "Co-op" or Jogo == "Salve Co-op" then
