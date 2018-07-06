@@ -14,7 +14,7 @@ function love.load()
   love.window.setTitle("Canos vs. FlappyBird")
   myfont = love.graphics.newFont("GretoonHighlight.ttf", 20)
   love.graphics.setFont(myfont)
-  Jogo = 0 -- 0-Menu 1-Jogo 2-Salve 3-Game Over 4-Co-op 5-Salve Co-op
+  Jogo = "Menu" -- 0-Menu 1-Jogo 2-Salve 3-Game Over 4-Co-op 5-Salve Co-op
   Moedas = 50 -- Máximo de Moedas
   inimigos = {} -- Vetor de tabelas dos inimigos
   Matriz_Cano = {} -- Armazena a Cor do cano em sua Posição
@@ -179,7 +179,7 @@ function love.load()
   end
 end
 function love.keypressed(key)
-  if Jogo == 1 or Jogo == 4 then -- Jogo
+  if Jogo == "Jogo" or Jogo == "Co-op" then -- Jogo
     if key == "kp1" and Dificuldade.Nivel >= 1 then -- Seleção de Canos, com bloqueio das cores ainda não liberadas
       Mario.Cano_Selecionado = 1 -- Verde
     elseif key == "kp2" and Dificuldade.Nivel >= 2 then
@@ -202,7 +202,7 @@ function love.keypressed(key)
         Mario.anim_saida_up = true --Caso o jogador tenha pressionado
         Mario.tempo_saida = 0 --Inicializa o tempo de animação
     end
-    if Jogo == 4 then -- Jogo Cooperativo
+    if Jogo == "Co-op" then -- Jogo Cooperativo
       if key == "g" and Dificuldade.Nivel >= 1 then -- Seleção de Canos Luigi
         Luigi.Cano_Selecionado = 1 -- Verde
       elseif key == "h" and Dificuldade.Nivel >= 2 then
@@ -226,23 +226,23 @@ function love.keypressed(key)
         Luigi.tempo_saida = 0 --Inicializa o tempo de animação
       end
     end
-  elseif Jogo == 2 or Jogo == 5 then -- Salve a Princesa
+  elseif Jogo == "Salve" or Jogo == "Salve Co-op" then -- Salve a Princesa
     if key == "left" then -- Cresce a Bola de Fogo
-      if Jogo == 2 and Princesa.Contador < 10 * Princesa.Nivel then
+      if Jogo == "Salve" and Princesa.Contador < 10 * Princesa.Nivel then
         Princesa.Contador = Princesa.Contador + 1
         BolaFogo.Tamanho = (Princesa.Contador/(10*Princesa.Nivel))
-      elseif Jogo == 5 and Princesa.Contador < 20 * Princesa.Nivel then
+      elseif Jogo == "Salve Co-op" and Princesa.Contador < 20 * Princesa.Nivel then
         Princesa.Contador = Princesa.Contador + 1
         BolaFogo.Tamanho = (Princesa.Contador/(20*Princesa.Nivel))
       end
     end
-    if Jogo == 5 then
+    if Jogo == "Salve Co-op" then
       if key == "a" then
         Princesa.Contador = Princesa.Contador + 1
         BolaFogo.Tamanho = (Princesa.Contador/(Princesa.Nivel*20))
       end
     end
-  elseif Jogo == 3 then -- Game Over
+  elseif Jogo == "Game Over" then -- Game Over
     if key == "return" then -- Reinicia o Jogo
       for i = 0, 3, 1 do
         for j = 0, 6, 1 do
@@ -264,11 +264,11 @@ function love.keypressed(key)
       Princesa.PosX = 3 * window.w/4
       Princesa.Cor = 0
       Moedas = 50
-      Jogo = 0
+      Jogo = "Menu"
       BackGrounds.Destaque = 0
       BackGrounds.Ativada = true
     end
-  elseif Jogo == 0 then -- Menu
+  elseif Jogo == "Menu" then -- Menu
     if key == "return" and cutscenes.ativador == false and Escolha.Ativada == false and BackGrounds.Ativada == false then
       cutscenes.ativador = true
     end
@@ -328,9 +328,9 @@ function love.keypressed(key)
     if InstrucoesAtivada == true then
       if key == "return" then
         if Escolha.Destaque == "Solo" then
-          Jogo = 1
+          Jogo = "Jogo"
         elseif Escolha.Destaque == "Cooperativo" then
-          Jogo = 4
+          Jogo = "Co-op"
         end
         InstrucoesAtivada = false
       end
@@ -341,7 +341,7 @@ function love.keypressed(key)
   end
 end
 function love.update(dt)
-  if Jogo == 1 or Jogo == 4 then-- Jogo
+  if Jogo == "Jogo" or Jogo == "Co-op" then-- Jogo
     if Mario.anim_saida_down == true then   -- Movimento do Mario para Baixo
       Mario.tempo_saida = Mario.tempo_saida + dt --Conta o tempo
       if Mario.tempo_saida > 0.07 then
@@ -370,7 +370,7 @@ function love.update(dt)
         Mario.animacao = 2  --Carrega a animação       
       end
     end
-    if Jogo == 4 then
+    if Jogo == "Co-op" then
       if Luigi.anim_saida_down == true then   -- Movimento do Luigi para Baixo
         Luigi.tempo_saida = Luigi.tempo_saida + dt --Conta o tempo
         if Luigi.tempo_saida > 0.07 then
@@ -415,7 +415,7 @@ function love.update(dt)
     end
     --Controle de criação de inimigos
     Controle_Inimigos.tempo_aparicao = Controle_Inimigos.tempo_aparicao + dt
-    if Jogo == 1 then
+    if Jogo == "Jogo" then
       if Controle_Inimigos.tempo_aparicao > 1.5 then
         local i = 0
         while (i < 10) do
@@ -429,7 +429,7 @@ function love.update(dt)
           end
         Controle_Inimigos.tempo_aparicao = 0
       end
-    elseif Jogo == 4 then
+    elseif Jogo == "Co-op" then
       if Controle_Inimigos.tempo_aparicao > 1 then
         local i = 0
         while (i < 10) do
@@ -480,10 +480,10 @@ function love.update(dt)
             Matriz_Cano[t][g] = 0
           end
         end
-        if Jogo == 1 then
-          Jogo = 2
-        elseif Jogo == 4 then
-          Jogo = 5
+        if Jogo == "Jogo" then
+          Jogo = "Salve"
+        elseif Jogo == "Co-op" then
+          Jogo = "Salve Co-op"
         end
       end
       if inimigos[i].cores == 0 then -- Remove os pássaros inexistentes do caminho
@@ -491,21 +491,17 @@ function love.update(dt)
       end
     end
   Controle_Inimigos.Velocidade = ((Pontuacao+1)^(1/4)) -- mudança da velocidade dos passaros
-  elseif Jogo == 2 or Jogo == 5 then -- Salve a princesa
+  elseif Jogo == "Salve" or Jogo == "Salve Co-op" then -- Salve a princesa
     if Princesa.PosX <= 0 then
       BolaFogo.Tamanho = 0
-      Jogo = 3
+      Jogo = "Game Over"
     end
-    if Jogo == 2 then
+    if Jogo == "Salve" then
       if Princesa.Contador < (10 * Princesa.Nivel) then
         Princesa.PosX = Princesa.PosX - window.w/8 * dt
       elseif Princesa.Contador >= (10 * Princesa.Nivel) then
         BolaFogo.PosX = BolaFogo.PosX - (1500 * dt)
-        if BolaFogo.PosY < Princesa.PosY + 30 then
-          BolaFogo.PosY = BolaFogo.PosY + 3000 * dt
-        elseif BolaFogo.PosY > Princesa.PosY + 50 then
-          BolaFogo.PosY = BolaFogo.PosY - 3000 * dt
-        end
+       
         if BolaFogo.PosX <= Princesa.PosX + 75 then
           BolaFogo.Tamanho = 0
           BolaFogo.PosX = Mario.posx
@@ -515,10 +511,10 @@ function love.update(dt)
           Princesa.Nivel = Princesa.Nivel + 1
           Princesa.Contador = 0
           Moedas = 50
-          Jogo = 1
+          Jogo = "Jogo"
         end
       end
-    elseif Jogo == 5 then
+    elseif Jogo == "Salve Co-op" then
       if Princesa.Contador < (20 * Princesa.Nivel) then
         Princesa.PosX = Princesa.PosX - window.w/8 * dt
       elseif Princesa.Contador >= (20 * Princesa.Nivel) then
@@ -537,11 +533,11 @@ function love.update(dt)
           Princesa.Nivel = Princesa.Nivel + 1
           Princesa.Contador = 0
           Moedas = 50
-          Jogo = 4
+          Jogo = "Co-op"
         end
       end
     end
-  elseif Jogo == 0 then -- Menu
+  elseif Jogo == "Menu" then -- Menu
     --cutscenes
     if cutscenes.ativador == true then
       if cutscenes.bandodeflappy.posicaox[1] > window.w then
@@ -594,7 +590,7 @@ function love.update(dt)
   end
 end
 function love.draw()
-  if Jogo ==1 or Jogo == 2 or Jogo == 4 or Jogo == 5 then
+  if Jogo ==1 or Jogo == "Salve" or Jogo == "Co-op" or Jogo == "Salve Co-op" then
     love.graphics.setBackgroundColor(160,194,250)
     if BackGrounds.Destaque == 0 then
       love.graphics.draw(Lava, 0, 0)
@@ -694,7 +690,7 @@ function love.draw()
       tam_coluna/128,
       tam_linha/196)
     end
-    if Jogo == 4 or Jogo == 5 then
+    if Jogo == "Co-op" or Jogo == "Salve Co-op" then
       if Luigi.animacao == 1 then  -- Animação do Luigi normal
         love.graphics.draw(luigi_normal,
           Luigi.posx,
@@ -915,11 +911,11 @@ function love.draw()
     love.graphics.print(Moedas, 140, 35)
     love.graphics.print(Pontuacao, 350, 35)
     love.graphics.draw(BolaDeFogo, BolaFogo.PosX, BolaFogo.PosY, 0, BolaFogo.Tamanho, BolaFogo.Tamanho, (128 * BolaFogo.Tamanho)/2, (128 * BolaFogo.Tamanho)/2)
-  elseif Jogo == 3 then
+  elseif Jogo == "Game Over" then
     love.graphics.setBackgroundColor( 0, 0, 0)
     love.graphics.print("Pontuação", 350, 270)
     love.graphics.print(Pontuacao, 400, 300)
-  elseif Jogo == 0 then
+  elseif Jogo == "Menu" then
     if cutscenes.ativador == false and Escolha.Ativada == false and BackGrounds.Ativada == false and InstrucoesAtivada == false then
       love.graphics.draw(Menu, 0, 0)
     elseif cutscenes.ativador == true then --Usuário pressionou enter
