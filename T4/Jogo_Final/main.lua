@@ -1,9 +1,81 @@
+local macro_TESTING = true
+
+function cresce_Bola()
+  if Jogo == "Salve" and Princesa.Contador < 10 * Princesa.Nivel then
+    Princesa.Contador = Princesa.Contador + 1
+    BolaFogo.Tamanho = (Princesa.Contador/(10*Princesa.Nivel))
+  elseif Jogo == "Salve Co-op" and Princesa.Contador < 20 * Princesa.Nivel then
+    Princesa.Contador = Princesa.Contador + 1
+    BolaFogo.Tamanho = (Princesa.Contador/(20*Princesa.Nivel))
+  end
+end
+function save_Mario(key)
+  if key == "left" then -- Cresce a Bola de Fogo
+    cresce_Bola()
+  end
+end
+function save_Luigi(key)
+  if key == "a" then
+    cresce_Bola()
+  end
+end
 function Por_Cano_keypressed(Cano_Selecionado, Linhapers) -- Armazena Cano_Selecionado na Matriz Cano
   for Coluna = 6, 1, -1 do -- Percorre a Matriz_Cano ajustando a posição deles.
     Matriz_Cano[Linhapers][Coluna] = Matriz_Cano[Linhapers][Coluna - 1]
   end
   Matriz_Cano[Linhapers][0] = Cano_Selecionado -- Põe o Cano_Selecionado
 end
+
+function controle_Luigi(key)
+  if key == "g" and Dificuldade.Nivel >= 1 then -- Seleção de Canos Luigi
+    Luigi.Cano_Selecionado = 1 -- Verde
+  elseif key == "h" and Dificuldade.Nivel >= 2 then
+    Luigi.Cano_Selecionado = 2 -- Amarelo
+  elseif key == "j" and Dificuldade.Nivel >= 3 then
+    Luigi.Cano_Selecionado = 3 -- Azul
+  elseif key == "t" and Dificuldade.Nivel >= 4 then
+    Luigi.Cano_Selecionado = 4 -- Vermelho
+  elseif key == "y" and Dificuldade.Nivel >= 5 then
+    Luigi.Cano_Selecionado = 5 -- Preto
+  end
+  if key == "a" and Moedas >= Luigi.Cano_Selecionado and Matriz_Cano[Luigi.Linha][6] == 0 then  -- Põe o Cano na Matriz-- Luigi
+    Por_Cano_keypressed(Luigi.Cano_Selecionado, Luigi.Linha)
+    Moedas = Moedas - Luigi.Cano_Selecionado -- Gasta a Moeda
+  end
+  if key == "s" and not(Luigi.posy == (23*window.h/32)) then  -- Movimento Luigi -- Limite Inferior
+    Luigi.anim_saida_down = true --Caso o jogador tenha pressionado
+    Luigi.tempo_saida = 0 --Inicializa o tempo de aniamação
+  elseif key == "w" and not(Luigi.posy == window.h/4) then -- Limite Superior
+    Luigi.anim_saida_up = true --Caso o jogador tenha pressionado
+    Luigi.tempo_saida = 0 --Inicializa o tempo de animação
+  end
+end
+function controle_Mario(key)
+  if key == "kp1" and Dificuldade.Nivel >= 1 then -- Seleção de Canos, com bloqueio das cores ainda não liberadas
+    Mario.Cano_Selecionado = 1 -- Verde
+  elseif key == "kp2" and Dificuldade.Nivel >= 2 then
+    Mario.Cano_Selecionado = 2 -- Amarelo
+  elseif key == "kp3" and Dificuldade.Nivel >= 3 then
+    Mario.Cano_Selecionado = 3 -- Azul
+  elseif key == "kp4" and Dificuldade.Nivel >= 4 then
+    Mario.Cano_Selecionado = 4 -- Vermelho
+  elseif key == "kp5" and Dificuldade.Nivel >= 5 then
+    Mario.Cano_Selecionado = 5 -- Preto
+  end
+  if key == "left" and Moedas >= Mario.Cano_Selecionado and Matriz_Cano[Mario.Linha][6] == 0 then  -- Põe o Cano na Matriz-- Mario
+    Por_Cano_keypressed(Mario.Cano_Selecionado, Mario.Linha)
+    Moedas = Moedas - Mario.Cano_Selecionado -- Gasta a Moeda
+  end
+  if key == "down" and not(Mario.posy == (23*window.h/32)) then  --Movimento do Mario -- Limite Inferior
+      Mario.anim_saida_down = true --Caso o jogador tenha pressionado
+      Mario.tempo_saida = 0 --Inicializa o tempo de aniamação
+  elseif key == "up" and not(Mario.posy == window.h/4) then -- Limite Superior
+      Mario.anim_saida_up = true --Caso o jogador tenha pressionado
+      Mario.tempo_saida = 0 --Inicializa o tempo de animação
+  end
+end
+
+
 function ChecarColisaoPassaro(XP, WP, XC, X) --x do Passaro, Largura do Passaro, x do Cano, Extra
   return XC < XP + WP - X
   end
@@ -179,69 +251,16 @@ function love.load()
   end
 end
 function love.keypressed(key)
-  if Jogo == "Jogo" or Jogo == "Co-op" then -- Jogo
-    if key == "kp1" and Dificuldade.Nivel >= 1 then -- Seleção de Canos, com bloqueio das cores ainda não liberadas
-      Mario.Cano_Selecionado = 1 -- Verde
-    elseif key == "kp2" and Dificuldade.Nivel >= 2 then
-      Mario.Cano_Selecionado = 2 -- Amarelo
-    elseif key == "kp3" and Dificuldade.Nivel >= 3 then
-      Mario.Cano_Selecionado = 3 -- Azul
-    elseif key == "kp4" and Dificuldade.Nivel >= 4 then
-      Mario.Cano_Selecionado = 4 -- Vermelho
-    elseif key == "kp5" and Dificuldade.Nivel >= 5 then
-      Mario.Cano_Selecionado = 5 -- Preto
-    end
-    if key == "left" and Moedas >= Mario.Cano_Selecionado and Matriz_Cano[Mario.Linha][6] == 0 then  -- Põe o Cano na Matriz-- Mario
-      Por_Cano_keypressed(Mario.Cano_Selecionado, Mario.Linha)
-      Moedas = Moedas - Mario.Cano_Selecionado -- Gasta a Moeda
-    end
-    if key == "down" and not(Mario.posy == (23*window.h/32)) then  --Movimento do Mario -- Limite Inferior
-        Mario.anim_saida_down = true --Caso o jogador tenha pressionado
-        Mario.tempo_saida = 0 --Inicializa o tempo de aniamação
-    elseif key == "up" and not(Mario.posy == window.h/4) then -- Limite Superior
-        Mario.anim_saida_up = true --Caso o jogador tenha pressionado
-        Mario.tempo_saida = 0 --Inicializa o tempo de animação
-    end
-    if Jogo == "Co-op" then -- Jogo Cooperativo
-      if key == "g" and Dificuldade.Nivel >= 1 then -- Seleção de Canos Luigi
-        Luigi.Cano_Selecionado = 1 -- Verde
-      elseif key == "h" and Dificuldade.Nivel >= 2 then
-        Luigi.Cano_Selecionado = 2 -- Amarelo
-      elseif key == "j" and Dificuldade.Nivel >= 3 then
-        Luigi.Cano_Selecionado = 3 -- Azul
-      elseif key == "t" and Dificuldade.Nivel >= 4 then
-        Luigi.Cano_Selecionado = 4 -- Vermelho
-      elseif key == "y" and Dificuldade.Nivel >= 5 then
-        Luigi.Cano_Selecionado = 5 -- Preto
-      end
-      if key == "a" and Moedas >= Luigi.Cano_Selecionado and Matriz_Cano[Luigi.Linha][6] == 0 then  -- Põe o Cano na Matriz-- Luigi
-        Por_Cano_keypressed(Luigi.Cano_Selecionado, Luigi.Linha)
-        Moedas = Moedas - Luigi.Cano_Selecionado -- Gasta a Moeda
-      end
-      if key == "s" and not(Luigi.posy == (23*window.h/32)) then  -- Movimento Luigi -- Limite Inferior
-        Luigi.anim_saida_down = true --Caso o jogador tenha pressionado
-        Luigi.tempo_saida = 0 --Inicializa o tempo de aniamação
-      elseif key == "w" and not(Luigi.posy == window.h/4) then -- Limite Superior
-        Luigi.anim_saida_up = true --Caso o jogador tenha pressionado
-        Luigi.tempo_saida = 0 --Inicializa o tempo de animação
-      end
-    end
-  elseif Jogo == "Salve" or Jogo == "Salve Co-op" then -- Salve a Princesa
-    if key == "left" then -- Cresce a Bola de Fogo
-      if Jogo == "Salve" and Princesa.Contador < 10 * Princesa.Nivel then
-        Princesa.Contador = Princesa.Contador + 1
-        BolaFogo.Tamanho = (Princesa.Contador/(10*Princesa.Nivel))
-      elseif Jogo == "Salve Co-op" and Princesa.Contador < 20 * Princesa.Nivel then
-        Princesa.Contador = Princesa.Contador + 1
-        BolaFogo.Tamanho = (Princesa.Contador/(20*Princesa.Nivel))
-      end
-    end
-    if Jogo == "Salve Co-op" then
-      if key == "a" then
-        Princesa.Contador = Princesa.Contador + 1
-        BolaFogo.Tamanho = (Princesa.Contador/(Princesa.Nivel*20))
-      end
-    end
+  if Jogo == "Jogo" then -- Jogo
+    controle_Mario(key)
+  elseif Jogo == "Co-op" then -- Jogo Cooperativo
+    controle_Mario(key)
+    controle_Luigi(key)
+  elseif Jogo == "Salve" then -- Salve a Princesa
+    save_Mario(key)
+  elseif Jogo == "Salve Co-op" then
+    save_Mario(key)
+    save_Luigi(key)
   elseif Jogo == "Game Over" then -- Game Over
     if key == "return" then -- Reinicia o Jogo
       for i = 0, 3, 1 do
