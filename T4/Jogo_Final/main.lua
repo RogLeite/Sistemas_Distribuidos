@@ -30,6 +30,9 @@ function change_Jogo(str)
         Jogo = "Salve Co-op"
       end
   elseif Jogo == "Game Over" then
+      reset_Jogo()
+      BackGrounds.Ativada = true
+      Jogo = "Menu"
   elseif Jogo == "Salve" then
       if str == "Over" then
         Jogo = "Game Over"
@@ -358,9 +361,7 @@ function reset_Jogo()
   Princesa.PosX = 3 * window.w/4
   Princesa.Cor = 0
   Moedas = 50
-  Jogo = "Menu"
   BackGrounds.Destaque = 0
-  BackGrounds.Ativada = true
 end
 
 
@@ -642,7 +643,7 @@ function love.keypressed(key)
     save_Luigi(key)
   elseif Jogo == "Game Over" then -- Game Over
     if key == "return" then -- Reinicia o Jogo
-      reset_Jogo()
+      change_Jogo()
     end
   elseif Jogo == "Menu" then -- Menu
     if just_started then
