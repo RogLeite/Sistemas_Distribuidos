@@ -1,17 +1,39 @@
 local macro_TESTING = true
-
-
-function first_Start()
-  just_started = false
-  cutscenes.ativador = true
+function change_Jogo()
+  if Jogo == "Menu" then
+    if just_started then
+      just_started = false
+      cutscenes.ativador = true
+    elseif cutscenes.ativador then
+      cutscenes.ativador = false
+      BackGrounds.Ativada = true
+    elseif BackGrounds.Ativada then
+      BackGrounds.Ativada = false
+      Escolha.Ativada = true
+    elseif Escolha.Ativada then
+      Escolha.Ativada = false
+      InstrucoesAtivada = true
+    elseif InstrucoesAtivada then
+      InstrucoesAtivada = false
+      if Escolha.Destaque == "Solo" then
+        Jogo = "Jogo"
+      elseif Escolha.Destaque == "Cooperativo" then
+        Jogo = "Co-op"
+      end
+    end
+  elseif Jogo == "Jogo" then
+      if  true then
+        Jogo = "Salve"
+      end
+  elseif Jogo == "Co-op" then
+      if true then
+        Jogo = "Salve Co-op"
+      end
+  elseif Jogo == "Game Over" then
+  elseif Jogo == "Salve" then
+  elseif Jogo == "Salve Co-op" then
+  end
 end
-
-
-function end_Cutscene()
-  cutscenes.ativador = false
-  BackGrounds.Ativada = true  
-end
-
 function select_Background(key)
   if key == "up" then
     if BackGrounds.Destaque <= 2 then
@@ -42,8 +64,7 @@ function select_Background(key)
     end
   end
   if key == "return" then
-    BackGrounds.Ativada = false
-    Escolha.Ativada = true
+    change_Jogo()
   end
 end
 
@@ -56,26 +77,9 @@ function select_Modo(key)
     end
   end
   if key == "space" then
-    Escolha.Ativada = false
-    InstrucoesAtivada = true
+    change_Jogo()
   end
 end
-
-
-function end_Instrucoes()  
-  InstrucoesAtivada = false
-  start_Jogo()
-end
-
-
-function start_Jogo()  
-  if Escolha.Destaque == "Solo" then
-    Jogo = "Jogo"
-  elseif Escolha.Destaque == "Cooperativo" then
-    Jogo = "Co-op"
-  end
-end
-
 
 
 function update_Mario(dt)
@@ -271,8 +275,7 @@ end
 
 function update_Cutscene(dt)
   if cutscenes.bandodeflappy.posicaox[1] > window.w then
-    cutscenes.ativador = false
-    BackGrounds.Ativada = true
+    end_Cutscene()
   end
   cutscenes.contador = cutscenes.contador + dt
   if cutscenes.bowser.posicaox >= window.w/2 then
@@ -639,12 +642,12 @@ function love.keypressed(key)
   elseif Jogo == "Menu" then -- Menu
     if just_started then
       if key == "return" then
-        first_Start()
+        change_Jogo()
       end
     end
     if cutscenes.ativador then
       if key == "kpenter" or key == "p" then
-        end_Cutscene()
+        change_Jogo()
       end
     end
     if BackGrounds.Ativada then
@@ -655,7 +658,7 @@ function love.keypressed(key)
     end
     if InstrucoesAtivada then
       if key == "return" then
-        end_Instrucoes()
+        change_Jogo()
       end
     end
   end
@@ -669,7 +672,7 @@ function love.update(dt)
     update_Mario(dt)
     move_Passaros(dt)
     spawn_Passaros(dt)
-    collision_Passaros(dt) 
+    collision_Passaros(dt)
     update_Nivel()
     update_Efeito(dt)
   elseif Jogo == "Co-op" then
@@ -689,8 +692,8 @@ function love.update(dt)
       move_Bola(dt)
     end
   elseif Jogo == "Salve Co-op" then
-    check_GameOver()
     delete_Efeito()
+    check_GameOver()
     if Princesa.Contador < (20 * Princesa.Nivel) then
       move_Princesa(dt)
     elseif Princesa.Contador >= (20 * Princesa.Nivel) then
