@@ -1,5 +1,5 @@
 local macro_TESTING = true
-function change_Jogo()
+function change_Jogo(str)
   if Jogo == "Menu" then
     if just_started then
       just_started = false
@@ -22,16 +22,26 @@ function change_Jogo()
       end
     end
   elseif Jogo == "Jogo" then
-      if  true then
+      if  Princesa.Capturada then
         Jogo = "Salve"
       end
   elseif Jogo == "Co-op" then
-      if true then
+      if Princesa.Capturada then
         Jogo = "Salve Co-op"
       end
   elseif Jogo == "Game Over" then
   elseif Jogo == "Salve" then
+      if str == "Over" then
+        Jogo = "Game Over"
+      else
+        Jogo = "Jogo"
+      end
   elseif Jogo == "Salve Co-op" then
+      if str == "Over" then
+        Jogo = "Game Over"
+      else
+        Jogo = "Co-op"
+      end
   end
 end
 function select_Background(key)
@@ -221,11 +231,8 @@ function collision_Passaros(dt)
           Matriz_Cano[t][g] = 0
         end
       end
-      if Jogo == "Jogo" then
-        Jogo = "Salve"
-      elseif Jogo == "Co-op" then
-        Jogo = "Salve Co-op"
-      end
+      Princesa.Capturada = true
+      change_Jogo()
     end
     if inimigos[i].cores == 0 then -- Remove os pássaros inexistentes do caminho
       inimigos[i].posicaox = - tam_coluna
@@ -237,15 +244,12 @@ end
 
 function check_GameOver()
   if Princesa.PosX <= 0 then
-    end_Game()
+    BolaFogo.Tamanho = 0
+    change_Jogo("Over")
   end  
 end
 
 
-function end_Game()
-  BolaFogo.Tamanho = 0
-  Jogo = "Game Over"
-end
 
 
 function move_Princesa(dt)
@@ -255,6 +259,7 @@ end
 
 function move_Bola(dt)
   BolaFogo.PosX = BolaFogo.PosX - (1500 * dt)
+  BolaFogo.PosY = BolaFogo.PosY + (Princesa.PosY-BolaFogo.PosY)*20*dt
   if BolaFogo.PosX <= Princesa.PosX + 75 then
     BolaFogo.Tamanho = 0
     BolaFogo.PosX = Mario.posx
@@ -264,8 +269,7 @@ function move_Bola(dt)
     Princesa.Nivel = Princesa.Nivel + 1
     Princesa.Contador = 0
     Moedas = 50
-    if Jogo == "Salve" then Jogo = "Jogo"
-    elseif Jogo == "Salve Co-op" then Jogo = "Co-op" end
+    change_Jogo()
   end
 end
 
@@ -492,7 +496,8 @@ function love.load()
     PosX = 3*window.w/4,
     PosY = window.h/4,
     Cor = 0,--Armazena a cor que o flappybird terá
-    Contador = 0 -- Armazena o clique de teclas para derrotar o pássaro
+    Contador = 0, -- Armazena o clique de teclas para derrotar o pássaro
+    Capturada = false
   }
   Controle_Inimigos = {
     Velocidade = 1,-- Cresce em função da pontuação
