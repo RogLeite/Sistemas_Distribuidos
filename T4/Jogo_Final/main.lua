@@ -491,13 +491,13 @@ function mqttcb(topic, message)
   print("Received: " .. topic .. ": " .. message)
   if topic == "Luigi" and Escolha_Personagem_Destaque == "Mario" then
     if Jogo == "Salve Co-op" then
-      salve_Luigi(message)
+      save_Luigi(message)
     elseif Jogo == "Co-op"then
       controle_Luigi(message)
     end
   elseif topic == "Mario" and Escolha_Personagem_Destaque == "Luigi" then
     if Jogo == "Salve Co-op" then
-      salve_Mario(message)
+      save_Mario(message)
     elseif Jogo == "Co-op"then
       controle_Mario(message)
     end
@@ -703,10 +703,10 @@ function love.keypressed(key)
   elseif Jogo == "Salve Co-op" then
     if Escolha_Personagem_Destaque == "Mario" then
       mqtt_client:publish(Escolha_Personagem_Destaque,key)
-      salve_Mario(key)
+      save_Mario(key)
     elseif Escolha_Personagem_Destaque == "Luigi" then
       mqtt_client:publish(Escolha_Personagem_Destaque,key)
-      salve_Luigi(key)
+      save_Luigi(key)
     end
   elseif Jogo == "Game Over" then -- Game Over
     if key == "return" then -- Reinicia o Jogo
