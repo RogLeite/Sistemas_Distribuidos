@@ -463,6 +463,11 @@ function love.load()
   window = {}
   window.h = love.graphics.getHeight()
   window.w = love.graphics.getWidth()
+  ------------------------------------
+  mqtt_client = mqtt.client.create("127.0.0.1", 1883, mqttcb)  
+  mqtt_client:connect("jogomvfp")  
+  mqtt_client:subscribe({"controle"})  
+--------------------------------------
   love.window.setTitle("Canos vs. FlappyBird")
   myfont = love.graphics.newFont("GretoonHighlight.ttf", 20)
   love.graphics.setFont(myfont)
