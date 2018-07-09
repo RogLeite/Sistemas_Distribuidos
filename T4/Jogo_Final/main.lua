@@ -501,6 +501,14 @@ function mqttcb(topic, message)
     elseif Jogo == "Co-op"then
       controle_Mario(message)
     end
+  elseif topic == "log" then
+    if message == "Mario" then
+      mario_ready = true
+      if luigi_ready then both_ready = true end
+    elseif message == "Luigi" then
+      luigi_ready = true
+      if mario_ready then both_ready = true end
+    end
   end
 end
 
@@ -517,6 +525,9 @@ function love.load()
 --------------------------------------
   Escolha_Personagem = false
   Escolha_Personagem_Destaque = "Mario"
+  mario_ready = false
+  luigi_ready = false
+  both_ready = false
   love.window.setTitle("Canos vs. FlappyBird")
   myfont = love.graphics.newFont("GretoonHighlight.ttf", 20)
   love.graphics.setFont(myfont)
@@ -736,7 +747,7 @@ function love.keypressed(key)
     end
     if Escolha_Personagem then
       if key == "space" then
-        change_Jogo()
+        mqtt_client:publish("log",Escolha_Personagem_Destaque)
       else
         select_Personagem(key)
       end
@@ -783,6 +794,8 @@ function love.update(dt)
     delete_Efeito()
     if cutscenes.ativador == true then --cutscenes
       update_Cutscene(dt)
+    elseif Escolha_Personagem_Destaque and both_ready then
+      change_Jogo()
     end
   end
   
