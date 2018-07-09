@@ -1,4 +1,7 @@
 local macro_TESTING = true
+-- aspas pra micaele: ""
+local mqtt = require ("mqtt_library")
+
 function change_Jogo(str)
   if Jogo == "Menu" then
     if just_started then
