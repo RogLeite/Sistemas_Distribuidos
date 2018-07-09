@@ -1,6 +1,13 @@
 local macro_TESTING = true
 -- aspas pra micaele: ""
+
+--[[if not LUA_PATH then 
+  LUA_PATH="/usr/local/lib/luarocks/rocks/luasocket" 
+else
+  LUA_PATH = LUA_PATH..";/usr/local/lib/luarocks/rocks/luasocket"
+  end]]
 local mqtt = require ("mqtt_library")
+
 
 function change_Jogo(str)
   if Jogo == "Menu" then
