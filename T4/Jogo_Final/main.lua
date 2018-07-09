@@ -425,35 +425,34 @@ function controle_Luigi(key)
   local key_boa = false
   if key == "g" and Dificuldade.Nivel >= 1 then -- Seleção de Canos Luigi
     Luigi.Cano_Selecionado = 1 -- Verde
-    key_boa = true
+     
   elseif key == "h" and Dificuldade.Nivel >= 2 then
     Luigi.Cano_Selecionado = 2 -- Amarelo
-    key_boa = true
+     
   elseif key == "j" and Dificuldade.Nivel >= 3 then
     Luigi.Cano_Selecionado = 3 -- Azul
-    key_boa = true
+     
   elseif key == "t" and Dificuldade.Nivel >= 4 then
     Luigi.Cano_Selecionado = 4 -- Vermelho
-    key_boa = true
+     
   elseif key == "y" and Dificuldade.Nivel >= 5 then
     Luigi.Cano_Selecionado = 5 -- Preto
-    key_boa = true
+     
   end
   if key == "a" and Moedas >= Luigi.Cano_Selecionado and Matriz_Cano[Luigi.Linha][6] == 0 then  -- Põe o Cano na Matriz-- Luigi
     Por_Cano_keypressed(Luigi.Cano_Selecionado, Luigi.Linha)
     Moedas = Moedas - Luigi.Cano_Selecionado -- Gasta a Moeda
-    key_boa = true
+     
   end
   if key == "s" and not(Luigi.posy == (23*window.h/32)) then  -- Movimento Luigi -- Limite Inferior
     Luigi.anim_saida_down = true --Caso o jogador tenha pressionado
     Luigi.tempo_saida = 0 --Inicializa o tempo de aniamação
-    key_boa = true
+     
   elseif key == "w" and not(Luigi.posy == window.h/4) then -- Limite Superior
     Luigi.anim_saida_up = true --Caso o jogador tenha pressionado
     Luigi.tempo_saida = 0 --Inicializa o tempo de animação
-    key_boa = true
+     
   end
-  if key_boa then mqtt_client:publish("Luigi",key) end
 end
 
 function controle_Mario(key)
@@ -490,13 +489,10 @@ function ChecarColisaoPassaro(XP, WP, XC, X) --x do Passaro, Largura do Passaro,
 
 function mqttcb(topic, message)   
   print("Received: " .. topic .. ": " .. message)
-  if topic == "Luigi" then
-    if message == "s" then
-      controle_Mario("down")
-    elseif message == "w" then
-      controle_Mario("up")
-    end
-    
+  if topic == "Luigi" and Escolha_Personagem_Destaque == "Mario" then
+    controle_Luigi(message)
+  elseif topic == "Mario" and Escolha_Personagem_Destaque == "Luigi" then
+    controle_Mario(message)
   end
 end
 
@@ -507,8 +503,8 @@ function love.load()
   window.h = love.graphics.getHeight()
   window.w = love.graphics.getWidth()
   ------------------------------------
-  mqtt_client = mqtt.client.create("127.0.0.1", 1883, mqttcb)  
-  mqtt_client:connect("jogomvfp")  
+  mqtt_client = mqtt.client.create("192.168.43.113", 1883, mqttcb)  
+  mqtt_client:connect("rodrigo")  
   mqtt_client:subscribe({"log","Mario","Luigi"})  
 --------------------------------------
   Escolha_Personagem = false
@@ -687,13 +683,23 @@ function love.keypressed(key)
   if Jogo == "Jogo" then -- Jogo
     controle_Mario(key)
   elseif Jogo == "Co-op" then -- Jogo Cooperativo
-    controle_Mario(key)
-    controle_Luigi(key)
+    if Escolha_Personagem_Destaque == "Mario" then
+      mqtt_client:publish(Escolha_Personagem_Destaque,key)
+      controle_Mario(key)
+    elseif Escolha_Personagem_Destaque == "Luigi" then
+      mqtt_client:publish(Escolha_Personagem_Destaque,key)
+      controle_Luigi(key)
+    end
   elseif Jogo == "Salve" then -- Salve a Princesa
     save_Mario(key)
   elseif Jogo == "Salve Co-op" then
-    save_Mario(key)
-    save_Luigi(key)
+    if Escolha_Personagem_Destaque == "Mario" then
+      mqtt_client:publish(Escolha_Personagem_Destaque,key)
+      salve_Mario(key)
+    elseif Escolha_Personagem_Destaque == "Luigi" then
+      mqtt_client:publish(Escolha_Personagem_Destaque,key)
+      salve_Luigi(key)
+    end
   elseif Jogo == "Game Over" then -- Game Over
     if key == "return" then -- Reinicia o Jogo
       change_Jogo()
@@ -1100,7 +1106,7 @@ function love.draw()
     love.graphics.print("Pontuação", 350, 270)
     love.graphics.print(Pontuacao, 400, 300)
   elseif Jogo == "Menu" then
-    if cutscenes.ativador == false and Escolha.Ativada == false and BackGrounds.Ativada == false and InstrucoesAtivada == false then
+    if cutscenes.ativador == false and Escolha.Ativada == false and BackGrounds.Ativada == false and InstrucoesAtivada == false and Escolha_Personagem == false then
       love.graphics.draw(Menu, 0, 0)
     elseif cutscenes.ativador == true then --Usuário pressionou enter
       love.graphics.draw(Cutscene, 0, 0)
@@ -1162,6 +1168,19 @@ function love.draw()
       love.graphics.draw(Instrucoes, 0, 0)
       love.graphics.print("Pressione Enter", 40, 530)
       love.graphics.print("para Continuar", 40, 560)
+    elseif Escolha_Personagem == true then
+      love.graphics.draw(MododeJogo, 0, 0)
+      love.graphics.print("Pressione Espaço", 200, 500)
+      love.graphics.setColor(0,0,0)
+      love.graphics.rectangle("fill",380,315,250,150)
+      love.graphics.setColor(255,255,255)
+      love.graphics.print("Mario",400,340,0,1.5,1.5)
+      love.graphics.print("Luigi",400,410,0,1.5,1.5)
+      if Escolha_Personagem_Destaque == "Mario" then
+        love.graphics.draw(Seletor, 0, 0)
+      elseif Escolha_Personagem_Destaque == "Luigi" then
+        love.graphics.draw(Seletor, 0, 70)
+      end
     end
   end
 end
