@@ -490,9 +490,17 @@ function ChecarColisaoPassaro(XP, WP, XC, X) --x do Passaro, Largura do Passaro,
 function mqttcb(topic, message)   
   print("Received: " .. topic .. ": " .. message)
   if topic == "Luigi" and Escolha_Personagem_Destaque == "Mario" then
-    controle_Luigi(message)
+    if Jogo == "Salve Co-op" then
+      salve_Luigi(message)
+    elseif Jogo == "Co-op"then
+      controle_Luigi(message)
+    end
   elseif topic == "Mario" and Escolha_Personagem_Destaque == "Luigi" then
-    controle_Mario(message)
+    if Jogo == "Salve Co-op" then
+      salve_Mario(message)
+    elseif Jogo == "Co-op"then
+      controle_Mario(message)
+    end
   end
 end
 
@@ -503,7 +511,7 @@ function love.load()
   window.h = love.graphics.getHeight()
   window.w = love.graphics.getWidth()
   ------------------------------------
-  mqtt_client = mqtt.client.create("192.168.43.113", 1883, mqttcb)  
+  mqtt_client = mqtt.client.create("127.0.0.1", 1883, mqttcb)  
   mqtt_client:connect("rodrigo")  
   mqtt_client:subscribe({"log","Mario","Luigi"})  
 --------------------------------------
