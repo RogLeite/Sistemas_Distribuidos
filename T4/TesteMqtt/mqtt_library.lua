@@ -69,11 +69,16 @@
 -- ------------------------------------------------------------------------- --
 
 function isPsp() return(Socket ~= nil) end
-
+local table = table
+table.getn = function (t)
+  local i = 0
+  for _ in pairs(t) do i = i+1 end
+  return  i
+  end
 if (not isPsp()) then
   socket = require("socket")
-  require("io")
-  require("ltn12")
+  io = require("io")
+  ltn12 = require("ltn12")
   
 --require("ssl")
 end
