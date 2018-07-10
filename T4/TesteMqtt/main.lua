@@ -8,7 +8,6 @@ mqtt_client = mqtt.client.create("127.0.0.1", 1883, mqttcb)
 mqtt_client:connect("escmiau")  
 mqtt_client:subscribe({"log"})
 for i=0,5 do
-
   mqtt_client:publish("log", "ihuuu")
   print("Aperte 'enter' para continuar")
   io.read()
